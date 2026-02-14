@@ -1,0 +1,145 @@
+## docker compose -f compose.DEV.yml up
+services:
+  # Frontend Angular
+  pfg1-front:
+    container_name: pfg1-front
+    image: node:24-bullseye
+    command: sh -c "cp .env.DEV .env && npm install && npm start -- --host 0.0.0.0"
+    working_dir: /usr/src/app
+    volumes:
+      - ./front:/usr/src/app
+    ports:
+      - "4200:4200"
+    # links:
+    #   - pfg1-back
+    networks:
+      - general
+
+  # Backend Laravel
+  pfg1-back:
+    container_name: pfg1-back
+    build:
+      context: .
+      dockerfile: ./back/principal/dev.Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - ./back/principal:/app
+    depends_on:
+      - pfg1-postgres
+    entrypoint: ["/bin/sh", "-c"]
+    command: sh -c "cp .env.DEV .env && composer install && php artisan migrate && php artisan serve --host=0.0.0.0 --port=8000"
+    networks:
+      - general
+
+  # Backend Sensor nodejs
+  pfg1-sensor:
+    container_name: pfg1-sensor
+    build:
+      dockerfile: ./back/sensor/dev.Dockerfile
+      context: .
+    command: sh -c "cp .env.DEV .env && npm install && nodemon -L index.js"
+    volumes:
+      - ./back/sensor:/usr/src/app
+    ports:
+      - "3000:3000"
+    working_dir: /usr/src/app
+    depends_on:
+      - pfg1-rabbitmq
+    networks:
+      - general
+
+  # Backend DB insert nodejs
+  pfg1-dbinsert:
+    container_name: pfg1-dbinsert
+    build:
+      dockerfile: ./back/dbinsert/dev.Dockerfile
+      context: .
+    command: sh -c "cp .env.DEV .env && npm install && nodemon -L index.js"
+    volumes:
+      - ./back/dbinsert:/usr/src/app
+    working_dir: /usr/src/app
+    depends_on:
+      - pfg1-mongodb
+      - pfg1-sensor
+    networks:
+      - general
+
+  pfg1-mongodb:
+    image: mongo:6.0
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    volumes:
+      - mongo-bd:/data/db
+    networks:
+      - general
+
+  pfg1-mongo-express:
+    image: mongo-express
+    container_name: pfg1-mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      MONGO_USER: root
+      MONGO_PASSWORD: example
+      MONGO_URI: mongodb://root:example@pfg1-mongodb:27017/
+      ME_CONFIG_BASICAUTH: false
+    depends_on:
+      - pfg1-mongodb
+    networks:
+      - general
+
+  pfg1-postgres:
+    image: postgres:16
+    container_name: pfg1-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: prf-g6
+    volumes:
+      - postgres-bd:/var/lib/postgresql/data:rw
+    ports:
+      - 5432:5432
+    networks:
+      - general
+
+  pfg1-pgadmin:
+    image: dpage/pgadmin4
+    container_name: pfg1-pgadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@example.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    depends_on:
+      - pfg1-postgres
+    networks:
+      - general
+
+  pfg1-rabbitmq:
+    image: rabbitmq:4.0-management-alpine
+    container_name: pfg1-rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - general
+
+volumes:
+  postgres-bd:
+  mongo-bd:
+  rabbitmq_data:
+
+networks:
+  general:
+    driver: bridge
+    name: general
