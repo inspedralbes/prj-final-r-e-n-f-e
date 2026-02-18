@@ -1,0 +1,58 @@
+<div class="disseny-principal">
+    <app-sidebar></app-sidebar>
+
+    <div class="contingut">
+
+        <div class="encapçalament-tauler">
+            <!-- Espai per si volem posar un títol o salutació més endavant -->
+        </div>
+
+        <!-- Contenidor principal limitat per amplada per millorar visualització -->
+        <div class="graella-tauler">
+
+            <!-- Targeta Classe Actual -->
+            <div class="targeta-classe-actual">
+                <div class="insignia-estat">
+                    <span class="punt"></span> {{ classeActual.estat }}
+                </div>
+
+                <h1>{{ classeActual.nom }}</h1>
+
+                <div class="accions">
+                    <button class="boto-accio">
+                        Passar llista ara
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Horari -->
+            <div class="contenidor-horari">
+                <div class="graella-horari">
+                    <!-- Capçalera dies -->
+                    <div class="cel-la-capçalera columna-hora">
+                        <button class="insignia-hora punter" (click)="commutarFranja()" title="Canviar Franja Horària">
+                            {{ franjaHoraria() }}
+                            <span class="icona-commutador">⇅</span>
+                        </button>
+                    </div>
+                    @for (dia of diesSetmana; track dia) {
+                    <div class="cel-la-capçalera">{{ dia }}</div>
+                    }
+
+                    <!-- Files hores i assignatures -->
+                    @for (franja of horariActual(); track franja) {
+                    <div class="cel-la-hora">{{ franja.hora }}</div>
+                    @for (assignatura of franja.assignatures; track assignatura) {
+                    <div class="cel-la-assignatura" [class.esbarjo]="assignatura === 'Esbarjo'">
+                        {{ assignatura }}
+                    </div>
+                    }
+                    }
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>

@@ -1,0 +1,196 @@
+.fons-login {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #6200EA 0%, #B388FF 100%);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative background shapes (optional) */
+.fons-login::before {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    top: -100px;
+    right: -100px;
+}
+
+.fons-login::after {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 50%;
+    bottom: -50px;
+    left: -50px;
+}
+
+.targeta-login {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 30px;
+    padding: 50px 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    z-index: 10;
+    transition: transform 0.3s ease;
+}
+
+.targeta-login:hover {
+    transform: translateY(-5px);
+}
+
+.encapçalament-login {
+    text-align: center;
+}
+
+.encapçalament-login h1 {
+    margin: 0;
+    color: #333;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.encapçalament-login p {
+    margin: 0;
+    color: #666;
+    font-size: 1rem;
+}
+
+.cos-formulari {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.grup-input {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.grup-input label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #444;
+    margin-left: 5px;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 15px 45px 15px 20px;
+    border: 2px solid #eee;
+    border-radius: 15px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+}
+
+.input-wrapper input:focus {
+    border-color: #6200EA;
+    background-color: white;
+    box-shadow: 0 0 0 4px rgba(98, 0, 234, 0.1);
+}
+
+.icona-input {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.boto-entrar {
+    background: linear-gradient(90deg, #6200EA 0%, #7C4DFF 100%);
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 15px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    box-shadow: 0 10px 20px rgba(98, 0, 234, 0.3);
+}
+
+.boto-entrar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(98, 0, 234, 0.4);
+    filter: brightness(1.1);
+}
+
+.boto-entrar:active {
+    transform: translateY(1px);
+}
+
+.fletxa {
+    transition: transform 0.3s ease;
+}
+
+.boto-entrar:hover .fletxa {
+    transform: translateX(5px);
+}
+
+.missatge-error {
+    background-color: #FFEBEE;
+    color: #D32F2F;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #FFCDD2;
+    animation: shake 0.4s ease-in-out;
+}
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    75% {
+        transform: translateX(5px);
+    }
+}
+
+.peu-login {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.peu-login p {
+    color: #aaa;
+    font-size: 0.85rem;
+    margin: 0;
+}
