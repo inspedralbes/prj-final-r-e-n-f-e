@@ -1,0 +1,34 @@
+<div class="fons-login">
+    <div class="targeta-login">
+        <div class="encapçalament-login">
+            <h1>Benvingut</h1>
+            <p>Accedeix al teu compte</p>
+        </div>
+
+        <div class="cos-formulari">
+            <div class="grup-input">
+                <label for="usuari">Usuari</label>
+                <div class="input-wrapper">
+                    <input type="text" id="usuari" placeholder="Ex: alumne, professor, admin" [(ngModel)]="usuari"
+                        (keyup.enter)="iniciarSessio()">
+                    <span class="icona-input">👤</span>
+                </div>
+            </div>
+
+            <button (click)="iniciarSessio()" class="boto-entrar">
+                Iniciar Sessió
+                <span class="fletxa">→</span>
+            </button>
+
+            @if (error()) {
+            <div class="missatge-error">
+                <span class="icona-error">⚠️</span> {{ error() }}
+            </div>
+            }
+        </div>
+
+        <div class="peu-login">
+            <p>© 2024 Projecte Pedralbes</p>
+        </div>
+    </div>
+</div>

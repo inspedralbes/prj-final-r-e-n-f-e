@@ -1,0 +1,237 @@
+.disseny-principal {
+    display: flex;
+    background-color: #f8f9fa;
+    height: 100vh;
+    /* Alçada fixa per evitar scroll al cos si el contingut hi cap */
+    overflow: hidden;
+    /* Amagar desbordament al cos principal */
+    font-family: 'Inter', sans-serif;
+}
+
+.contingut {
+    flex-grow: 1;
+    margin-left: 140px;
+    padding: 30px 50px;
+    /* Padding reduït */
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    /* Omplir alçada */
+    overflow-y: auto;
+    /* Permetre scroll només dins del contingut si és absolutament necessari, però intentant encaixar-ho */
+}
+
+.encapçalament-tauler {
+    margin-bottom: 10px;
+    /* Marge reduït */
+    flex-shrink: 0;
+}
+
+.graella-tauler {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    /* Gap reduït de 40px */
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+    /* Omplir espai disponible */
+}
+
+/* Targeta Classe Actual */
+.targeta-classe-actual {
+    background: linear-gradient(135deg, #6200EA 0%, #651FFF 100%);
+    border-radius: 20px;
+    padding: 25px 40px;
+    /* Padding vertical reduït */
+    color: white;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 10px 25px rgba(98, 0, 234, 0.25);
+    min-height: 160px;
+    /* Alçada mínima reduïda de 220px */
+    flex-shrink: 0;
+    /* Evitar que s'encongeixi massa */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.insignia-estat {
+    background-color: rgba(255, 255, 255, 0.2);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    width: fit-content;
+    margin-bottom: 10px;
+    /* Marge reduït */
+}
+
+.punt {
+    width: 8px;
+    height: 8px;
+    background-color: #00E676;
+    border-radius: 50%;
+    box-shadow: 0 0 5px #00E676;
+}
+
+.targeta-classe-actual h1 {
+    font-size: 2.2rem;
+    /* Font lleugerament més petita */
+    font-weight: 700;
+    margin: 0 0 15px 0;
+    /* Marge reduït */
+    letter-spacing: -0.02em;
+}
+
+.boto-accio {
+    background-color: white;
+    color: #6200EA;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 14px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.boto-accio:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.icona-targeta {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.15;
+}
+
+.icona-targeta svg {
+    width: 100px;
+    /* Icona més petita */
+    height: 100px;
+    fill: white;
+}
+
+/* Horari */
+.contenidor-horari {
+    background-color: #B388FF;
+    background: linear-gradient(135deg, #B388FF 0%, #9575CD 100%);
+    border-radius: 20px;
+    padding: 20px;
+    /* Padding reduït */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    color: white;
+    flex-grow: 1;
+    /* Omplir espai vertical restant */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Evitar desbordament */
+}
+
+.graella-horari {
+    display: grid;
+    grid-template-columns: 90px repeat(5, 1fr);
+    gap: 2px;
+    height: 100%;
+    /* Omplir contenidor */
+    align-content: stretch;
+    /* Estirar files per omplir */
+}
+
+/* Cel·les generals */
+.cel-la-capçalera,
+.cel-la-hora,
+.cel-la-assignatura {
+    padding: 10px;
+    /* Padding reduït significativament */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+}
+
+.cel-la-capçalera {
+    font-size: 1.1rem;
+    padding-bottom: 15px;
+    /* Reduït */
+    text-transform: capitalize;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+    height: min-content;
+    /* No ocupar espai extra */
+}
+
+.columna-hora {
+    /* Renamed from time-col */
+    justify-content: center;
+    border-bottom: none;
+    /* Remove line under AM/PM badge */
+}
+
+.insignia-hora {
+    background: rgba(0, 0, 0, 0.25);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s;
+}
+
+.insignia-hora.punter {
+    cursor: pointer;
+}
+
+.insignia-hora:hover {
+    background: rgba(0, 0, 0, 0.4);
+    transform: scale(1.05);
+}
+
+.icona-commutador {
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+
+.cel-la-hora {
+    font-weight: 700;
+    font-size: 1.1rem;
+    opacity: 0.9;
+}
+
+.cel-la-assignatura {
+    font-size: 1.05rem;
+    background-color: rgba(255, 255, 255, 0.12);
+    margin: 3px;
+    border-radius: 10px;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.cel-la-assignatura:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+    transform: scale(1.02);
+}
+
+.cel-la-assignatura.esbarjo {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.95rem;
+    font-style: italic;
+    background: transparent;
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+}

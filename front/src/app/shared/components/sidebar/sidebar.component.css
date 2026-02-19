@@ -1,0 +1,100 @@
+:host {
+    display: block;
+    height: 92vh;
+    position: fixed;
+    left: 0;
+    top: 4vh;
+    z-index: 100;
+}
+
+.barra-lateral {
+    background-image: url('/img/menu/menu.png');
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+    width: 120px;
+    height: 100%;
+    border-top-right-radius: 60px;
+    border-bottom-right-radius: 60px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 0;
+    filter: drop-shadow(10px 0 30px rgba(98, 0, 234, 0.3));
+    color: white;
+}
+
+.logo {
+    margin-bottom: 80px;
+}
+
+.enllacos-navegacio {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 100%;
+    align-items: center;
+    margin-top: 50%;
+}
+
+.element-navegacio {
+    color: white;
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+    width: 100%;
+    position: relative;
+}
+
+/* Estil de l'indicador actiu */
+.element-navegacio.actiu .caixa-icona {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.element-navegacio:hover .caixa-icona {
+    transform: translateY(-2px);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+}
+
+.caixa-icona {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+/* Icones com a imatges */
+.caixa-icona img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.element-navegacio.actiu .caixa-icona img {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+/* Ajust específic per a icones plenes si cal (com el perfil d'usuari) */
+.caixa-icona.perfil img {
+    width: 45px;
+    height: 45px;
+    opacity: 1;
+    border-radius: 50%;
+}
+
+
+
+.seccio-perfil {
+    margin-top: 60px;
+    margin-bottom: 20px;
+}
