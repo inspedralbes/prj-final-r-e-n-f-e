@@ -1,24 +1,18 @@
 .disseny-principal {
     display: flex;
+    flex-direction: column;
     background-color: #f8f9fa;
     height: 100vh;
-    /* Alçada fixa per evitar scroll al cos si el contingut hi cap */
-    overflow: hidden;
-    /* Amagar desbordament al cos principal */
     font-family: 'Inter', sans-serif;
 }
 
 .contingut {
     flex-grow: 1;
-    margin-left: 140px;
+    margin-top: 80px; /* Alçada del navbar */
     padding: 30px 50px;
-    /* Padding reduït */
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    /* Omplir alçada */
     overflow-y: auto;
-    /* Permetre scroll només dins del contingut si és absolutament necessari, però intentant encaixar-ho */
 }
 
 .encapçalament-tauler {
