@@ -1,0 +1,65 @@
+<div class="contenidor-pantalla">
+
+  <aside class="menu-lateral">
+    <div class="logo">
+      <h2>R.E.N.F.E</h2>
+    </div>
+    <nav class="botons-menu">
+      <button class="btn-lateral" routerLink="/administracio">Tauler Inicial</button>
+      <button class="btn-lateral actiu">Gestió de Cursos</button>
+      <button class="btn-lateral btn-avall">Ajustos</button>
+    </nav>
+  </aside>
+
+  <main class="area-principal">
+    
+    <header class="capcalera-formulari">
+      <h1>Crear un Nou Cicle Formatiu</h1>
+      <p>Introdueix les dades per registrar el curs a la base de dades.</p>
+    </header>
+
+    <div class="targeta-formulari">
+      <form>
+        
+        <h3 class="titol-seccio">Dades Generals</h3>
+        <div class="camp">
+          <label>Nom del Cicle (Ex: Desenvolupament d'Aplicacions Web)</label>
+          <input type="text" placeholder="Escriu el nom complet del cicle...">
+        </div>
+
+        <div class="camp">
+          <label>Grau del Cicle</label>
+          <select>
+            <option value="">Selecciona una opció...</option>
+            <option value="mitja">Grau Mitjà</option>
+            <option value="superior">Grau Superior</option>
+          </select>
+        </div>
+
+        <hr class="separador">
+
+        <h3 class="titol-seccio">Calendari del Curs</h3>
+        <div class="grup-dates">
+          
+          <div class="camp meitat">
+            <label>Data d'Inici</label>
+            <input type="date">
+          </div>
+
+          <div class="camp meitat">
+            <label>Data de Fi</label>
+            <input type="date">
+          </div>
+
+        </div>
+
+        <div class="accions-formulari">
+          <button type="button" class="btn-cancelar">Cancel·lar</button>
+          <button type="button" class="btn-guardar">Crear Cicle</button>
+        </div>
+
+      </form>
+    </div>
+
+  </main>
+</div>

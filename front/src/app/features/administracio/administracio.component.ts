@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 @Component({
     selector: 'app-administracio',
-    imports: [],
+    imports: [RouterLink],
     templateUrl: './administracio.component.html',
     styleUrl: './administracio.component.css'
 })

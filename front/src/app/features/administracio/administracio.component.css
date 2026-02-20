@@ -1,4 +1,78 @@
-.contenidor {
-    /* Renamed from container */
-    padding: 20px;
+.contenidor-pantalla {
+  display: flex; 
+  height: 100vh; 
+  margin: 0;
+  font-family: Arial, sans-serif;
+  overflow: hidden; 
+}
+
+.menu-lateral {
+  width: 250px; 
+  background-color: #f8f9fa;
+  border-right: 1px solid #e0e0e0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column; 
+  box-sizing: border-box;
+}
+
+.botons-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-grow: 1; 
+}
+.btn-avall {
+  margin-top: auto; 
+}
+
+.area-principal {
+  flex: 1; 
+  background-color: #ffffff;
+  padding: 40px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+
+.btn-lateral {
+  padding: 12px 15px;
+  text-align: left;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+transition: all 0.2s ease-in-out; 
+}
+
+.btn-derecha {
+  padding: 12px 15px;
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+  display: block; 
+  margin-left: auto;
+  margin-right: 100px;
+  background-color: #5b21b6;
+  color: white;
+}
+
+.btn-lateral:hover {
+  background-color: #f0ebff; 
+  color: #5b21b6;
+  transform: translateX(5px); 
+}
+
+.btn-lateral:active {
+  transform: scale(0.95); 
+}
+
+.btn-lateral.actiu {
+  background-color: #e0d4fc;
+  color: #5b21b6;
+  font-weight: bold;
+  transform: none; 
 }
