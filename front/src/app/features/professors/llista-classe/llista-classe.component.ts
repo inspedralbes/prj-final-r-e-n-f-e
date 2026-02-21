@@ -30,9 +30,7 @@ export class LlistaClasseComponent {
 
   calcularDatesSetmana() {
     const avui = new Date();
-    const diaSetmanaActual = avui.getDay(); // 0 (dg) a 6 (ds)
-
-    // Calcular el dilluns d'aquesta setmana (1 és dilluns)
+    const diaSetmanaActual = avui.getDay();
     const diferenciaAlDilluns = diaSetmanaActual === 0 ? -6 : 1 - diaSetmanaActual;
     const dilluns = new Date(avui);
     dilluns.setDate(avui.getDate() + diferenciaAlDilluns);
@@ -41,7 +39,6 @@ export class LlistaClasseComponent {
       const dia = new Date(dilluns);
       dia.setDate(dilluns.getDate() + i);
 
-      // Formatar com "DD/MM"
       const diaStr = dia.getDate().toString().padStart(2, '0');
       const mesStr = (dia.getMonth() + 1).toString().padStart(2, '0');
       this.datesSetmana.push(`${diaStr}/${mesStr}`);
@@ -51,7 +48,7 @@ export class LlistaClasseComponent {
   inicialitzarAssistencia() {
     for (const alumne of this.alumnes) {
       for (const data of this.datesSetmana) {
-        alumne.assistencia[data] = ''; // Comença buit
+        alumne.assistencia[data] = ''; 
       }
     }
   }
@@ -60,13 +57,11 @@ export class LlistaClasseComponent {
     let seguentAlumne = alumneIndex + 1;
     let seguentDia = diaIndex;
 
-    // Si arribem al final dels alumnes, passem al següent dia
     if (seguentAlumne >= this.alumnes.length) {
       seguentAlumne = 0;
       seguentDia++;
     }
 
-    // Si encara hi ha dies, posem el focus
     if (seguentDia < this.datesSetmana.length) {
       const idInput = `input-${seguentAlumne}-${seguentDia}`;
       setTimeout(() => {

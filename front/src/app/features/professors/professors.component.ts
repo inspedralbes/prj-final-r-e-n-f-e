@@ -3,52 +3,70 @@ import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 
 @Component({
-    selector: 'app-professors',
-    imports: [CommonModule, SidebarComponent],
-    templateUrl: './professors.component.html',
-    styleUrl: './professors.component.css'
+  selector: 'app-professors',
+  imports: [CommonModule, SidebarComponent],
+  templateUrl: './professors.component.html',
+  styleUrl: './professors.component.css',
 })
 export class ProfessorsComponent {
-    franjaHoraria = signal<'AM' | 'PM'>('AM');
+  franjaHoraria = signal<'AM' | 'PM'>('AM');
 
-    // Dades simulades per a la classe actual
-    classeActual = {
-        nom: 'Matemáticas Avanzadas II',
-        estat: 'EN CURS ARA',
-        horaInici: '08:00',
-        horaFi: '09:00',
-        aula: 'A201'
-    };
+  // Dades simulades per a la classe actual
+  classeActual = {
+    nom: 'Matemáticas Avanzadas II',
+    estat: 'EN CURS ARA',
+    horaInici: '08:00',
+    horaFi: '09:00',
+    aula: 'A201',
+  };
 
-    diesSetmana = ['Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres'];
+  // Resum de faltes (Dades simulades)
+  resumFaltes = [
+    { assignatura: 'Matemàtiques', totals: 5, justificades: 2 },
+    { assignatura: 'Física', totals: 3, justificades: 1 },
+    { assignatura: 'Química', totals: 0, justificades: 0 },
+    { assignatura: 'Història', totals: 2, justificades: 2 },
+    { assignatura: 'Filosofia', totals: 1, justificades: 0 },
+  ];
 
-    // Dades AM
-    horariFrontAM = [
-        { hora: '08:00', assignatures: ['Matemàtiques', 'Física', 'Química', 'Història', 'Filosofia'] },
-        { hora: '09:00', assignatures: ['Anglès', 'Matemàtiques', 'Física', 'Química', 'Història'] },
-        { hora: '10:00', assignatures: ['Filosofia', 'Anglès', 'Matemàtiques', 'Física', 'Química'] },
-        { hora: '11:00', assignatures: ['Història', 'Filosofia', 'Anglès', 'Matemàtiques', 'Física'] },
-        { hora: '11:30', assignatures: ['Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo'] },
-        { hora: '12:00', assignatures: ['Química', 'Història', 'Filosofia', 'Anglès', 'Matemàtiques'] },
-        { hora: '13:00', assignatures: ['Tutoria', 'Projecte', 'Projecte', 'Esport', 'Lliure'] },
-    ];
+  diesSetmana = ['Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres'];
 
-    // Dades PM (a partir de les 14:30)
-    horariFrontPM = [
-        { hora: '15:00', assignatures: ['Programació', 'Bases de Dades', 'Xarxes', 'Sistemes', 'Anglès Tècnic'] },
-        { hora: '16:00', assignatures: ['Bases de Dades', 'Programació', 'Xarxes', 'Sistemes', 'Anglès Tècnic'] },
-        { hora: '17:00', assignatures: ['Xarxes', 'Sistemes', 'Programació', 'Bases de Dades', 'Empresa'] },
-        { hora: '18:00', assignatures: ['Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo'] },
-        { hora: '18:30', assignatures: ['Projecte', 'Empresa', 'FOL', 'Programació', 'Sistemes'] },
-        { hora: '19:30', assignatures: ['Projecte', 'Empresa', 'FOL', 'Programació', 'Sistemes'] },
-    ];
+  // Dades AM
+  horariFrontAM = [
+    { hora: '08:00', assignatures: ['Matemàtiques', 'Física', 'Química', 'Història', 'Filosofia'] },
+    { hora: '09:00', assignatures: ['Anglès', 'Matemàtiques', 'Física', 'Química', 'Història'] },
+    { hora: '10:00', assignatures: ['Filosofia', 'Anglès', 'Matemàtiques', 'Física', 'Química'] },
+    { hora: '11:00', assignatures: ['Història', 'Filosofia', 'Anglès', 'Matemàtiques', 'Física'] },
+    { hora: '11:30', assignatures: ['Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo'] },
+    { hora: '12:00', assignatures: ['Química', 'Història', 'Filosofia', 'Anglès', 'Matemàtiques'] },
+    { hora: '13:00', assignatures: ['Tutoria', 'Projecte', 'Projecte', 'Esport', 'Lliure'] },
+  ];
 
-    // Senyal computat que retorna l'horari segons la franja
-    horariActual = computed(() => {
-        return this.franjaHoraria() === 'AM' ? this.horariFrontAM : this.horariFrontPM;
-    });
+  // Dades PM (a partir de les 14:30)
+  horariFrontPM = [
+    {
+      hora: '15:00',
+      assignatures: ['Programació', 'Bases de Dades', 'Xarxes', 'Sistemes', 'Anglès Tècnic'],
+    },
+    {
+      hora: '16:00',
+      assignatures: ['Bases de Dades', 'Programació', 'Xarxes', 'Sistemes', 'Anglès Tècnic'],
+    },
+    {
+      hora: '17:00',
+      assignatures: ['Xarxes', 'Sistemes', 'Programació', 'Bases de Dades', 'Empresa'],
+    },
+    { hora: '18:00', assignatures: ['Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo'] },
+    { hora: '18:30', assignatures: ['Projecte', 'Empresa', 'FOL', 'Programació', 'Sistemes'] },
+    { hora: '19:30', assignatures: ['Projecte', 'Empresa', 'FOL', 'Programació', 'Sistemes'] },
+  ];
 
-    commutarFranja() {
-        this.franjaHoraria.update(valor => valor === 'AM' ? 'PM' : 'AM');
-    }
+  // Senyal computat que retorna l'horari segons la franja
+  horariActual = computed(() => {
+    return this.franjaHoraria() === 'AM' ? this.horariFrontAM : this.horariFrontPM;
+  });
+
+  commutarFranja() {
+    this.franjaHoraria.update((valor) => (valor === 'AM' ? 'PM' : 'AM'));
+  }
 }

@@ -1,75 +1,90 @@
 <div class="disseny-principal">
-    <app-sidebar></app-sidebar>
+  <app-sidebar></app-sidebar>
 
-    <!-- Fons orgànic amb formes decoratives -->
-    <div class="fons-organic">
-        <div class="forma forma-1"></div>
-        <div class="forma forma-2"></div>
-        <div class="forma forma-3"></div>
-    </div>
+  <!-- Fons orgànic amb formes decoratives -->
+  <div class="fons-organic">
+    <div class="forma forma-1"></div>
+    <div class="forma forma-2"></div>
+    <div class="forma forma-3"></div>
+  </div>
 
-    <div class="contingut">
+  <div class="contingut">
+    <div class="graella-tauler">
+      <div class="panell-lateral">
+        <div class="targeta-classe-actual">
+          <div class="contingut-targeta">
+            <div class="insignia-estat"><span class="punt"></span> {{ classeActual.estat }}</div>
 
-        <div class="encapçalament-tauler">
-            <!-- Espai per salutació o títol, si cal -->
+            <h1>{{ classeActual.nom }}</h1>
+
+            <div class="accions">
+              <button class="boto-accio">
+                Passar llista ara
+                <span class="icona-fletxa">→</span>
+              </button>
+            </div>
+          </div>
+          <!-- Decoració interna de la targeta -->
+          <div class="cercle-decoratiu"></div>
         </div>
 
-        <!-- Contenidor principal -->
-        <div class="graella-tauler">
-
-            <!-- Targeta Classe Actual -->
-            <div class="targeta-classe-actual">
-                <div class="contingut-targeta">
-                    <div class="insignia-estat">
-                        <span class="punt"></span> {{ classeActual.estat }}
-                    </div>
-
-                    <h1>{{ classeActual.nom }}</h1>
-
-                    <div class="accions">
-                        <button class="boto-accio">
-                            Passar llista ara
-                            <span class="icona-fletxa">→</span>
-                        </button>
-                    </div>
+        <!-- Targeta de Resum de Faltes -->
+        <div class="targeta-estadistiques">
+          <h3>Resum d'Assistència</h3>
+          <div class="llista-estadistiques">
+            @for (item of resumFaltes; track item.assignatura) {
+              <div class="fila-estadistica">
+                <span class="nom-mat"> {{ item.assignatura }} </span>
+                <div class="valors-faltes">
+                  <span class="num-faltes total" [title]="'Faltes totals'"
+                    >{{ item.totals }} F</span
+                  >
+                  <span class="num-faltes justificades" [title]="'Justificades'"
+                    >{{ item.justificades }} J</span
+                  >
                 </div>
-
-                <!-- Decoració interna de la targeta -->
-                <div class="cercle-decoratiu"></div>
-            </div>
-
-            <!-- Horari -->
-            <div class="contenidor-horari">
-                <div class="capçalera-horari">
-                    <h2>Horari Setmanal</h2>
-                    <div class="controls-horari">
-                        <button class="insignia-hora punter" (click)="commutarFranja()" title="Canviar Franja Horària">
-                            {{ franjaHoraria() }}
-                            <span class="icona-commutador">⇅</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="graella-horari">
-                    <!-- Capçalera dies -->
-                    <div class="cel-la-capçalera buida"></div>
-                    @for (dia of diesSetmana; track dia) {
-                    <div class="cel-la-capçalera">{{ dia }}</div>
-                    }
-
-                    <!-- Files hores i assignatures -->
-                    @for (franja of horariActual(); track franja) {
-                    <div class="cel-la-hora">{{ franja.hora }}</div>
-                    @for (assignatura of franja.assignatures; track assignatura) {
-                    <div class="cel-la-assignatura" [class.esbarjo]="assignatura === 'Esbarjo'">
-                        <span class="text-assignatura">{{ assignatura }}</span>
-                    </div>
-                    }
-                    }
-                </div>
-            </div>
-
+              </div>
+            }
+          </div>
         </div>
+      </div>
 
+      <!-- Columna Dreta: Horari -->
+      <div class="panell-principal">
+        <div class="contenidor-horari">
+          <div class="capçalera-horari">
+            <h2>Horari Setmanal</h2>
+            <div class="controls-horari">
+              <button
+                class="insignia-hora punter"
+                (click)="commutarFranja()"
+                title="Canviar Franja Horària"
+              >
+                {{ franjaHoraria() }}
+                <span class="icona-commutador">⇅</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="graella-horari">
+            <!-- Capçalera dies -->
+            <div class="cel-la-capçalera buida"></div>
+            @for (dia of diesSetmana; track dia) {
+              <div class="cel-la-capçalera">{{ dia }}</div>
+            }
+
+            <!-- Files hores i assignatures -->
+            @for (franja of horariActual(); track franja) {
+              <div class="cel-la-hora">{{ franja.hora }}</div>
+              @for (assignatura of franja.assignatures; track assignatura) {
+                <div class="cel-la-assignatura" [class.esbarjo]="assignatura === 'Esbarjo'">
+                  <span class="text-assignatura">{{ assignatura }}</span>
+                </div>
+              }
+            }
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
