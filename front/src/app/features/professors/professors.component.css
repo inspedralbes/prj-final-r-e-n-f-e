@@ -20,19 +20,18 @@
     display: flex;
     flex-direction: column;
     background-color: var(--bg-color);
-    height: 100vh;
+    min-height: 100vh;
     font-family: 'Outfit', sans-serif;
     position: relative;
-    overflow: hidden;
 }
 
 /* Fons Orgànic */
 .fons-organic {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     z-index: 0;
     pointer-events: none;
     overflow: hidden;
@@ -74,13 +73,16 @@
 }
 
 @keyframes flotar {
+
     0%,
     100% {
         transform: translate(0, 0) scale(1);
     }
+
     33% {
         transform: translate(30px, -50px) scale(1.1);
     }
+
     66% {
         transform: translate(-20px, 20px) scale(0.9);
     }
@@ -89,24 +91,21 @@
 .contingut {
     flex-grow: 1;
     margin-top: 80px;
-    padding: 20px 30px;
+    padding: 20px 30px 40px;
     display: flex;
     flex-direction: column;
     z-index: 1;
-    overflow: hidden;
-    min-height: 0;
 }
 
 /* Layout en dues columnes */
 .graella-tauler {
     display: flex;
     flex-direction: row;
+    align-items: flex-start;
     gap: 25px;
     max-width: 1500px;
     margin: 0 auto;
     width: 100%;
-    flex: 1;
-    min-height: 0;
 }
 
 .panell-lateral {
@@ -115,12 +114,10 @@
     gap: 20px;
     width: 380px;
     flex-shrink: 0;
-    min-height: 0;
 }
 
 .panell-principal {
     flex: 1;
-    min-height: 0;
 }
 
 /* Targeta Classe Actual */
@@ -190,9 +187,11 @@
     0% {
         box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
     }
+
     70% {
         box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
     }
+
     100% {
         box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
     }
@@ -231,10 +230,8 @@
     padding: 25px;
     box-shadow: var(--shadow-soft);
     border: 1px solid rgba(255, 255, 255, 0.5);
-    flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 0;
 }
 
 .targeta-estadistiques h3 {
@@ -249,9 +246,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    overflow-y: auto;
     padding-right: 5px;
-    flex: 1;
 }
 
 .fila-estadistica {
@@ -306,22 +301,20 @@
     padding: 25px;
     box-shadow: var(--shadow-soft);
     border: 1px solid rgba(255, 255, 255, 0.5);
-    height: 100%;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
 .capçalera-horari {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     flex-shrink: 0;
 }
 
 .capçalera-horari h2 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     color: var(--text-main);
     font-weight: 700;
     margin: 0;
@@ -331,9 +324,7 @@
     display: grid;
     grid-template-columns: 70px repeat(5, 1fr);
     grid-auto-rows: min-content;
-    gap: 8px;
-    height: 100%;
-    overflow-y: auto;
+    gap: 10px;
     padding-right: 5px;
 }
 
@@ -406,17 +397,157 @@
 
 /* Media Queries per a Ecrans Petits */
 @media (max-height: 800px) {
-    .contingut { padding: 10px 20px; }
-    .targeta-classe-actual { min-height: 120px; padding: 20px; }
-    .targeta-classe-actual h1 { font-size: 1.5rem; }
-    .targeta-estadistiques { padding: 20px; }
-    .fila-estadistica { padding: 8px 12px; }
-    .nom-mat { font-size: 0.85rem; }
+    .contingut {
+        padding: 10px 20px;
+    }
+
+    .targeta-classe-actual {
+        min-height: 120px;
+        padding: 20px;
+    }
+
+    .targeta-classe-actual h1 {
+        font-size: 1.5rem;
+    }
+
+    .targeta-estadistiques {
+        padding: 20px;
+    }
+
+    .fila-estadistica {
+        padding: 8px 12px;
+    }
+
+    .nom-mat {
+        font-size: 0.85rem;
+    }
 }
 
 @media (max-width: 1024px) {
-    .graella-tauler { flex-direction: column; overflow-y: auto; }
-    .panell-lateral { width: 100%; height: auto; }
-    .targeta-estadistiques { max-height: 300px; }
-    .panell-principal { height: 500px; flex-shrink: 0; }
+    .graella-tauler {
+        flex-direction: column;
+        overflow: visible;
+        height: auto;
+    }
+
+    .panell-lateral {
+        width: 100%;
+        height: auto;
+    }
+
+    .targeta-estadistiques {
+        max-height: none;
+        /* Let it grow naturally */
+    }
+
+    .panell-principal {
+        height: auto;
+        /* Remove fixed height */
+        min-height: 500px;
+        flex-shrink: 0;
+    }
+}
+
+/* Tablets i Mòbils Grans */
+@media (max-width: 768px) {
+    .contingut {
+        padding: 15px 15px;
+        margin-top: 60px;
+        height: auto;
+        overflow-y: visible;
+    }
+
+    .targeta-classe-actual {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px;
+    }
+
+    .cercle-decoratiu {
+        right: -30px;
+        top: -30px;
+    }
+
+    .targeta-classe-actual h1 {
+        font-size: 1.4rem;
+        white-space: normal;
+    }
+
+    .boto-accio {
+        width: 100%;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .contenidor-horari {
+        min-height: 400px;
+        height: auto;
+    }
+
+    .capçalera-horari {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .controls-horari {
+        width: 100%;
+    }
+
+    .insignia-hora {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        box-sizing: border-box;
+    }
+
+    /* Permetre scroll horitzontal a la taula de l'horari */
+    .graella-horari {
+        grid-template-columns: 50px repeat(5, minmax(110px, 1fr));
+        overflow-x: auto;
+        padding-bottom: 10px;
+        height: auto;
+    }
+}
+
+/* Pantalles Petites (Mòbils) */
+@media (max-width: 480px) {
+    .disseny-principal {
+        height: auto;
+        min-height: 100vh;
+        overflow-y: auto;
+    }
+
+    .forma-1 {
+        width: 300px;
+        height: 300px;
+    }
+
+    .forma-2 {
+        width: 250px;
+        height: 250px;
+    }
+
+    .forma-3 {
+        display: none;
+    }
+
+    .targeta-classe-actual h1 {
+        font-size: 1.2rem;
+    }
+
+    .targeta-estadistiques h3 {
+        font-size: 1.1rem;
+    }
+
+    .fila-estadistica {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .panell-principal {
+        min-height: 400px;
+        height: auto;
+    }
 }
