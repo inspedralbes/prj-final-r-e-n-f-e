@@ -19,46 +19,45 @@
     </header>
 
     <div class="targeta-formulari">
-      <form>
-        
-        <h3 class="titol-seccio">Dades Generals</h3>
-        <div class="camp">
-          <label>Nom del Cicle (Ex: Desenvolupament d'Aplicacions Web)</label>
-          <input type="text" placeholder="Escriu el nom complet del cicle...">
-        </div>
+      <form [formGroup]="formulariCicle" (ngSubmit)="guardarCicle()" class="targeta-formulari">
+  <h3 class="titol-seccio">Dades del Curs</h3>
+  
+  <div class="camp">
+    <label>Nom del Curs</label>
+    <input type="text" formControlName="nom" placeholder="Ex: Desenvolupament Web">
+  </div>
 
-        <div class="camp">
-          <label>Grau del Cicle</label>
-          <select>
-            <option value="">Selecciona una opció...</option>
-            <option value="mitja">Grau Mitjà</option>
-            <option value="superior">Grau Superior</option>
-          </select>
-        </div>
+  <div class="camp">
+    <label>Tipus de Grau</label>
+    <select formControlName="tipus">
+      <option value="">Selecciona...</option>
+      <option value="GM">Grau Mitjà (GM)</option>
+      <option value="GS">Grau Superior (GS)</option>
+    </select>
+  </div>
 
-        <hr class="separador">
+  <hr class="separador">
 
-        <h3 class="titol-seccio">Calendari del Curs</h3>
-        <div class="grup-dates">
-          
-          <div class="camp meitat">
-            <label>Data d'Inici</label>
-            <input type="date">
-          </div>
+  <h3 class="titol-seccio">Connexions (IDs)</h3>
+  <div class="grup-dates">
+    
+    <div class="camp meitat">
+      <label>ID del Tutor</label>
+      <input type="number" formControlName="id_tutor" placeholder="Ex: 1">
+    </div>
 
-          <div class="camp meitat">
-            <label>Data de Fi</label>
-            <input type="date">
-          </div>
+    <div class="camp meitat">
+      <label>ID del Període</label>
+      <input type="number" formControlName="id_periode" placeholder="Ex: 1">
+    </div>
+    
+  </div>
 
-        </div>
-
-        <div class="accions-formulari">
-          <button type="button" class="btn-cancelar">Cancel·lar</button>
-          <button type="button" class="btn-guardar">Crear Cicle</button>
-        </div>
-
-      </form>
+  <div class="accions-formulari">
+    <button type="button" class="btn-cancelar" routerLink="/">Cancel·lar</button>
+    <button type="submit" class="btn-guardar">Crear Curs</button>
+  </div>
+</form>
     </div>
 
   </main>

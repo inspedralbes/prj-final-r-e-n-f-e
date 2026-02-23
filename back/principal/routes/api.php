@@ -10,6 +10,7 @@ use App\Http\Controllers\HorariController;
 use App\Http\Controllers\ImparteixController;
 use App\Http\Controllers\AssistenciaController;
 use App\Http\Controllers\JustificantController;
+use App\Http\Controllers\CursController;
 
 Route::prefix('api/v1')->group(function () {
 
@@ -39,5 +40,8 @@ Route::prefix('api/v1')->group(function () {
 
     // Justificants routes
     Route::apiResource('justificants', JustificantController::class);
+
+    // Rutes per als Cursos
+    Route::apiResource('cursos', CursController::class);
 
 });
