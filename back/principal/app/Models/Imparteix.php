@@ -23,7 +23,7 @@ class Imparteix extends Model
 
     public function professor()
     {
-        return $this->belongsTo(User::class, 'id_profe');
+        return $this->belongsTo(Usuari::class, 'id_profe');
     }
 
     public function assignatura()

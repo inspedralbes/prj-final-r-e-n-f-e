@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Aula extends Model
 {
+    protected $table = 'aules';
+
     protected $fillable = [
         'nom',
     ];

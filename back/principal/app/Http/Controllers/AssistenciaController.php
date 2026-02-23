@@ -3,8 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Assistencia;
+use App\Models\Classe;
+use App\Models\Assignatura;
+use App\Models\Inscrit;
+use App\Models\Usuari;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+use Illuminate\Support\Facades\DB;
 
 class AssistenciaController extends Controller
 {
@@ -22,9 +30,8 @@ class AssistenciaController extends Controller
         $validated = $request->validate([
             'id_inscripcio' => 'required|exists:inscrits,id',
             'data' => 'required|date',
-            'estat' => 'required|string|in:present,absent,retard',
-            'justificat' => 'required|boolean',
-            'id_profe' => 'required|exists:usuaris,id',
+            'estat' => 'required|string|in:Assistit,Falta,Retart',
+            'id_profe' => 'nullable|exists:usuaris,id',
         ]);
 
         $assistencia = Assistencia::create($validated);
@@ -68,8 +75,7 @@ class AssistenciaController extends Controller
         $validated = $request->validate([
             'id_inscripcio' => 'sometimes|required|exists:inscrits,id',
             'data' => 'sometimes|required|date',
-            'estat' => 'sometimes|required|string|in:present,absent,retard',
-            'justificat' => 'sometimes|required|boolean',
+            'estat' => 'sometimes|required|string|in:Assistit,Falta,Retart',
             'id_profe' => 'sometimes|required|exists:usuaris,id',
         ]);
 
@@ -99,5 +105,106 @@ class AssistenciaController extends Controller
             'success' => true,
             'message' => 'Assistència eliminada correctament'
         ], Response::HTTP_OK);
+    }
+    /**
+     * Endpoint
+     * POST /api/admin/generar-assistencies
+     * BODY:
+     *      {
+     *      "data_ini": "2026-02-23",
+     *      "data_fi": "2026-02-27"
+     *      }
+     */
+
+    public function generar(Request $peticio)
+    {
+        $validated = $peticio->validate([
+            'data_ini' => 'required|date',
+            'data_fi' => 'required|date',
+        ]);
+
+        try {
+            $dataIni = Carbon::createFromFormat('Y-m-d', $validated['data_ini']);
+            $dataFi = Carbon::createFromFormat('Y-m-d', $validated['data_fi']);
+
+            // Mapatge dia setmana a lletra del codi_hora
+            $letraDies = [
+                'Monday' => 'L',
+                'Tuesday' => 'M',
+                'Wednesday' => 'X',
+                'Thursday' => 'J',
+                'Friday' => 'V',
+            ];
+
+            // Per a cada classe
+            foreach (Classe::all() as $classe) {
+                // Obtenir assignatures de la classe
+                $assignaturesClasse = $classe->horaris()
+                    ->with('assignatura')
+                    ->get()
+                    ->pluck('assignatura')
+                    ->unique('id');
+
+                // Verificar si hi ha projecte per a aquesta classe
+                $projecte = $assignaturesClasse->firstWhere('id_classe_projecte', $classe->id);
+
+                // Obtenir alumnes inscrits
+                $alumnes = Usuari::whereHas('inscrits', function ($query) use ($assignaturesClasse) {
+                    $query->whereIn('id_assignatura', $assignaturesClasse->pluck('id'));
+                })->with('inscrits')->get();
+
+                // Per a cada dia del període
+                foreach (CarbonPeriod::create($dataIni, $dataFi) as $data) {
+                    $letraDia = $letraDies[$data->format('l')] ?? null;
+                    if (!$letraDia) {
+                        continue;
+                    }
+
+                    // Obtenir horaris del dia (que comencen amb la lletra del dia)
+                    $horarisDia = $classe->horaris()
+                        ->with('assignatura')
+                        ->get()
+                        ->filter(function ($h) use ($letraDia) {
+                            return str_starts_with($h->codi_hora, $letraDia);
+                        });
+
+                    // Per a cada horari
+                    foreach ($horarisDia as $horari) {
+                        $assignatura = $horari->assignatura;
+
+                        // Si hi ha projecte i l'assignatura no és excepció, usar projecte
+                        if ($projecte && !$assignatura->excepcio) {
+                            $assignatura = $projecte;
+                        }
+
+                        // Crear assistències per a cada alumne
+                        foreach ($alumnes as $alumne) {
+                            // Cercar inscripció directa a la col·lecció carregada
+                            $inscripcio = $alumne->inscrits->firstWhere('id_assignatura', $assignatura->id);
+
+                            if ($inscripcio) {
+                                Assistencia::create([
+                                    'id_inscripcio' => $inscripcio->id,
+                                    'data' => $data->format('Y-m-d'),
+                                    'estat' => 'Assistit',
+                                    'id_profe' => null,
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Assistències generades correctament',
+            ], Response::HTTP_CREATED);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage(),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }

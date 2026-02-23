@@ -1,0 +1,67 @@
+<div class="disseny-principal">
+    <app-sidebar></app-sidebar>
+
+    <!-- Fons orgànic amb formes decoratives -->
+    <div class="fons-organic">
+        <div class="forma forma-1"></div>
+        <div class="forma forma-2"></div>
+        <div class="forma forma-3"></div>
+    </div>
+
+    <div class="contingut">
+        <div class="encapçalament-tauler">
+            <h1 style="font-size: 2.5rem; color: var(--text-main); margin-bottom: 0.5rem;">Gestió d'Assignatures</h1>
+            <p style="color: var(--text-muted);">Crea o elimina les teves assignatures.</p>
+        </div>
+        <div class="graella-tauler" style="grid-template-columns: 1fr; max-width: 800px; margin: 0 auto;">
+
+            <!-- Targeta per Crear Assignatura -->
+            <div class="targeta-classe-actual">
+                <div class="contingut-targeta">
+                    <h2>Nova Assignatura</h2>
+                    <br>
+                    <div style="display: flex; gap: 15px; margin-top: 10px;">
+                        <!-- Aquí connectem el TS i l'HTML amb ngModel -->
+                        <input type="text" [(ngModel)]="novaAssignaturaNom" placeholder="Nom de la nova assignatura..."
+                            style="flex: 1; padding: 12px 20px; border-radius: 12px; border: 1px solid var(--primary-light); background: rgba(255,255,255,0.9); font-family: 'Outfit';">
+
+                        <button class="boto-accio" (click)="crearAssignatura()" style="min-width: 150px;">
+                            <span class="icona-fletxa">+</span> Afegir
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Targeta de la Llista actual -->
+            <div class="contenidor-horari" style="margin-top: 30px;">
+                <div class="capçalera-horari">
+                    <h2>Les meves Assignatures</h2>
+
+                    <!-- Mostrar estat de càrrega o error si n'hi ha -->
+                    <span *ngIf="assignaturesManager.isLoading()"
+                        style="color: var(--primary-light);">Carregant...</span>
+                    <span *ngIf="assignaturesManager.error()" style="color: red;">{{ assignaturesManager.error()
+                        }}</span>
+                </div>
+                <div style="padding: 20px;">
+                    <!-- Recorrem les assignatures del Signal -->
+                    @for (assignatura of assignaturesManager.assignatures(); track assignatura.id) {
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(0,0,0,0.05);">
+                        <span style="font-size: 1.1rem; color: var(--text-main); font-weight: 500;">
+                            {{ assignatura.nom }}
+                        </span>
+                        <button (click)="eliminarAssignatura(assignatura.id!)"
+                            style="background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-family: 'Outfit'; transition: 0.3s; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);">
+                            Esborrar
+                        </button>
+                    </div>
+                    } @empty {
+                    <div style="padding: 30px; text-align: center; color: var(--text-muted); font-style: italic;">
+                        Encara no tens cap assignatura creada.
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

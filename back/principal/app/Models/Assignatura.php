@@ -9,8 +9,13 @@ class Assignatura extends Model
 {
     use HasFactory;
 
+    protected $table = 'assignatures';
+
     protected $fillable = [
         'nom',
+        'id_classe_projecte',
+        'interval',
+        'exempcio',
     ];
 
     public function imparteix()
@@ -36,5 +41,10 @@ class Assignatura extends Model
     public function justificantsFi()
     {
         return $this->hasMany(Justificant::class, 'id_ass_fi');
+    }
+
+    public function classeProjecte()
+    {
+        return $this->belongsTo(Classe::class, 'id_classe_projecte');
     }
 }

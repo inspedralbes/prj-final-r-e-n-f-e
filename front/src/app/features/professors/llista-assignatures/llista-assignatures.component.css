@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:host {
+    --primary-color: #6366f1;
+    --primary-light: #818cf8;
+    --secondary-color: #a78bfa;
+    --accent-color: #f472b6;
+    --bg-color: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 20px 40px -10px rgba(99, 102, 241, 0.2);
+    --radius-large: 32px;
+    --radius-medium: 20px;
+    --radius-small: 12px;
+}
+
+.disseny-principal {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-color);
+    height: 100vh;
+    font-family: 'Outfit', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Fons Orgànic */
+.fons-organic {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.forma {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: flotar 20s infinite ease-in-out;
+}
+
+.forma-1 {
+    top: -10%;
+    right: -5%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--primary-light), transparent 70%);
+    animation-delay: 0s;
+}
+
+.forma-2 {
+    bottom: -10%;
+    left: -5%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--secondary-color), transparent 70%);
+    animation-delay: -5s;
+}
+
+.forma-3 {
+    top: 40%;
+    left: 30%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, var(--accent-color), transparent 70%);
+    opacity: 0.4;
+    animation-delay: -10s;
+}
+
+@keyframes flotar {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(30px, -50px) scale(1.1);
+    }
+
+    66% {
+        transform: translate(-20px, 20px) scale(0.9);
+    }
+}
+
+.contingut {
+    flex-grow: 1;
+    margin-top: 80px;
+    /* Alçada navbar */
+    padding: 20px 40px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 1;
+    /* Sobre el fons */
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-light) transparent;
+}

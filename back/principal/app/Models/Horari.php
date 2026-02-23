@@ -9,6 +9,8 @@ class Horari extends Model
 {
     use HasFactory;
 
+    protected $table = 'horaris';
+
     protected $fillable = [
         'codi_hora',
         'id_assig',

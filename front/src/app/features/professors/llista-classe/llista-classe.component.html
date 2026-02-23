@@ -1,0 +1,56 @@
+<div class="disseny-principal">
+  <app-sidebar></app-sidebar>
+
+  <div class="fons-organic">
+    <div class="forma forma-1"></div>
+    <div class="forma forma-2"></div>
+    <div class="forma forma-3"></div>
+  </div>
+
+  <div class="contingut">
+    <div class="targeta-llista">
+      <div class="capçalera-llista">
+        <h1>Llista de Classe</h1>
+        <p class="setmana-info">Asistència de la setmana</p>
+      </div>
+
+      <div class="contenedor-taula">
+        <table class="taula-assistencia">
+          <thead>
+            <tr>
+              <th class="col-nom">Alumne</th>
+              @for (dia of diesSetmana; track $index) {
+              <th class="col-dia">
+                <span class="nom-dia">{{dia}}</span>
+                <span class="data-dia">{{datesSetmana[$index]}}</span>
+              </th>
+              }
+            </tr>
+          </thead>
+          <tbody>
+            @for (alumne of alumnes(); track alumne.id; let i = $index) {
+            <tr>
+              <td class="nom-alumne">{{alumne.nom}}</td>
+              @for (data of datesSetmana; track $index; let j = $index) {
+              <td class="celda-assistencia">
+                <input type="text" class="estat-input" [attr.data-estat]="alumne.assistencia[data]"
+                  [(ngModel)]="alumne.assistencia[data]" (keyup.enter)="moureFocus(i, j)" [id]="'input-' + i + '-' + j"
+                  maxlength="2" autocomplete="off">
+              </td>
+              }
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <div class="llegenda">
+        <div class="item-llegenda"><span class="punt p-0"></span> Pendent (buit)</div>
+        <div class="item-llegenda"><span class="punt p-1"></span> . Assistit</div>
+        <div class="item-llegenda"><span class="punt p-2"></span> F Falta</div>
+        <div class="item-llegenda"><span class="punt p-3"></span> FJ Justificada</div>
+        <div class="item-llegenda"><span class="punt p-4"></span> R Retràs</div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Classe;
+use App\Models\Usuari;
+use App\Models\Inscrit;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -109,6 +112,108 @@ class ClasseController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Classe eliminada correctament'
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Assigna alumnes a una classe i els inscriu a totes les assignatures d'aquesta classe.
+     *
+     * BODY:
+     *   {
+     *      "classe_id": 1,
+     *      "emails": [
+     *          "mlopez.pruebas@inspedralbes.cat",
+     *          "ngarcia.pruebas@inspedralbes.cat"
+     *      ]
+     *    }
+     */
+    public function assignarAlumnes(Request $peticio)
+    {
+
+        $dadesValidades = $peticio->validate([
+            'classe_id' => 'required|exists:classes,id',
+            'emails' => 'required|array|min:1',
+        ]);
+
+        // Obtenir la classe amb els seus horaris associats
+        $classe = Classe::with('horaris')->find($dadesValidades['classe_id']);
+
+        if (!$classe) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Classe no trobada'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Obtenir totes les assignatures úniques a partir dels horaris de la classe
+        $idsAssignatures = $classe->horaris()
+            ->pluck('id_assig')
+            ->unique()
+            ->toArray();
+
+        if (empty($idsAssignatures)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'La classe no té assignatures associades al seu horari'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Cercar alumnes pels correus electrònics proporcionats
+        $alumnes = Usuari::whereIn('email', $dadesValidades['emails'])
+            ->where('rol', 'Alumne')
+            ->get();
+
+        if ($alumnes->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Cap alumne trobat amb els correus proporcionats'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $comptadorAssignats = 0;
+        $comptadorInscripcions = 0;
+        $errors = [];
+
+        foreach ($alumnes as $alumne) {
+
+            // Assignar l'alumne a la classe (actualitzar id_classe)
+            if ($alumne->id_classe !== $classe->id) {
+                $alumne->update(['id_classe' => $classe->id]);
+                $comptadorAssignats++;
+            }
+
+            // Inscriure l'alumne a totes les assignatures de la classe
+            foreach ($idsAssignatures as $idAssignatura) {
+
+                // Comprovar si ja està inscrit a l'assignatura
+                $jaExisteix = Inscrit::where('id_alumne', $alumne->id)
+                    ->where('id_assignatura', $idAssignatura)
+                    ->exists();
+
+                if (!$jaExisteix) {
+                    try {
+                        Inscrit::create([
+                            'id_alumne' => $alumne->id,
+                            'id_assignatura' => $idAssignatura,
+                        ]);
+                        $comptadorInscripcions++;
+                    } catch (\Exception $e) {
+                        $errors[] = "Error en inscriure {$alumne->email} a l'assignatura {$idAssignatura}: " . $e->getMessage();
+                    }
+                }
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'alumnes_assignats' => $comptadorAssignats,
+                'inscripcions_creades' => $comptadorInscripcions,
+                'alumnes_processats' => $alumnes->count(),
+                'assignatures_totals' => count($idsAssignatures),
+            ],
+            'errors' => $errors,
+            'message' => 'Alumnes assignats i inscrits correctament'
         ], Response::HTTP_OK);
     }
 }

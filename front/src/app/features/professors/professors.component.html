@@ -1,41 +1,59 @@
 <div class="disseny-principal">
     <app-sidebar></app-sidebar>
 
+    <!-- Fons orgànic amb formes decoratives -->
+    <div class="fons-organic">
+        <div class="forma forma-1"></div>
+        <div class="forma forma-2"></div>
+        <div class="forma forma-3"></div>
+    </div>
+
     <div class="contingut">
 
         <div class="encapçalament-tauler">
-            <!-- Espai per si volem posar un títol o salutació més endavant -->
+            <!-- Espai per salutació o títol, si cal -->
         </div>
 
-        <!-- Contenidor principal limitat per amplada per millorar visualització -->
+        <!-- Contenidor principal -->
         <div class="graella-tauler">
 
             <!-- Targeta Classe Actual -->
             <div class="targeta-classe-actual">
-                <div class="insignia-estat">
-                    <span class="punt"></span> {{ classeActual.estat }}
+                <div class="contingut-targeta">
+                    <div class="insignia-estat">
+                        <span class="punt"></span> {{ classeActual().estat }}
+
+                    </div>
+
+                    <h1>{{ classeActual().nom }}</h1>
+
+                    <div class="accions">
+                        <button class="boto-accio">
+                            Passar llista ara
+                            <span class="icona-fletxa">→</span>
+                        </button>
+                    </div>
                 </div>
 
-                <h1>{{ classeActual.nom }}</h1>
-
-                <div class="accions">
-                    <button class="boto-accio">
-                        Passar llista ara
-                    </button>
-                </div>
-
+                <!-- Decoració interna de la targeta -->
+                <div class="cercle-decoratiu"></div>
             </div>
 
             <!-- Horari -->
             <div class="contenidor-horari">
-                <div class="graella-horari">
-                    <!-- Capçalera dies -->
-                    <div class="cel-la-capçalera columna-hora">
+                <div class="capçalera-horari">
+                    <h2>Horari Setmanal</h2>
+                    <div class="controls-horari">
                         <button class="insignia-hora punter" (click)="commutarFranja()" title="Canviar Franja Horària">
                             {{ franjaHoraria() }}
                             <span class="icona-commutador">⇅</span>
                         </button>
                     </div>
+                </div>
+
+                <div class="graella-horari">
+                    <!-- Capçalera dies -->
+                    <div class="cel-la-capçalera buida"></div>
                     @for (dia of diesSetmana; track dia) {
                     <div class="cel-la-capçalera">{{ dia }}</div>
                     }
@@ -45,7 +63,7 @@
                     <div class="cel-la-hora">{{ franja.hora }}</div>
                     @for (assignatura of franja.assignatures; track assignatura) {
                     <div class="cel-la-assignatura" [class.esbarjo]="assignatura === 'Esbarjo'">
-                        {{ assignatura }}
+                        <span class="text-assignatura">{{ assignatura }}</span>
                     </div>
                     }
                     }

@@ -15,13 +15,11 @@ class Assistencia extends Model
         'id_inscripcio',
         'data',
         'estat',
-        'justificat',
         'id_profe',
     ];
 
     protected $casts = [
         'data' => 'date',
-        'justificat' => 'boolean',
     ];
 
     public function inscripcio()

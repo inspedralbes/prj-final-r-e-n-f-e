@@ -28,7 +28,7 @@ class Usuari extends Authenticatable
         'password',
         'token',
         'nfc_id',
-        'id_curs',
+        'id_classe',
         'horari_guardies'
     ];
 
@@ -58,7 +58,7 @@ class Usuari extends Authenticatable
 
     public function curs()
     {
-        return $this->belongsTo(Curs::class, 'id_curs');
+        return $this->belongsTo(Classe::class, 'id_classe');
     }
 
     public function inscrits()

@@ -1,237 +1,376 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:host {
+    --primary-color: #6366f1;
+    --primary-light: #818cf8;
+    --secondary-color: #a78bfa;
+    --accent-color: #f472b6;
+    --bg-color: #f8fafc;
+    --card-bg: rgba(255, 255, 255, 0.85);
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+    --shadow-hover: 0 20px 40px -10px rgba(99, 102, 241, 0.2);
+    --radius-large: 32px;
+    --radius-medium: 20px;
+    --radius-small: 12px;
+}
+
 .disseny-principal {
     display: flex;
-    background-color: #f8f9fa;
+    flex-direction: column;
+    background-color: var(--bg-color);
     height: 100vh;
-    /* Alçada fixa per evitar scroll al cos si el contingut hi cap */
+    font-family: 'Outfit', sans-serif;
+    position: relative;
     overflow: hidden;
-    /* Amagar desbordament al cos principal */
-    font-family: 'Inter', sans-serif;
+}
+
+/* Fons Orgànic */
+.fons-organic {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.forma {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: flotar 20s infinite ease-in-out;
+}
+
+.forma-1 {
+    top: -10%;
+    right: -5%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, var(--primary-light), transparent 70%);
+    animation-delay: 0s;
+}
+
+.forma-2 {
+    bottom: -10%;
+    left: -5%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, var(--secondary-color), transparent 70%);
+    animation-delay: -5s;
+}
+
+.forma-3 {
+    top: 40%;
+    left: 30%;
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, var(--accent-color), transparent 70%);
+    opacity: 0.4;
+    animation-delay: -10s;
+}
+
+@keyframes flotar {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(30px, -50px) scale(1.1);
+    }
+
+    66% {
+        transform: translate(-20px, 20px) scale(0.9);
+    }
 }
 
 .contingut {
     flex-grow: 1;
-    margin-left: 140px;
-    padding: 30px 50px;
-    /* Padding reduït */
+    margin-top: 80px;
+    /* Alçada navbar */
+    padding: 20px 40px;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    /* Omplir alçada */
     overflow-y: auto;
-    /* Permetre scroll només dins del contingut si és absolutament necessari, però intentant encaixar-ho */
-}
-
-.encapçalament-tauler {
-    margin-bottom: 10px;
-    /* Marge reduït */
-    flex-shrink: 0;
+    z-index: 1;
+    /* Sobre el fons */
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-light) transparent;
 }
 
 .graella-tauler {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    /* Gap reduït de 40px */
+    gap: 30px;
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
     height: 100%;
-    /* Omplir espai disponible */
 }
 
 /* Targeta Classe Actual */
 .targeta-classe-actual {
-    background: linear-gradient(135deg, #6200EA 0%, #651FFF 100%);
-    border-radius: 20px;
-    padding: 25px 40px;
-    /* Padding vertical reduït */
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    border-radius: var(--radius-large);
+    padding: 40px;
     color: white;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 10px 25px rgba(98, 0, 234, 0.25);
-    min-height: 160px;
-    /* Alçada mínima reduïda de 220px */
-    flex-shrink: 0;
-    /* Evitar que s'encongeixi massa */
+    box-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: transform 0.3s ease;
+}
+
+.targeta-classe-actual:hover {
+    transform: translateY(-5px);
+}
+
+.contingut-targeta {
+    position: relative;
+    z-index: 2;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    gap: 15px;
+    max-width: 60%;
+}
+
+.cercle-decoratiu {
+    position: absolute;
+    right: -50px;
+    top: -50px;
+    width: 300px;
+    height: 300px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    filter: blur(2px);
 }
 
 .insignia-estat {
     background-color: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.9rem;
     font-weight: 600;
     width: fit-content;
-    margin-bottom: 10px;
-    /* Marge reduït */
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .punt {
-    width: 8px;
-    height: 8px;
-    background-color: #00E676;
+    width: 10px;
+    height: 10px;
+    background-color: #4ade80;
+    /* Green 400 */
     border-radius: 50%;
-    box-shadow: 0 0 5px #00E676;
+    box-shadow: 0 0 10px #4ade80;
+    animation: pols 2s infinite;
+}
+
+@keyframes pols {
+    0% {
+        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+    }
 }
 
 .targeta-classe-actual h1 {
-    font-size: 2.2rem;
-    /* Font lleugerament més petita */
+    font-size: 2.8rem;
     font-weight: 700;
-    margin: 0 0 15px 0;
-    /* Marge reduït */
-    letter-spacing: -0.02em;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
 }
 
 .boto-accio {
     background-color: white;
-    color: #6200EA;
+    color: var(--primary-color);
     border: none;
-    padding: 12px 24px;
-    border-radius: 14px;
-    font-weight: 600;
-    font-size: 1rem;
+    padding: 16px 32px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 1.1rem;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    gap: 12px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    width: fit-content;
 }
 
 .boto-accio:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
-.icona-targeta {
-    position: absolute;
-    right: 40px;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.15;
+.icona-fletxa {
+    transition: transform 0.3s ease;
 }
 
-.icona-targeta svg {
-    width: 100px;
-    /* Icona més petita */
-    height: 100px;
-    fill: white;
+.boto-accio:hover .icona-fletxa {
+    transform: translateX(5px);
 }
 
-/* Horari */
+/* Horari Container */
 .contenidor-horari {
-    background-color: #B388FF;
-    background: linear-gradient(135deg, #B388FF 0%, #9575CD 100%);
-    border-radius: 20px;
-    padding: 20px;
-    /* Padding reduït */
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-    color: white;
+    background-color: var(--card-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: var(--radius-large);
+    padding: 30px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(255, 255, 255, 0.5);
     flex-grow: 1;
-    /* Omplir espai vertical restant */
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    /* Evitar desbordament */
+    height: 60vh;
+    /* Alçada fixa aproximada */
+}
+
+.capçalera-horari {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 0 10px;
+}
+
+.capçalera-horari h2 {
+    font-size: 1.5rem;
+    color: var(--text-main);
+    font-weight: 700;
+    margin: 0;
 }
 
 .graella-horari {
     display: grid;
-    grid-template-columns: 90px repeat(5, 1fr);
-    gap: 2px;
+    grid-template-columns: 80px repeat(5, 1fr);
+    grid-template-rows: auto repeat(10, 1fr);
+    /* Ajustat per files */
+    gap: 12px;
     height: 100%;
-    /* Omplir contenidor */
-    align-content: stretch;
-    /* Estirar files per omplir */
+    overflow-y: auto;
+    padding-right: 5px;
 }
 
-/* Cel·les generals */
-.cel-la-capçalera,
-.cel-la-hora,
-.cel-la-assignatura {
-    padding: 10px;
-    /* Padding reduït significativament */
+.graella-horari::-webkit-scrollbar {
+    width: 6px;
+}
+
+.graella-horari::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Cel·les */
+.cel-la-capçalera {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-align: center;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.cel-la-capçalera.buida {
+    /* Espai buit cantonada sup esq */
+    visibility: hidden;
+    /* Ensure it doesn't block anything if it has size */
+}
+
+.cel-la-hora {
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
-}
-
-.cel-la-capçalera {
-    font-size: 1.1rem;
-    padding-bottom: 15px;
-    /* Reduït */
-    text-transform: capitalize;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-    height: min-content;
-    /* No ocupar espai extra */
-}
-
-.columna-hora {
-    /* Renamed from time-col */
-    justify-content: center;
-    border-bottom: none;
-    /* Remove line under AM/PM badge */
-}
-
-.insignia-hora {
-    background: rgba(0, 0, 0, 0.25);
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.95rem;
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: all 0.2s;
-}
-
-.insignia-hora.punter {
-    cursor: pointer;
-}
-
-.insignia-hora:hover {
-    background: rgba(0, 0, 0, 0.4);
-    transform: scale(1.05);
-}
-
-.icona-commutador {
-    font-size: 0.8em;
-    opacity: 0.7;
-}
-
-.cel-la-hora {
-    font-weight: 700;
-    font-size: 1.1rem;
-    opacity: 0.9;
+    color: var(--text-muted);
+    font-size: 0.9rem;
 }
 
 .cel-la-assignatura {
-    font-size: 1.05rem;
-    background-color: rgba(255, 255, 255, 0.12);
-    margin: 3px;
-    border-radius: 10px;
-    transition: all 0.2s;
+    background-color: white;
+    border-radius: var(--radius-medium);
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    font-weight: 500;
+    color: var(--text-main);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(241, 245, 249, 1);
+    transition: all 0.2s ease;
+    min-height: 60px;
+    cursor: default;
 }
 
-.cel-la-assignatura:hover {
-    background-color: rgba(255, 255, 255, 0.25);
-    transform: scale(1.02);
+.cel-la-assignatura:hover:not(.esbarjo) {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-light);
+    color: var(--primary-color);
 }
 
 .cel-la-assignatura.esbarjo {
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 0.95rem;
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+    box-shadow: none;
     font-style: italic;
-    background: transparent;
-    border: 1px dashed rgba(255, 255, 255, 0.2);
+    opacity: 0.7;
+}
+
+/* Controls */
+.insignia-hora {
+    background: white;
+    color: var(--primary-color);
+    padding: 8px 16px;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.insignia-hora:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
+}
+
+.icona-commutador {
+    font-size: 1.1em;
+}
+
+@media (max-width: 1024px) {
+    .graella-horari {
+        grid-template-columns: 60px repeat(5, 1fr);
+        font-size: 0.9em;
+    }
 }

@@ -1,40 +1,38 @@
 :host {
     display: block;
-    height: 92vh;
+    width: 100%;
+    height: 80px;
     position: fixed;
+    top: 0;
     left: 0;
-    top: 4vh;
-    z-index: 100;
+    z-index: 1000;
 }
 
-.barra-lateral {
-    background-image: url('/img/menu/menu.png');
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
-    width: 120px;
+.barra-superior {
+    background-color: #6200EA;
+    background-image: linear-gradient(135deg, #6200EA 0%, #7C4DFF 100%);
+    width: 100%;
     height: 100%;
-    border-top-right-radius: 60px;
-    border-bottom-right-radius: 60px;
-
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    padding: 40px 0;
-    filter: drop-shadow(10px 0 30px rgba(98, 0, 234, 0.3));
+    padding: 0 40px;
+    justify-content: space-between;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
     color: white;
 }
 
-.logo {
-    margin-bottom: 80px;
+.seccio-esquerra {
+    display: flex;
+    align-items: center;
+    gap: 40px;
 }
 
 .enllacos-navegacio {
     display: flex;
-    flex-direction: column;
-    gap: 30px;
-    width: 100%;
+    flex-direction: row;
+    gap: 20px;
     align-items: center;
-    margin-top: 50%;
 }
 
 .element-navegacio {
@@ -43,58 +41,43 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.3s ease;
-    width: 100%;
-    position: relative;
+    transition: all 0.2s ease;
+    border-radius: 12px;
 }
 
-/* Estil de l'indicador actiu */
 .element-navegacio.actiu .caixa-icona {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 20px;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .element-navegacio:hover .caixa-icona {
-    transform: translateY(-2px);
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
+    transform: translateY(-2px);
 }
 
 .caixa-icona {
-    width: 70px;
-    height: 70px;
+    width: 50px;
+    height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    border-radius: 12px;
 }
 
-/* Icones com a imatges */
 .caixa-icona img {
-    width: 40px;
-    height: 40px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
-    opacity: 1;
-    transition: all 0.3s ease;
 }
-
-.element-navegacio.actiu .caixa-icona img {
-    opacity: 1;
-    transform: scale(1.1);
-}
-
-/* Ajust específic per a icones plenes si cal (com el perfil d'usuari) */
-.caixa-icona.perfil img {
-    width: 45px;
-    height: 45px;
-    opacity: 1;
-    border-radius: 50%;
-}
-
-
 
 .seccio-perfil {
-    margin-top: 60px;
-    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+}
+
+.caixa-icona.perfil img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.5);
 }

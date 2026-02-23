@@ -9,6 +9,8 @@ class Inscrit extends Model
 {
     use HasFactory;
 
+    protected $table = 'inscrits';
+
     protected $fillable = [
         'id_alumne',
         'id_assignatura',
@@ -16,7 +18,7 @@ class Inscrit extends Model
 
     public function alumne()
     {
-        return $this->belongsTo(User::class, 'id_alumne');
+        return $this->belongsTo(Usuari::class, 'id_alumne');
     }
 
     public function assignatura()
