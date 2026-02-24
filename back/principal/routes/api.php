@@ -48,6 +48,6 @@ Route::prefix('v1')->group(function (): void {
     Route::apiResource('cursos', CursController::class);
 
     // Ruta per les estadistiques admin
-    Route::get('/v1/administracio/stats', [AdministracioController::class, 'getEstadistiques']);
+    Route::get('/administracio/stats', [AdministracioController::class, 'getEstadistiques']);
 
 });
