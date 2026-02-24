@@ -17,8 +17,8 @@ export class CrearCicleComponent {
   formulariCicle = new FormGroup({
     nom: new FormControl('', Validators.required),
     tipus: new FormControl('', Validators.required),
-    id_tutor: new FormControl('', Validators.required),
-    id_periode: new FormControl('', Validators.required)
+    id_tutor: new FormControl(null),
+    id_periode: new FormControl(null)
   });
 
   guardarCicle() {

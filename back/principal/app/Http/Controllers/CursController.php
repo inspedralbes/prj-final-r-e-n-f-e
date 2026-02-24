@@ -11,9 +11,9 @@ class CursController extends Controller
     {
         $request->validate([
             'nom' => 'required|string',
-            'tipus' => 'required|string', 
-            'id_tutor' => 'required|integer',
-            'id_periode' => 'required|integer',
+            'tipus' => 'required|in:GM,GS', 
+            'id_tutor' => 'nullable|integer',
+            'id_periode' => 'nullable|integer',
         ]);
 
         $curs = Curs::create([

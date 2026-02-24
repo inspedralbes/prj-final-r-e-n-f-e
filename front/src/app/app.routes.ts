@@ -5,6 +5,7 @@ import { AdministracioComponent } from './features/administracio/administracio.c
 import { LoginComponent } from './features/login/login.component';
 import { LlistaClasseComponent } from './features/professors/llista-classe/llista-classe.component';
 import { LlistaAssignaturesComponent } from './features/professors/llista-assignatures/llista-assignatures.component';
+import { CrearCicleComponent } from './features/administracio/crear-cicle/crear-cicle.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -13,4 +14,5 @@ export const routes: Routes = [
   { path: 'administracio', component: AdministracioComponent },
   { path: 'llista-classe', component: LlistaClasseComponent },
   { path: 'llista-assignatures', component: LlistaAssignaturesComponent },
+  { path: 'crear-cicle', component: CrearCicleComponent },
 ];

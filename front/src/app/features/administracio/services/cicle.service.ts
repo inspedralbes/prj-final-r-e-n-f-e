@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class CicleService {
 
-  private apiUrl = 'http://localhost:8000/api/cursos';
+  private apiUrl = 'http://localhost:8000/api/v1/cursos';
 
   constructor(private http: HttpClient) { }
 

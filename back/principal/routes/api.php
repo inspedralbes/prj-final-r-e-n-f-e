@@ -11,6 +11,7 @@ use App\Http\Controllers\ImparteixController;
 use App\Http\Controllers\AssistenciaController;
 use App\Http\Controllers\JustificantController;
 use App\Http\Controllers\CursController;
+use App\Http\Controllers\AdministracioController;
 
 Route::prefix('v1')->group(function (): void {
 
@@ -45,5 +46,8 @@ Route::prefix('v1')->group(function (): void {
 
     // Rutes per als Cursos
     Route::apiResource('cursos', CursController::class);
+
+    // Ruta per les estadistiques admin
+    Route::get('/v1/administracio/stats', [AdministracioController::class, 'getEstadistiques']);
 
 });
