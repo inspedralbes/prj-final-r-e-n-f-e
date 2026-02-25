@@ -14,4 +14,12 @@ export class CicleService {
   crearCicle(dadesCicle: any): Observable<any> {
     return this.http.post(this.apiUrl, dadesCicle);
   }
+
+  getCursos(): Observable<any> {
+    return this.http.get(this.apiUrl);
+  }
+
+  eliminarCurs(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }

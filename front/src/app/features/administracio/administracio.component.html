@@ -1,62 +1,21 @@
-<div class="contenidor-pantalla">
-
+<div class="layout-principal">
+  
   <aside class="menu-lateral">
-    <div class="logo">
-      <h2>R.E.N.F.E</h2>
-    </div>
-    <nav class="botons-menu">
-      <button class="btn-lateral actiu">Tauler Inicial</button>
-      <button class="btn-lateral">Gestió de Usuaris</button>
-      <button class="btn-lateral">Gestió de Cicles</button>
-      <button class="btn-lateral">Parametres</button>
-      <button class="btn-lateral btn-avall">Tancar sessió</button>
-    </nav>
+    <h2>R.E.N.F.E</h2>
+    <ul class="lista-menu">
+      <li><a routerLink="/administracio/tauler" routerLinkActive="activo">Tauler Inicial</a></li>
+      <li><a routerLink="/administracio/gestio-usuaris" routerLinkActive="activo">Gestió de Usuaris</a></li>
+      <li><a routerLink="/administracio/gestio-cicles" routerLinkActive="activo">Gestió de Cicles</a></li>
+      <li><a routerLink="/administracio/parametres" routerLinkActive="activo">Parametres</a></li>
+    </ul>
   </aside>
 
-  <main class="area-principal">
-    <header>
+  <main class="contenido-derecha">
+    <div class="cabecera">
       <h1>Resum General</h1>
-      <p>Rendiment del centre FP</p>
-      <button class="btn-derecha" routerLink="/crear-cicle">Nou Cicle</button> 
-    </header>
+    </div>
     
-    <div class="dashboard-stats">
-  <div class="kpi-card">
-    <div class="kpi-header">
-      <div class="icon-box blue-box">👤</div>
-    </div>
-    <p class="kpi-title">TOTAL ESTUDIANTES</p>
-    <h2 class="kpi-value">{{ estadistiques.total_estudiantes }}</h2>
-    <div class="progress-bg">
-      <div class="progress-bar blue-bar" style="width: 75%;"></div>
-    </div>
-  </div>
+    <router-outlet></router-outlet>
 
-  <div class="kpi-card">
-    <div class="kpi-header">
-      <div class="icon-box purple-box">👩‍🏫</div>
-      <span class="badge gray-badge">Estable</span>
-    </div>
-    <p class="kpi-title">DOCENTES ACTIVOS</p>
-    <h2 class="kpi-value">{{ estadistiques.docentes_activos }}</h2>
-    <div class="progress-bg">
-      <div class="progress-bar purple-bar" style="width: 85%;"></div>
-    </div>
-  </div>
-
-  <div class="kpi-card">
-    <div class="kpi-header">
-      <div class="icon-box orange-box">📅</div>
-      <span class="badge red-badge">-2.4% vs mes anterior</span>
-    </div>
-    <p class="kpi-title">ASISTENCIA MEDIA</p>
-    <h2 class="kpi-value">{{ estadistiques.asistencia_media }}%</h2>
-    <div class="progress-bg">
-      <div class="progress-bar orange-bar" [style.width.%]="estadistiques.asistencia_media"></div>
-    </div>
-  </div>
-</div>
-    
   </main>
-
 </div>

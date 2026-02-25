@@ -1,0 +1,38 @@
+<div class="gestio-container">
+  
+  <div class="cabecera-gestio">
+    <h2>Gestió de Cicles Formatius</h2>
+    <button class="btn-crear" routerLink="/administracio/crear-cicle">Nou Cicle</button>
+  </div>
+
+  <div class="missatge-caixa" *ngIf="carregant">
+    <p>Carregant cicles des de la base de dades...</p>
+  </div>
+  
+  <table class="taula-cursos" *ngIf="cursos && cursos.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nom del Cicle</th>
+        <th>Tipus</th>
+        <th>Accions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let curs of cursos">
+        <td>{{ curs.id }}</td>
+        <td>{{ curs.nom }}</td>
+        <td>{{ curs.tipus }}</td>
+        <td class="accions">
+          <button class="btn-editar">Editar</button>
+          <button class="btn-eliminar" (click)="esborrarCurs(curs.id, curs.nom)">Esborrar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="buit" *ngIf="!cursos || cursos.length === 0">
+    <p>Encara no hi ha cap curs creat.</p>
+  </div>
+
+</div>

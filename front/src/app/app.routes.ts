@@ -6,13 +6,27 @@ import { LoginComponent } from './features/login/login.component';
 import { LlistaClasseComponent } from './features/professors/llista-classe/llista-classe.component';
 import { LlistaAssignaturesComponent } from './features/professors/llista-assignatures/llista-assignatures.component';
 import { CrearCicleComponent } from './features/administracio/crear-cicle/crear-cicle.component';
+import { GestioCiclesComponent } from './features/administracio/gestio-cicles/gestio-cicles.component'
+import { TaulerInicialComponent } from './features/administracio/tauler-inicial/tauler-inicial.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'alumnes', component: AlumnesComponent },
   { path: 'professors', component: ProfessorsComponent },
-  { path: 'administracio', component: AdministracioComponent },
   { path: 'llista-classe', component: LlistaClasseComponent },
   { path: 'llista-assignatures', component: LlistaAssignaturesComponent },
-  { path: 'crear-cicle', component: CrearCicleComponent },
+
+  {
+    path: 'administracio',
+    component: AdministracioComponent,
+    children: [
+      { path: '', redirectTo: 'tauler', pathMatch: 'full' },
+      
+      { path: 'tauler', component: TaulerInicialComponent },
+      { path: 'gestio-cicles', component: GestioCiclesComponent },
+      { path: 'crear-cicle', component: CrearCicleComponent }
+    ]
+  }
+
+
 ];

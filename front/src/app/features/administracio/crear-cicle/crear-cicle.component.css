@@ -1,115 +1,75 @@
-.contenidor-pantalla { display: flex; height: 100vh; margin: 0; font-family: Arial, sans-serif; overflow: hidden; background-color: #f8f9fa; }
-.menu-lateral { width: 250px; background-color: #ffffff; border-right: 1px solid #e0e0e0; padding: 20px; display: flex; flex-direction: column; box-sizing: border-box; }
-.botons-menu { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; }
-.btn-avall { margin-top: auto; }
-.area-principal { flex: 1; padding: 40px; overflow-y: auto; box-sizing: border-box; }
-
-.btn-lateral { padding: 12px 15px; text-align: left; background: transparent; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; color: #555; transition: all 0.2s; }
-.btn-lateral:hover { background-color: #f0ebff; color: #5b21b6; transform: translateX(5px); }
-.btn-lateral.actiu { background-color: #e0d4fc; color: #5b21b6; font-weight: bold; transform: none; }
-
-
-.capcalera-formulari {
-  margin-bottom: 30px;
+.form-container {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  max-width: 600px;
+  margin: 0 auto; 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
+
+.header-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #f3f4f6;
+  padding-bottom: 15px;
+}
+
+.header-form h2 { margin: 0; color: #1f2937; font-size: 1.4rem; }
 
 .btn-tornar {
-  background: none;
-  border: none;
-  color: #5b21b6;
-  font-weight: bold;
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 10px;
-  font-size: 14px;
-}
-
-.btn-tornar:hover { text-decoration: underline; }
-
-.targeta-formulari {
-  background-color: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 30px;
-  max-width: 700px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-}
-
-.titol-seccio {
-  font-size: 16px;
-  color: #374151;
-  margin-top: 0;
-  margin-bottom: 15px;
-}
-
-.separador {
-  border: 0;
-  border-top: 1px solid #e5e7eb;
-  margin: 25px 0;
-}
-
-.camp {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 20px;
-}
-
-.camp label {
-  font-size: 14px;
-  font-weight: bold;
+  background-color: #f3f4f6;
   color: #4b5563;
-  margin-bottom: 8px;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
 }
 
-.camp input, .camp select {
+.btn-tornar:hover { background-color: #e5e7eb; }
+
+.cicle-form { display: flex; flex-direction: column; gap: 20px; }
+
+.form-row { display: flex; gap: 20px; }
+
+.form-group { display: flex; flex-direction: column; flex: 1; }
+
+label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #374151;
+  font-size: 0.9rem;
+}
+
+input, select {
   padding: 12px;
   border: 1px solid #d1d5db;
   border-radius: 6px;
-  font-size: 15px;
+  font-size: 1rem;
   outline: none;
-  transition: border-color 0.2s;
+  transition: all 0.2s;
 }
 
-.camp input:focus, .camp select:focus {
-  border-color: #5b21b6;
-  box-shadow: 0 0 0 3px rgba(91, 33, 182, 0.1);
+input:focus, select:focus {
+  border-color: #6b21a8;
+  box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.1);
 }
 
-.grup-dates {
-  display: flex;
-  gap: 20px;
-}
-
-.meitat {
-  flex: 1; 
-}
-
-.accions-formulari {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 30px;
-}
-
-.btn-cancelar {
-  padding: 12px 20px;
-  background-color: white;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  color: #374151;
-}
-
-.btn-guardar {
-  padding: 12px 20px;
-  background-color: #5b21b6;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
+.btn-submit {
+  background-color: #6b21a8;
   color: white;
+  border: none;
+  padding: 14px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.3s;
 }
 
-.btn-guardar:hover { background-color: #4c1d95; }
-.btn-cancelar:hover { background-color: #f3f4f6; }
+.btn-submit:hover { background-color: #581c87; }

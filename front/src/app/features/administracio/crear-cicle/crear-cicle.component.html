@@ -1,63 +1,39 @@
-<div class="contenidor-pantalla">
-
-  <aside class="menu-lateral">
-    <div class="logo">
-      <h2>R.E.N.F.E</h2>
-    </div>
-    <nav class="botons-menu">
-      <button class="btn-lateral" routerLink="/administracio">Tauler Inicial</button>
-      <button class="btn-lateral actiu">Gestió de Cursos</button>
-      <button class="btn-lateral btn-avall">Ajustos</button>
-    </nav>
-  </aside>
-
-  <main class="area-principal">
-    
-    <header class="capcalera-formulari">
-      <h1>Crear un Nou Cicle Formatiu</h1>
-      <p>Introdueix les dades per registrar el curs a la base de dades.</p>
-    </header>
-
-    <div class="targeta-formulari">
-      <form [formGroup]="formulariCicle" (ngSubmit)="guardarCicle()" class="targeta-formulari">
-  <h3 class="titol-seccio">Dades del Curs</h3>
+<div class="form-container">
   
-  <div class="camp">
-    <label>Nom del Curs</label>
-    <input type="text" formControlName="nom" placeholder="Ex: Desenvolupament Web">
+  <div class="header-form">
+    <h2>Nou Cicle Formatiu</h2>
+    <button class="btn-tornar" routerLink="/administracio/gestio-cicles">⬅ Tornar a la llista</button>
   </div>
 
-  <div class="camp">
-    <label>Tipus de Grau</label>
-    <select formControlName="tipus">
-      <option value="">Selecciona...</option>
-      <option value="GM">Grau Mitjà (GM)</option>
-      <option value="GS">Grau Superior (GS)</option>
-    </select>
-  </div>
-
-  <hr class="separador">
-
-  <h3 class="titol-seccio">Connexions (IDs)</h3>
-  <div class="grup-dates">
+  <form class="cicle-form" (ngSubmit)="crearCicle()">
     
-    <div class="camp meitat">
-      <label>ID del Tutor</label>
-      <input type="number" formControlName="id_tutor" placeholder="Ex: 1">
+    <div class="form-group">
+      <label for="nom">Nom del Cicle:</label>
+      <input type="text" id="nom" [(ngModel)]="cicle.nom" name="nom" required placeholder="Ex: Desenvolupament d'Aplicacions Web">
     </div>
 
-    <div class="camp meitat">
-      <label>ID del Període</label>
-      <input type="number" formControlName="id_periode" placeholder="Ex: 1">
-    </div>
-    
-  </div>
-
-  <div class="accions-formulari">
-    <button type="submit" class="btn-guardar">Crear Curs</button>
-  </div>
-</form>
+    <div class="form-group">
+      <label for="tipus">Tipus:</label>
+      <select id="tipus" [(ngModel)]="cicle.tipus" name="tipus" required>
+        <option value="" disabled selected>Selecciona un tipus</option>
+        <option value="GS">Grau Superior (GS)</option>
+        <option value="GM">Grau Mitjà (GM)</option>
+      </select>
     </div>
 
-  </main>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="id_tutor">ID Tutor (Opcional):</label>
+        <input type="number" id="id_tutor" [(ngModel)]="cicle.id_tutor" name="id_tutor" placeholder="Ex: 1">
+      </div>
+
+      <div class="form-group">
+        <label for="id_periode">ID Període (Opcional):</label>
+        <input type="number" id="id_periode" [(ngModel)]="cicle.id_periode" name="id_periode" placeholder="Ex: 1">
+      </div>
+    </div>
+
+    <button type="submit" class="btn-submit">Guardar Cicle</button>
+  </form>
+  
 </div>
