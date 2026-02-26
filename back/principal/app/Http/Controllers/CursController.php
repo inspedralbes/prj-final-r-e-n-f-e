@@ -50,6 +50,25 @@ class CursController extends Controller
         return response()->json(['missatge' => 'Curs no trobat'], 404);
     }
 
+    public function show($id)
+    {
+        $curs = Curs::find($id);
+        if ($curs) {
+            return response()->json($curs);
+        }
+        return response()->json(['missatge' => 'Curs no trobat'], 404);
+    }
 
+    public function update(Request $request, $id)
+    {
+        $curs = Curs::find($id);
+
+        if ($curs) {
+            $curs->update($request->all());
+            return response()->json(['missatge' => 'Curs actualitzat correctament!', 'curs' => $curs], 200);
+        }
+
+        return response()->json(['missatge' => 'Curs no trobat'], 404);
+    }
 
 }

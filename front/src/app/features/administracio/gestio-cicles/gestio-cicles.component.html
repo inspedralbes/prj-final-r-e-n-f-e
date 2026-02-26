@@ -24,7 +24,7 @@
         <td>{{ curs.nom }}</td>
         <td>{{ curs.tipus }}</td>
         <td class="accions">
-          <button class="btn-editar">Editar</button>
+          <button class="btn-editar" [routerLink]="['/administracio/editar-cicle', curs.id]">Editar</button>
           <button class="btn-eliminar" (click)="esborrarCurs(curs.id, curs.nom)">Esborrar</button>
         </td>
       </tr>

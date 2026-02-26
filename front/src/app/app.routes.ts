@@ -24,7 +24,8 @@ export const routes: Routes = [
       
       { path: 'tauler', component: TaulerInicialComponent },
       { path: 'gestio-cicles', component: GestioCiclesComponent },
-      { path: 'crear-cicle', component: CrearCicleComponent }
+      { path: 'crear-cicle', component: CrearCicleComponent },
+      { path: 'editar-cicle/:id', component: CrearCicleComponent }
     ]
   }
 

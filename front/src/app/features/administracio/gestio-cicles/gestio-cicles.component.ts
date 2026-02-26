@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { CicleService } from '../services/cicle.service';
 
@@ -15,21 +15,34 @@ export class GestioCiclesComponent implements OnInit {
   cursos: any[] = [];
   carregant: boolean = true; 
 
-  constructor(private cicleService: CicleService) { }
+constructor(
+    private cicleService: CicleService,
+    private cdr: ChangeDetectorRef,
+    @Inject(PLATFORM_ID) private platformId: Object 
+  ) { }
 
   ngOnInit(): void {
-    this.carregarCursos();
+    if (isPlatformBrowser(this.platformId)) {
+      this.carregarCursos();
+    } else {
+      this.carregant = false;
+    }
   }
 
   carregarCursos() {
+    this.carregant = true;
     this.cicleService.getCursos().subscribe({
       next: (dades) => {
         this.cursos = dades;
         this.carregant = false;
+        this.cdr.detectChanges();
       },
-      error: (err) => console.error('Error al cargar cursos', err)
+      error: (err) => {
+        console.error('Error al cargar cursos', err);
+        this.carregant = false;
+        this.cdr.detectChanges();
+      }
     });
-    this.carregant = false;
   }
 
   esborrarCurs(id: number, nom: string) {

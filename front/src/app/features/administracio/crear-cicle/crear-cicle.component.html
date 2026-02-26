@@ -1,11 +1,11 @@
 <div class="form-container">
   
   <div class="header-form">
-    <h2>Nou Cicle Formatiu</h2>
+    <h2>{{ esEdicio ? 'Editar Cicle Formatiu' : 'Nou Cicle Formatiu' }}</h2>
     <button class="btn-tornar" routerLink="/administracio/gestio-cicles">⬅ Tornar a la llista</button>
   </div>
 
-  <form class="cicle-form" (ngSubmit)="crearCicle()">
+  <form class="cicle-form" (ngSubmit)="guardarCicle()">
     
     <div class="form-group">
       <label for="nom">Nom del Cicle:</label>
@@ -33,7 +33,9 @@
       </div>
     </div>
 
-    <button type="submit" class="btn-submit">Guardar Cicle</button>
+    <button type="submit" class="btn-submit">
+      {{ esEdicio ? 'Actualitzar Cicle' : 'Crear Cicle' }}
+    </button>
   </form>
   
 </div>

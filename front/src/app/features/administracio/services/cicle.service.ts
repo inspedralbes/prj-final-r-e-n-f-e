@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class CicleService {
 
-  private apiUrl = 'http://localhost:8000/api/v1/cursos';
+  private apiUrl = 'http://127.0.0.1:8000/api/v1/cursos';
 
   constructor(private http: HttpClient) { }
 
@@ -22,4 +22,14 @@ export class CicleService {
   eliminarCurs(id: number): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${id}`);
   }
+
+  getCurs(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
+
+  actualitzarCurs(id: number, dades: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, dades);
+  }
+
+
 }
