@@ -12,7 +12,7 @@ export class AdministracioComponent {
     
   titolPagina: string = 'Resum General'; 
 
-  constructor(private router: Router) {
+  constructor(public router: Router) {
 
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
@@ -20,7 +20,10 @@ export class AdministracioComponent {
       }
     });
   }
-
+  
+  get menuCiclesActiu(): boolean {
+    return this.router.url.includes('cicle') || this.router.url.includes('periode');
+  }
 
   actualitzarTitol(url: string) {
     if (url.includes('gestio-cicles')) {
@@ -31,11 +34,12 @@ export class AdministracioComponent {
       this.titolPagina = 'Edició de Cicle';
     } else if (url.includes('gestio-usuaris')) {
       this.titolPagina = "Gestió d'Usuaris";
-    } else if (url.includes('parametres')) {
-      this.titolPagina = 'Paràmetres del Sistema';
+    } else if (url.includes('crear-periode')) {
+      this.titolPagina = 'Crear Periode';
     } else {
 
       this.titolPagina = 'Resum General';
     }
+  
   }
 }

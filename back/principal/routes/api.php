@@ -12,6 +12,7 @@ use App\Http\Controllers\AssistenciaController;
 use App\Http\Controllers\JustificantController;
 use App\Http\Controllers\CursController;
 use App\Http\Controllers\AdministracioController;
+use App\Http\Controllers\PeriodeController;
 
 Route::prefix('v1')->group(function (): void {
 
@@ -49,5 +50,8 @@ Route::prefix('v1')->group(function (): void {
 
     // Ruta per les estadistiques admin
     Route::get('/administracio/stats', [AdministracioController::class, 'getEstadistiques']);
+
+    // Ruta per crear periodes
+    Route::post('/periodes', [PeriodeController::class, 'store']);
 
 });

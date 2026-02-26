@@ -8,6 +8,7 @@ import { LlistaAssignaturesComponent } from './features/professors/llista-assign
 import { CrearCicleComponent } from './features/administracio/crear-cicle/crear-cicle.component';
 import { GestioCiclesComponent } from './features/administracio/gestio-cicles/gestio-cicles.component'
 import { TaulerInicialComponent } from './features/administracio/tauler-inicial/tauler-inicial.component';
+import { CrearPeriodeComponent } from './features/administracio/crear-periode/crear-periode.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -25,7 +26,8 @@ export const routes: Routes = [
       { path: 'tauler', component: TaulerInicialComponent },
       { path: 'gestio-cicles', component: GestioCiclesComponent },
       { path: 'crear-cicle', component: CrearCicleComponent },
-      { path: 'editar-cicle/:id', component: CrearCicleComponent }
+      { path: 'editar-cicle/:id', component: CrearCicleComponent },
+      { path: 'crear-periode', component: CrearPeriodeComponent }
     ]
   }
 

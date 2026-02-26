@@ -1,0 +1,63 @@
+<div class="form-container">
+  
+  <div class="header-form">
+    <h2>Nou Període Acadèmic</h2>
+    <button class="btn-tornar" routerLink="/administracio/gestio-cicles">⬅ Tornar</button>
+  </div>
+
+  <div class="caja-errores" *ngIf="erroresServidor.length > 0">
+    <ul>
+      <li *ngFor="let error of erroresServidor">{{ error }}</li>
+    </ul>
+  </div>
+
+  <form class="cicle-form" #periodeForm="ngForm" (ngSubmit)="guardarPeriode()">
+    
+    <fieldset class="trimestre-group">
+      <legend>1er Trimestre</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="trimestre_1_ini">Data d'inici:</label>
+          <input type="date" id="trimestre_1_ini" [(ngModel)]="periode.trimestre_1_ini" name="trimestre_1_ini" required>
+        </div>
+        <div class="form-group">
+          <label for="trimestre_1_fi">Data de fi:</label>
+          <input type="date" id="trimestre_1_fi" [(ngModel)]="periode.trimestre_1_fi" name="trimestre_1_fi" required>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="trimestre-group">
+      <legend>2on Trimestre</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="trimestre_2_ini">Data d'inici:</label>
+          <input type="date" id="trimestre_2_ini" [(ngModel)]="periode.trimestre_2_ini" name="trimestre_2_ini" required>
+        </div>
+        <div class="form-group">
+          <label for="trimestre_2_fi">Data de fi:</label>
+          <input type="date" id="trimestre_2_fi" [(ngModel)]="periode.trimestre_2_fi" name="trimestre_2_fi" required>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="trimestre-group">
+      <legend>3er Trimestre</legend>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="trimestre_3_ini">Data d'inici:</label>
+          <input type="date" id="trimestre_3_ini" [(ngModel)]="periode.trimestre_3_ini" name="trimestre_3_ini" required>
+        </div>
+        <div class="form-group">
+          <label for="trimestre_3_fi">Data de fi:</label>
+          <input type="date" id="trimestre_3_fi" [(ngModel)]="periode.trimestre_3_fi" name="trimestre_3_fi" required>
+        </div>
+      </div>
+    </fieldset>
+
+    <button type="submit" class="btn-submit" [disabled]="!periodeForm.valid">
+      Crear
+    </button>
+  </form>
+  
+</div>
