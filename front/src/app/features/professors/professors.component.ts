@@ -4,6 +4,7 @@ import { SidebarComponent } from '../../shared/components/sidebar/sidebar.compon
 import { AssignaturesManagerService } from '../../shared/services/assignatures/assignatures-manager.service';
 import { HorarisManagerService } from '../../shared/services/horaris/horaris-manager.service';
 import { ImparteixManagerService } from '../../shared/services/imparteix/imparteix-manager.service';
+import { AuthService } from '../../shared/services/auth/auth.service';
 
 @Component({
   selector: 'app-professors',
@@ -15,6 +16,7 @@ export class ProfessorsComponent implements OnInit {
   assignaturesManager = inject(AssignaturesManagerService);
   horarisManager = inject(HorarisManagerService);
   imparteixManager = inject(ImparteixManagerService);
+  authService = inject(AuthService); // Injectem l'AuthService
 
   // Dades de la classe actual conectada a la Base de Datos (ARA REACTIU!)
   classeActual = computed(() => {
@@ -76,7 +78,9 @@ export class ProfessorsComponent implements OnInit {
     const totsHoraris = this.horarisManager.horaris();
 
     // 2. Definim quin profe som per poder filtrar què ens toca donar
-    const idProfeLoguejat = 1; // Més endavant ho agafarem del Login
+    // Agafem l'ID de l'usuari actual guardat al servei d'autenticació
+    const usuariActual = this.authService.currentUser();
+    const idProfeLoguejat = usuariActual ? usuariActual.id : 1; // Si no n'hi ha, posem l'1 per defecte (per evitar errors visuals de moment)
 
     // 3. Busquem quines assignatures dono jo
     const lesMevesAssignatures: number[] = [];

@@ -14,6 +14,7 @@ use App\Http\Controllers\JustificantController;
 Route::prefix('v1')->group(function (): void {
 
     // Usuaris routes
+    Route::post('login', [UsuariController::class, 'login']); // TEMPORAL: Login basic sense auth real
     Route::apiResource('usuaris', UsuariController::class);
 
     // Classes routes

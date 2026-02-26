@@ -126,4 +126,38 @@ class UsuariController extends Controller
             'message' => 'Usuari eliminat correctament'
         ], Response::HTTP_OK);
     }
+
+    /**
+     * Login temporal para comprobar si el usuario o email existe.
+     * TEMPORAL: Solo se usará para comprobar flujo Frontend-Backend 
+     * antes de integrar Google Auth.
+     */
+    public function login(Request $request)
+    {
+        $validated = $request->validate([
+            'login_field' => 'required|string',
+        ]);
+
+        $input = $validated['login_field'];
+
+        // Buscamos un usuario que coincida por nombre o por email (ignorando la contraseña por ahora)
+        $usuari = Usuari::where('nom', $input)
+                        ->orWhere('email', $input)
+                        ->first();
+
+        // Si no existe, devolvemos 404
+        if (!$usuari) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuari no trobat'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Si existe, lo devolvemos para que el front lo almacene
+        return response()->json([
+            'success' => true,
+            'data' => $usuari,
+            'message' => 'Login correcte'
+        ], Response::HTTP_OK);
+    }
 }
