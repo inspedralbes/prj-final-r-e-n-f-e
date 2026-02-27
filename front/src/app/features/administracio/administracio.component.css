@@ -12,14 +12,14 @@
   flex: 1;
   padding: 40px;
   background-color: #f9fafb;
+  overflow-x: hidden;
 }
 .lista-menu { list-style: none; padding: 0; }
 .lista-menu li a { display: block; padding: 12px; text-decoration: none; color: #333; margin-bottom: 5px; border-radius: 8px; }
 .lista-menu li a:hover { background-color: #f3e8ff; }
 .activo { background-color: #ebd5ff !important; font-weight: bold; } 
-.cabecera { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.cabecera { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
 .btn-nuevo { background: #6b21a8; color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; }
-
 
 .lista-menu button {
   width: 100%;
@@ -30,4 +30,68 @@
   padding: 10px 15px;
   font-size: 1rem;
   color: inherit;
+}
+
+@media (max-width: 768px) {
+  .layout-principal {
+    flex-direction: column;
+  }
+
+  .menu-lateral {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #eee;
+    padding: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .lista-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+  }
+
+  .lista-menu li a,
+  .lista-menu button {
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+
+  .contenido-derecha {
+    padding: 20px;
+  }
+
+  .cabecera {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .btn-nuevo {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .menu-lateral {
+    padding: 10px;
+  }
+
+  .lista-menu li a,
+  .lista-menu button {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+
+  .contenido-derecha {
+    padding: 15px;
+  }
+
+  .btn-nuevo {
+    padding: 8px 15px;
+    font-size: 14px;
+  }
 }

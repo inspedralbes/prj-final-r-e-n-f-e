@@ -15,6 +15,8 @@
     margin-bottom: 30px;
     padding-bottom: 15px;
     border-bottom: 2px solid #f3f4f6;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .header-form h2 {
@@ -110,6 +112,7 @@
     transition: all 0.3s ease;
     box-shadow: 0 4px 6px -1px rgba(107, 33, 168, 0.3);
     margin-top: 10px;
+    width: 100%;
 }
 
 .btn-submit:hover:not(:disabled) {
@@ -147,8 +150,83 @@
 .form-row {
     display: flex;
     gap: 20px;
+    flex-wrap: wrap;
 }
 
 .form-row .form-group {
     flex: 1;
+    min-width: 200px;
+}
+
+@media (max-width: 768px) {
+    .form-container {
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .header-form {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .header-form h2 {
+        font-size: 1.2rem;
+        width: 100%;
+    }
+
+    .btn-tornar {
+        width: 100%;
+        text-align: center;
+    }
+
+    .form-group label {
+        font-size: 0.9rem;
+    }
+
+    .form-group input[type="date"] {
+        font-size: 16px;
+        padding: 10px 12px;
+    }
+
+    .ayuda-campo {
+        font-size: 0.75rem;
+    }
+
+    .btn-submit {
+        padding: 12px;
+        font-size: 0.95rem;
+    }
+
+    .trimestre-group {
+        padding: 15px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-row .form-group {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-container {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .header-form h2 {
+        font-size: 1rem;
+    }
+
+    .form-group label {
+        font-size: 0.85rem;
+    }
+
+    .btn-submit {
+        font-size: 0.9rem;
+    }
 }
