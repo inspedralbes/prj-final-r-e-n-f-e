@@ -10,7 +10,23 @@ export class PeriodeService {
 
   constructor(private http: HttpClient) { }
 
+  getPeriodes(): Observable<any> {
+    return this.http.get(this.apiUrl);
+  }
+
+  getPeriode(id: number): Observable<any> {
+    return this.http.get(`${this.apiUrl}/${id}`);
+  }
+
   crearPeriode(dades: any): Observable<any> {
     return this.http.post(this.apiUrl, dades);
+  }
+
+  actualitzarPeriode(id: number, dades: any): Observable<any> {
+    return this.http.put(`${this.apiUrl}/${id}`, dades);
+  }
+
+  eliminarPeriode(id: number): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${id}`);
   }
 }

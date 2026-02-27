@@ -22,24 +22,31 @@ export class AdministracioComponent {
   }
   
   get menuCiclesActiu(): boolean {
-    return this.router.url.includes('cicle') || this.router.url.includes('periode');
+    return this.router.url.includes('cicle');
   }
 
-  actualitzarTitol(url: string) {
+  get menuPeriodesActiu(): boolean {
+    return this.router.url.includes('periode');
+  }
+
+ actualitzarTitol(url: string) {
     if (url.includes('gestio-cicles')) {
       this.titolPagina = 'Gestió de Cicles Formatius';
     } else if (url.includes('crear-cicle')) {
       this.titolPagina = 'Crear un Nou Cicle';
     } else if (url.includes('editar-cicle')) {
       this.titolPagina = 'Edició de Cicle';
-    } else if (url.includes('gestio-usuaris')) {
-      this.titolPagina = "Gestió d'Usuaris";
-    } else if (url.includes('crear-periode')) {
-      this.titolPagina = 'Crear Periode';
-    } else {
+    } 
 
+    else if (url.includes('gestio-periodes')) {
+      this.titolPagina = 'Gestió de Períodes Acadèmics';
+    } else if (url.includes('crear-periode')) {
+      this.titolPagina = 'Crear un Nou Període';
+    } else if (url.includes('editar-periode')) {
+      this.titolPagina = 'Edició de Període';
+    } 
+     else {
       this.titolPagina = 'Resum General';
     }
-  
   }
 }

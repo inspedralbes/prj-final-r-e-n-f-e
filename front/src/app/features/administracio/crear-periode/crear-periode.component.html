@@ -1,8 +1,8 @@
 <div class="form-container">
   
   <div class="header-form">
-    <h2>Nou Període Acadèmic</h2>
-    <button class="btn-tornar" routerLink="/administracio/gestio-cicles">⬅ Tornar</button>
+    <h2>{{ esEdicio ? 'Editar Període' : 'Nou Període Acadèmic' }}</h2>
+    <button class="btn-tornar" routerLink="/administracio/gestio-periodes">⬅ Tornar</button>
   </div>
 
   <div class="caja-errores" *ngIf="erroresServidor.length > 0">
@@ -56,7 +56,7 @@
     </fieldset>
 
     <button type="submit" class="btn-submit" [disabled]="!periodeForm.valid">
-      Crear
+      {{ esEdicio ? 'Actualitzar Període' : 'Crear Període' }}
     </button>
   </form>
   

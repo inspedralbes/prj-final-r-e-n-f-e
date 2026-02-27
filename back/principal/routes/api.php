@@ -51,7 +51,7 @@ Route::prefix('v1')->group(function (): void {
     // Ruta per les estadistiques admin
     Route::get('/administracio/stats', [AdministracioController::class, 'getEstadistiques']);
 
-    // Ruta per crear periodes
-    Route::post('/periodes', [PeriodeController::class, 'store']);
+    // Ruta per als Periodes
+    Route::apiResource('periodes', PeriodeController::class);
 
 });

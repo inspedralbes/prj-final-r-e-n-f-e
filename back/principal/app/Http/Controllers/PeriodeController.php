@@ -25,4 +25,42 @@ class PeriodeController extends Controller
             'periode' => $periode
         ], 201);
     }
+
+    public function index()
+    {
+        return response()->json(Periode::all(), 200);
+    }
+
+    public function show($id)
+    {
+        $periode = Periode::find($id);
+        if ($periode) {
+            return response()->json($periode, 200);
+        }
+        return response()->json(['missatge' => 'Període no trobat'], 404);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $periode = Periode::find($id);
+        if ($periode) {
+            $periode->update($request->all());
+            return response()->json(['missatge' => 'Període actualitzat!', 'periode' => $periode], 200);
+        }
+        return response()->json(['missatge' => 'Període no trobat'], 404);
+    }
+
+    public function destroy($id)
+    {
+        $periode = Periode::find($id);
+        if ($periode) {
+            $periode->delete();
+            return response()->json(['missatge' => 'Període eliminat correctament'], 200);
+        }
+        return response()->json(['missatge' => 'Període no trobat'], 404);
+    }
+
+
+
+
 }
