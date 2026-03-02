@@ -8,8 +8,17 @@
   <div class="missatge-caixa" *ngIf="carregant">
     <p>Carregant cicles des de la base de dades...</p>
   </div>
+
+  <div class="buscador-container" *ngIf="!carregant && cicles.length > 0" style="margin-bottom: 20px;">
+    <input 
+      type="text" 
+      [(ngModel)]="termeCerca" 
+      placeholder="Cercar curs per nom..." 
+      style="width: 100%; max-width: 400px; padding: 10px; border-radius: 5px; border: 1px solid #ccc;"
+    >
+  </div>
   
-  <table class="taula-cursos">
+  <table class="taula-cursos" *ngIf="!carregant && ciclesFiltrats.length > 0">
       <thead>
         <tr>
           <th>ID</th>
@@ -21,24 +30,24 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let curs of cursos">
-          <td>{{ curs.id }}</td>
-          <td>{{ curs.nom }}</td>
-          <td>{{ curs.tipus }}</td>
+        <tr *ngFor="let c of ciclesFiltrats">
+          <td>{{ c.id }}</td>
+          <td>{{ c.nom }}</td>
+          <td>{{ c.tipus }}</td>
           
-          <td>{{ curs.id_tutor || '-' }}</td>
-          <td>{{ curs.id_periode || '-' }}</td>
+          <td>{{ c.id_tutor || '-' }}</td>
+          <td>{{ c.id_periode || '-' }}</td>
           
           <td class="accions">
-            <button class="btn-editar" [routerLink]="['/administracio/editar-cicle', curs.id]">Editar</button>
-            <button class="btn-eliminar" (click)="esborrarCurs(curs.id, curs.nom)">Esborrar</button>
+            <button class="btn-editar" [routerLink]="['/administracio/editar-cicle', c.id]">Editar</button>
+            <button class="btn-eliminar" (click)="esborrarCurs(c.id, c.nom)">Esborrar</button>
           </td>
         </tr>
       </tbody>
-    </table>
+  </table>
 
-  <div class="buit" *ngIf="!cursos || cursos.length === 0">
-    <p>Encara no hi ha cap curs creat.</p>
+  <div class="missatge-caixa" *ngIf="!carregant && ciclesFiltrats.length === 0">
+    <p>No s'han trobat cursos amb aquest nom.</p>
   </div>
 
 </div>

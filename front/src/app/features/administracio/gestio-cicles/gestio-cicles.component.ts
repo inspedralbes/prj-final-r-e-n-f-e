@@ -1,19 +1,32 @@
 import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { CicleService } from '../services/cicle.service';
 
 @Component({
   selector: 'app-gestio-cicles',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './gestio-cicles.component.html',
   styleUrls: ['./gestio-cicles.component.css']
 })
 export class GestioCiclesComponent implements OnInit {
   
-  cursos: any[] = [];
-  carregant: boolean = true; 
+cicles: any[] = [];
+  carregant: boolean = true;
+  
+  termeCerca: string = '';
+
+  get ciclesFiltrats() {
+    if (!this.termeCerca) {
+      return this.cicles; 
+    }
+    
+    return this.cicles.filter(c => 
+      c.nom.toLowerCase().includes(this.termeCerca.toLowerCase())
+    );
+  }
 
 constructor(
     private cicleService: CicleService,
@@ -33,7 +46,7 @@ constructor(
     this.carregant = true;
     this.cicleService.getCursos().subscribe({
       next: (dades) => {
-        this.cursos = dades;
+        this.cicles = dades;
         this.carregant = false;
         this.cdr.detectChanges();
       },

@@ -18,7 +18,7 @@ class CursController extends Controller
     public function store(Request $request)
     {
     $request->validate([
-            'nom' => 'required|string',
+            'nom' => 'required|string|max:255|unique:cicles,nom',
             'tipus' => 'required|in:GM,GS', 
             'id_tutor' => 'nullable|integer',
             'id_periode' => 'nullable|integer',
