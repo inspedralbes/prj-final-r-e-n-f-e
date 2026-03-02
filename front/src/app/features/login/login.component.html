@@ -7,7 +7,7 @@
 
         <div class="cos-formulari">
             <div class="grup-input">
-                <label for="usuari">Usuari</label>
+                <label for="usuari" i18n>Usuari</label>
                 <div class="input-wrapper">
                     <input type="text" id="usuari" placeholder="Ex: alumne, professor, admin" [(ngModel)]="usuari"
                         (keyup.enter)="iniciarSessio()">
@@ -15,7 +15,7 @@
                 </div>
             </div>
 
-            <button (click)="iniciarSessio()" class="boto-entrar">
+            <button (click)="iniciarSessio()" class="boto-entrar" i18n>
                 Iniciar Sessió
                 <span class="fletxa">→</span>
             </button>
