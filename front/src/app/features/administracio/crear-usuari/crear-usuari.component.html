@@ -1,0 +1,65 @@
+<div class="form-container">
+  <div class="header-form">
+    <h2>{{ esEdicio ? 'Editar Usuari' : 'Nou Usuari' }}</h2>
+    <button class="btn-tornar" routerLink="/administracio/gestio-usuaris">⬅ Tornar</button>
+  </div>
+
+  <div class="caja-errores" *ngIf="erroresServidor.length > 0">
+    <ul><li *ngFor="let error of erroresServidor">{{ error }}</li></ul>
+  </div>
+
+  <form class="cicle-form" #usuariForm="ngForm" (ngSubmit)="guardarUsuari()">
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>Nom:</label>
+        <input type="text" [(ngModel)]="usuari.nom" name="nom" required>
+      </div>
+      <div class="form-group">
+        <label>Cognom:</label>
+        <input type="text" [(ngModel)]="usuari.cognom" name="cognom" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Rol:</label>
+            <select [(ngModel)]="usuari.rol" name="rol" required>
+                <option value="" disabled>Selecciona un rol</option>
+                <option value="Admin">Admin</option>
+                <option value="Profe">Professor</option>
+                <option value="Alumne">Alumne</option>
+            </select>
+      </div>
+      <div class="form-group">
+        <label>NFC ID (Opcional):</label>
+        <input type="text" [(ngModel)]="usuari.nfc_id" name="nfc_id">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email:</label>
+        <input type="email" [(ngModel)]="usuari.email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label>Email Pares (Opcional):</label>
+        <input type="email" [(ngModel)]="usuari.email_pares" name="email_pares">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Contrasenya (Deixa-la buida si no vols canviar-la al editar):</label>
+      <input type="password" [(ngModel)]="usuari.password" name="password" [required]="!esEdicio">
+    </div>
+
+    <div class="form-group" *ngIf="usuari.rol === 'Profe'">
+      <label>Horari Guàrdies (Opcional):</label>
+      <textarea [(ngModel)]="usuari.horari_guardies" name="horari_guardies" rows="3"></textarea>
+    </div>
+
+    <button type="submit" class="btn-submit" [disabled]="!usuariForm.valid">
+      {{ esEdicio ? 'Actualitzar Usuari' : 'Crear Usuari' }}
+    </button>
+  </form>
+</div>

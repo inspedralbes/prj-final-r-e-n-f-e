@@ -10,6 +10,8 @@ import { GestioCiclesComponent } from './features/administracio/gestio-cicles/ge
 import { TaulerInicialComponent } from './features/administracio/tauler-inicial/tauler-inicial.component';
 import { CrearPeriodeComponent } from './features/administracio/crear-periode/crear-periode.component';
 import { GestioPeriodesComponent } from './features/administracio/gestio-periodes/gestio-periodes.component';
+import { GestioUsuarisComponent } from './features/administracio/gestio-usuaris/gestio-usuaris.component';
+import { CrearUsuariComponent } from './features/administracio/crear-usuari/crear-usuari.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -31,6 +33,9 @@ export const routes: Routes = [
       { path: 'gestio-periodes', component: GestioPeriodesComponent},
       { path: 'crear-periode', component: CrearPeriodeComponent },
       { path: 'editar-periode/:id', component: CrearPeriodeComponent },
+      { path: 'gestio-usuaris', component: GestioUsuarisComponent },
+      { path: 'crear-usuari', component: CrearUsuariComponent },
+      { path: 'editar-usuari/:id', component: CrearUsuariComponent },
     ]
   }
 

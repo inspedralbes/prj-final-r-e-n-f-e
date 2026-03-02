@@ -1,0 +1,74 @@
+.gestio-container { padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+
+.cabecera-gestio { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
+.cabecera-gestio h2 { margin: 0; color: #1f2937; }
+
+.btn-crear { background-color: #6b21a8; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: 0.3s; }
+.btn-crear:hover { background-color: #581c87; }
+
+.missatge-caixa { background: white; padding: 30px; text-align: center; color: #6b7280; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+
+.taula-cursos { width: 100%; border-collapse: collapse; background: white; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border-radius: 8px; overflow: hidden; margin-top: 10px; }
+.taula-cursos th, .taula-cursos td { padding: 15px; text-align: left; border-bottom: 1px solid #eee; }
+.taula-cursos th { background-color: #f8f9fa; font-weight: 600; color: #374151; text-transform: uppercase; font-size: 0.85rem; }
+.taula-cursos tr:hover { background-color: #f9fafb; }
+
+.accions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-editar { background: #3b82f6; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+.btn-eliminar { background: #ef4444; color: white; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; }
+.btn-editar:hover { background: #2563eb; }
+.btn-eliminar:hover { background: #dc2626; }
+
+@media (max-width: 768px) {
+    .gestio-container { padding: 15px; }
+
+    .cabecera-gestio { 
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    .cabecera-gestio h2 { 
+        font-size: 1.2rem;
+        width: 100%;
+    }
+
+    .btn-crear { 
+        width: 100%;
+        font-size: 13px;
+    }
+
+    .taula-cursos th, .taula-cursos td { 
+        padding: 10px;
+        font-size: 0.8rem;
+    }
+
+    .accions { 
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .btn-editar, .btn-eliminar { 
+        width: 100%;
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .gestio-container { padding: 10px; }
+
+    .cabecera-gestio h2 { 
+        font-size: 1rem;
+    }
+
+    .btn-crear { 
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    .taula-cursos th, .taula-cursos td { 
+        padding: 8px;
+        font-size: 0.75rem;
+    }
+}

@@ -1,0 +1,42 @@
+<div class="gestio-container">
+  
+  <div class="cabecera-gestio" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <div>
+      <h2 style="margin-bottom: 5px;">Gestió d'Usuaris</h2>
+      <h3 style="color: #4b5563; font-weight: normal; margin-top: 0;">Llistat del personal i alumnat</h3>
+    </div>
+    <button class="btn-crear" style="background-color: #0891b2;" routerLink="/administracio/crear-usuari">Nou Usuari</button>
+  </div>
+  
+  <div class="missatge-caixa" *ngIf="carregant">
+    <p>⏳ Carregant usuaris...</p>
+  </div>
+
+  <table class="taula-cursos" *ngIf="!carregant && usuaris.length > 0">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>NOM I COGNOM</th>
+        <th>ROL</th>
+        <th>EMAIL</th>
+        <th>ACCIONS</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let u of usuaris">
+        <td>{{ u.id }}</td>
+        <td>{{ u.nom }} {{ u.cognom }}</td>
+        <td><strong>{{ u.rol }}</strong></td>
+        <td>{{ u.email }}</td>
+        <td class="accions">
+          <button class="btn-editar" [routerLink]="['/administracio/editar-usuari', u.id]">Editar</button>
+          <button class="btn-eliminar" (click)="esborrarUsuari(u.id)">Esborrar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="missatge-caixa" *ngIf="!carregant && usuaris.length === 0">
+    <p>Encara no hi ha cap usuari creat.</p>
+  </div>
+</div>
