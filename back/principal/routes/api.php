@@ -22,10 +22,10 @@ Route::prefix('v1')->group(function (): void {
     
     Route::apiResource('assignatures', AssignaturaController::class);
 
-    Route::apiResource('assistencies', AssistenciaController::class);
         Route::get('assistencies/alumne/{alumneId}', action: [AssistenciaController::class, 'assistenciaPerAlumne']);
         Route::get('assistencia/assignatura/{id}', [AssistenciaController::class, 'perAssignatura']);
         Route::post('assistencies/generar', [AssistenciaController::class, 'generar']);
+    Route::apiResource('assistencies', AssistenciaController::class);
    
     Route::apiResource('aules', AulaController::class);
 
@@ -45,5 +45,4 @@ Route::prefix('v1')->group(function (): void {
     Route::apiResource('periodes', PeriodeController::class);
 
     Route::apiResource('usuaris', UsuariController::class);
-
 });

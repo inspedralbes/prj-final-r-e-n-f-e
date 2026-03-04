@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Assistencia;
 use App\Models\Classe;
-use App\Models\Assignatura;
-use App\Models\Inscrit;
 use App\Models\Usuari;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
