@@ -61,7 +61,7 @@ ngOnInit(): void {
     }
   }
 
-  guardarPeriode() {
+guardarPeriode() {
     this.erroresServidor = [];
 
     if (this.esEdicio && this.idPeriodeActual) {
@@ -70,25 +70,30 @@ ngOnInit(): void {
           alert('Període actualitzat correctament!');
           this.router.navigate(['/administracio/gestio-periodes']);
         },
-        error: this.gestionarError.bind(this)
+        error: (err) => this.gestionarError(err)
       });
     } else {
       this.periodeService.crearPeriode(this.periode).subscribe({
         next: () => {
           alert('Període creat correctament!');
-          this.router.navigate(['/administracio/gestio-periodes']); 
+          this.router.navigate(['/administracio/gestio-periodes']);
         },
-        error: this.gestionarError.bind(this)
+        error: (err) => this.gestionarError(err)
       });
     }
   }
 
   gestionarError(err: any) {
-    console.error('Error del backend:', err);
+    alert('Hi ha hagut un error! Revisa les dates del formulari.');
+
+
     if (err.status === 422 && err.error.errors) {
       this.erroresServidor = Object.values(err.error.errors).flat() as string[];
     } else {
-      this.erroresServidor = ['Hi ha hagut un error inesperat. Revisa la consola.'];
+      this.erroresServidor = ['Hi ha hagut un error inesperat al servidor.'];
     }
-  }
-}
+
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  
+  }}
