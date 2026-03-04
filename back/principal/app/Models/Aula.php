@@ -16,4 +16,9 @@ class Aula extends Model
     {
         return $this->hasMany(Horari::class, 'id_aula');
     }
+
+    public function sensors()
+    {
+        return $this->hasMany(Sensor::class, 'id_aula');
+    }
 }

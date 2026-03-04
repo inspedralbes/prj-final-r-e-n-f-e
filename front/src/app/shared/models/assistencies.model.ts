@@ -7,4 +7,5 @@ export interface Assistencia {
   id_profe: number;
   created_at: string;
   updated_at: string;
+  inscripcio?: any;
 }

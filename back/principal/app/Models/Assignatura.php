@@ -47,4 +47,9 @@ class Assignatura extends Model
     {
         return $this->belongsTo(Classe::class, 'id_classe_projecte');
     }
+
+    public function esSubstituible()
+    {
+        return !$this->exempcio;
+    }
 }

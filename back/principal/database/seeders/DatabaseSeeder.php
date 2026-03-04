@@ -12,14 +12,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // Tablas sin dependencias
+                // Tablas sin dependencias
             UsuarisSeeder::class,
             PeriodesSeeder::class,
             AulesSeeder::class,
-            AssignaturesSeeder::class,
-            // Tablas que dependen de las anteriores
+                // Tablas que dependen de las anteriores
             CursSeeder::class,       // depende de: usuaris, periodes
             ClassesSeeder::class,    // depende de: cursos, usuaris
+            AssignaturesSeeder::class,  // depende de: classes
             HorarisSeeder::class,    // depende de: assignatures, classes, aules
         ]);
     }

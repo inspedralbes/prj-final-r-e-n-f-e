@@ -56,7 +56,7 @@ class Usuari extends Authenticatable
         ];
     }
 
-    public function curs()
+    public function classe()
     {
         return $this->belongsTo(Classe::class, 'id_classe');
     }

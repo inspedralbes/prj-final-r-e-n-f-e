@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { InscritsManagerService } from '../../../shared/services/inscrits/inscrits-manager.service';
 import { AssistenciesManagerService } from '../../../shared/services/assistencies/assistencies-manager.service';
+import { getSimbolAssistencia } from '../../../shared/utils/assistencia-utils';
 
 @Component({
   selector: 'app-llista-classe',
@@ -18,7 +19,7 @@ export class LlistaClasseComponent implements OnInit {
 
   diesSetmana = ['Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres'];
   datesSetmana: string[] = [];
-  datesRealsLaravel: string[] = []; 
+  datesRealsLaravel: string[] = [];
 
   ngOnInit() {
     this.inscritsManager.carregarInscrits();
@@ -33,7 +34,9 @@ export class LlistaClasseComponent implements OnInit {
       const diaMates = new Date(avui);
       diaMates.setDate(avui.getDate() + i);
 
-      const diaFormatat = diaMates.getDate().toString().padStart(2, '0') + '/' +
+      const diaFormatat =
+        diaMates.getDate().toString().padStart(2, '0') +
+        '/' +
         (diaMates.getMonth() + 1).toString().padStart(2, '0');
 
       this.datesSetmana.push(diaFormatat);
@@ -64,12 +67,11 @@ export class LlistaClasseComponent implements OnInit {
       if (inscripcio.id_assignatura === idAssignaturaActual) {
         // Si la inscripció té les dades de l'alumne (el "with" de Laravel), l'afegim
         if (inscripcio.alumne && inscripcio.alumne.nom) {
-
           // Preparem les caselles d'assistència per a la setmana actual
           const assistenciaSetmana: any = {};
 
           for (let d = 0; d < this.datesSetmana.length; d++) {
-            const dataMostrar = this.datesSetmana[d];      // Format: 18/11
+            const dataMostrar = this.datesSetmana[d]; // Format: 18/11
             const dataLaravel = this.datesRealsLaravel[d]; // Format: 2026-11-18
 
             // Por defecte el quadre estarà buit
@@ -80,21 +82,13 @@ export class LlistaClasseComponent implements OnInit {
               const asis = totesAssistencies[a];
 
               // Comprovem id_inscripcio i si la data coincideix amb YYYY-MM-DD
-              if (asis.id_inscripcio === inscripcio.id &&
-                asis.data && asis.data.substring(0, 10) === dataLaravel) {
+              if (
+                asis.id_inscripcio === inscripcio.id &&
+                asis.data &&
+                asis.data.substring(0, 10) === dataLaravel
+              ) {
+                estatCasella = getSimbolAssistencia(asis.estat, !!asis.justificat);
 
-                // Traduïm l'estat amagat de Laravel als codis visuals F, FJ, R, .
-                if (asis.estat === 'present') {
-                  estatCasella = '.';
-                } else if (asis.estat === 'retard') {
-                  estatCasella = 'R';
-                } else if (asis.estat === 'absent') {
-                  if (asis.justificat) {
-                    estatCasella = 'FJ';
-                  } else {
-                    estatCasella = 'F';
-                  }
-                }
                 break; // Un cop trobada no cal buscar més
               }
             }
@@ -106,7 +100,7 @@ export class LlistaClasseComponent implements OnInit {
             id: inscripcio.id_alumne,
             id_inscripcio_db: inscripcio.id, // Per si ho necessitem si enviem coses al post
             nom: inscripcio.alumne.nom + ' ' + inscripcio.alumne.cognom,
-            assistencia: assistenciaSetmana // Assignem l'objecte resolt
+            assistencia: assistenciaSetmana, // Assignem l'objecte resolt
           });
         }
       }
@@ -125,5 +119,4 @@ export class LlistaClasseComponent implements OnInit {
       if (seguentCol) seguentCol.focus();
     }
   }
-
 }

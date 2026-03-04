@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ApiManagerService } from '../api/api-manager.service';
 import { Assistencia } from '../../models/assistencies.model';
+import { Inscrit } from '../../models/inscrits.model';
 
 @Injectable({
   providedIn: 'root',
@@ -30,6 +31,29 @@ export class AssistenciesManagerService {
     }
   }
 
+  async carregarAssistenciaAlumne(inscrits: Inscrit[]) {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    try {
+      const assistenciesPeticio: Assistencia[] = [];
+      //Itera cada inscripcio per agafar totes les assistencies de les assignatures on l'alumne previament especificat està inscrit.
+      inscrits.map(async (registre) => {
+        const data = await this.apiManager.get<Assistencia[]>(`/assistencies, ${registre.id}`);
+        data.map((inscripcio) => {
+          assistenciesPeticio.push(inscripcio);
+        });
+      });
+      this.assistencies.set(assistenciesPeticio);
+    } catch (err) {
+      this.error.set("Hi ha hagut un problema al llegir l'assistencia de l'alumne");
+      console.error(err);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  
   /**
    * Afegeix un nou registre d'assistència (POST)
    */

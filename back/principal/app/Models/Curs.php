@@ -35,6 +35,6 @@ class Curs extends Model
 
     public function alumnes()
     {
-        return $this->hasMany(User::class, 'id_curs');
+        return $this->hasMany(Usuari::class, 'id_classe');
     }
 }

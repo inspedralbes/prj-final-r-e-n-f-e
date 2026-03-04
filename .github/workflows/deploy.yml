@@ -1,0 +1,84 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          password: ${{ secrets.SERVER_PASSWORD }}
+          port: 22
+          timeout: 600s
+          command_timeout: 30m
+          envs: DB_PASSWORD, SERVER_USERNAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+          script: |
+            set -e
+            # 1. Anar a la carpeta del projecte
+            cd /prj-final-r-e-n-f-e
+
+            # 2. Baixar els últims canvis del codi
+            echo "Baixant canvis de Git..."
+            git pull origin main
+
+            # 3. Crear .env principal
+            echo "Creant .env principal..."
+            echo "MONGO_PASSWORD=$DB_PASSWORD" > .env
+            echo "POSTGRES_PASSWORD=$DB_PASSWORD" >> .env
+            echo "PGADMIN_DEFAULT_PASSWORD=$DB_PASSWORD" >> .env
+
+            # 3. Crear .env.PROD FRONT
+            # Nota: Fem servir les variables d'entorn ($VAR) en lloc de la interpolació de GitHub
+            echo "Creant .env.PROD FRONT..."
+            cd front
+            cp .env.PROD .env
+            echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> .env
+            echo "GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET" >> .env
+            echo "GOOGLE_REDIRECT_URI=https://renfe.daw.inspedralbes.cat/auth/google/callback" >> .env
+            cd ..
+
+            # 4. Crear .env.PROD BACK Principal
+            echo "Creant .env.PROD BACK Principal..."
+            cd /prj-final-r-e-n-f-e/back/principal
+            echo "Copiant .env.PROD de Back Principal..."
+            cp .env.PROD .env
+            echo "DB_CONNECTION=pgsql" >> .env.PROD
+            echo "DB_HOST=pfg1-postgres" >> .env.PROD
+            echo "DB_PORT=5432" >> .env.PROD
+            echo "DB_DATABASE=prf-renfe" >> .env.PROD
+            echo "DB_USERNAME=postgres" >> .env.PROD
+            echo "DB_PASSWORD=$DB_PASSWORD" >> .env.PROD
+
+            # 5. Crear .env.PROD BACK Dbinsert
+            # Crear .env de BACK Dbinsert
+            echo "Creant .env BACK Dbinsert..."
+            cd /prj-final-r-e-n-f-e/back/dbinsert
+            echo "Copiant .env.PROD de Back Dbinsert..."
+            #Per Ara res més
+
+            # 6. Crear .env.PROD BACK Sensor
+            # Crear .env de BACK Sensor
+            echo "Creant .env BACK Sensor..."
+            cd /prj-final-r-e-n-f-e/back/sensor
+            echo "Copiant .env.PROD de Back Sensor..."
+            #Per Ara res més
+
+            # 7. Aixecar contenidors reconstruint la imatge
+            echo " Construint i aixecant contenidors..."
+            cd /prj-final-r-e-n-f-e
+            docker compose -f compose.PROD.yml up --build -d
+
+            echo "Desplegem finalitzat amb èxit!"

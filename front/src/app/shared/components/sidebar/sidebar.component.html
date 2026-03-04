@@ -6,8 +6,12 @@
 
     <div class="enllacos-navegacio">
       <!-- Icona Inici -->
-      <a routerLink="/professors" routerLinkActive="actiu" [routerLinkActiveOptions]="{ exact: true }"
-        class="element-navegacio">
+      <a
+        routerLink="/professors"
+        routerLinkActive="actiu"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="element-navegacio"
+      >
         <div class="caixa-icona">
           <img src="/img/menu/iconos/inici-icona.png" alt="Inici" />
         </div>
@@ -34,12 +38,15 @@
         </div>
       </a>
 
-    </div>
-
-    <div>
       <a routerLink="/llista-assignatures" class="element-navegacio">
         <div class="caixa-icona">
           <img src="/img/menu/iconos/assignatures-icona.png" alt="Assignatures" />
+        </div>
+      </a>
+
+      <a routerLink="/llista-faltes" class="element-navegacio">
+        <div class="caixa-icona">
+          <img src="/img/menu/iconos/rellotge-icona.png" alt="Faltes" />
         </div>
       </a>
     </div>
@@ -53,6 +60,4 @@
       </div>
     </a>
   </div>
-
-
 </nav>

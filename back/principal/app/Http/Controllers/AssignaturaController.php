@@ -28,8 +28,8 @@ class AssignaturaController extends Controller
     {
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
-            'codi' => 'required|string|unique:assignatures,codi',
-            'hores' => 'required|integer|min:1',
+            'interval' => 'nullable|integer',
+            'exempcio' => 'nullable|boolean',
         ]);
 
         $assignatura = Assignatura::create($validated);
@@ -78,8 +78,8 @@ class AssignaturaController extends Controller
 
         $validated = $request->validate([
             'nom' => 'sometimes|required|string|max:255',
-            'codi' => 'sometimes|required|string|unique:assignatures,codi,' . $id,
-            'hores' => 'sometimes|required|integer|min:1',
+            'interval' => 'nullable|integer',
+            'exempcio' => 'nullable|boolean',
         ]);
 
         $assignatura->update($validated);

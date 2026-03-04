@@ -1,46 +1,55 @@
-## docker compose -f compose.DEV.yml up --build
-
-## docker exec pfg1-back php artisan db:seed
+# Generar certificats
+# docker compose -f compose.PROD.yml run --rm --entrypoint prj-final-r-e-n-f-e-certbot-1 certbot certonly --webroot --webroot-path /var/www/certbot -d renfe.daw.inspedralbes.cat --email a23cliferadn@inspedralbes.cat --agree-tos --no-eff-email
 services:
-  # Frontend Angular
-  pfg1-front:
-    container_name: pfg1-front
-    image: node:24-bullseye
-    command: sh -c "cp .env.DEV .env && npm run generate-env && npm install && npm start -- --host 0.0.0.0 --poll 2000"
-    working_dir: /usr/src/app
-    volumes:
-      - ./front:/usr/src/app
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
     ports:
-      - "4200:4200"
-    # links:
-    #   - pfg1-back
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    depends_on:
+      pfg1-back:
+        condition: service_started
     networks:
       - general
+    restart: unless-stopped
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    # Loop para comprobar renovación de certificados cada 12h
+    entrypoint: "/bin/sh -c 'trap exit TERM; certbot certonly --webroot --webroot-path /var/www/certbot -d renfe.daw.inspedralbes.cat --email a23cliferadn@inspedralbes.cat --agree-tos --no-eff-email --expand 2>/dev/null || true; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   # Backend Laravel
   pfg1-back:
     container_name: pfg1-back
     build:
       context: .
-      dockerfile: ./back/principal/dev.Dockerfile
+      dockerfile: ./back/principal/prod.Dockerfile
     ports:
       - 8000:8000
-    volumes:
-      - ./back/principal:/app
+    # volumes:
+    #   - ./back/principal:/app
     depends_on:
       - pfg1-postgres
     # entrypoint: ["/bin/sh", "-c"]
-    command: sh -c "cp /app/.env.DEV /app/.env && php artisan key:generate && php artisan storage:link || true && php artisan migrate && php artisan serve --host=0.0.0.0 --port=8000"
+    command: sh -c "php artisan key:generate && php artisan storage:link || true && php artisan serve --host=0.0.0.0 --port=8000"
     networks:
       - general
 
   # Backend Sensor nodejs
   pfg1-sensor:
     container_name: pfg1-sensor
-    build:
-      dockerfile: ./back/sensor/dev.Dockerfile
-      context: .
-    command: sh -c "cp .env.DEV .env && npm install && nodemon -L index.js"
+    image: node:22-bookworm-slim
+    command: sh -c "cp .env.PROD .env && npm install && node index.js"
     volumes:
       - ./back/sensor:/usr/src/app
     ports:
@@ -54,10 +63,8 @@ services:
   # Backend DB insert nodejs
   pfg1-dbinsert:
     container_name: pfg1-dbinsert
-    build:
-      dockerfile: ./back/dbinsert/dev.Dockerfile
-      context: .
-    command: sh -c "cp .env.DEV .env && npm install && nodemon -L index.js"
+    image: node:22-bookworm-slim
+    command: sh -c "cp .env.PROD .env && npm install && node index.js"
     volumes:
       - ./back/dbinsert:/usr/src/app
     working_dir: /usr/src/app
@@ -74,13 +81,13 @@ services:
       - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes:
       - mongo-bd:/data/db
     # Comprovació que el servei de MongoDB està disponible abans de permetre que el servei de mongo-express s'iniciï.
     healthcheck:
       test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5m
+      interval: 10s
       timeout: 5s
       retries: 10
       start_period: 60s
@@ -95,8 +102,8 @@ services:
       - 8081:8081
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: root
-      ME_CONFIG_MONGODB_URL: mongodb://root:root@pfg1-mongodb:27017/?authSource=admin
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://root:${MONGO_PASSWORD}@pfg1-mongodb:27017/?authSource=admin
       ME_CONFIG_BASICAUTH: false
       ME_CONFIG_MONGODB_AUTH_DATABASE: admin
       ME_CONFIG_MONGODB_ENABLE_ADMIN: true
@@ -112,7 +119,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: prf-renfe
     volumes:
       - postgres-bd:/var/lib/postgresql/data:rw
@@ -121,6 +128,15 @@ services:
     networks:
       - general
 
+  portainer:
+    container_name: portainer
+    image: portainer/portainer-ce:lts
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    ports:
+      - 9443:9443
   pfg1-pgadmin:
     image: dpage/pgadmin4
     container_name: pfg1-pgadmin
@@ -129,7 +145,7 @@ services:
       - 8080:80
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
       - pfg1-postgres
     networks:
@@ -147,8 +163,9 @@ services:
       - general
 
 volumes:
-  postgres-bd:
   mongo-bd:
+  postgres-bd:
+  portainer_data:
   rabbitmq_data:
 
 networks:

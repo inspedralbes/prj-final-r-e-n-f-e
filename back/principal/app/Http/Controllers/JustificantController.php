@@ -22,8 +22,8 @@ class JustificantController extends Controller
     {
         $validated = $request->validate([
             'id_alum' => 'required|exists:usuaris,id',
-            'id_ass_ini' => 'required|exists:assistencies,id',
-            'id_ass_fi' => 'required|exists:assistencies,id',
+            'id_assistencia_ini' => 'required|exists:assistencies,id',
+            'id_assistencia_fi' => 'required|exists:assistencies,id',
             'comentari' => 'nullable|string',
             'document' => 'nullable|string',
             'acceptada' => 'required|boolean',
@@ -69,8 +69,8 @@ class JustificantController extends Controller
 
         $validated = $request->validate([
             'id_alum' => 'sometimes|required|exists:usuaris,id',
-            'id_ass_ini' => 'sometimes|required|exists:assistencies,id',
-            'id_ass_fi' => 'sometimes|required|exists:assistencies,id',
+            'id_assistencia_ini' => 'sometimes|required|exists:assistencies,id',
+            'id_assistencia_fi' => 'sometimes|required|exists:assistencies,id',
             'comentari' => 'nullable|string',
             'document' => 'nullable|string',
             'acceptada' => 'sometimes|required|boolean',

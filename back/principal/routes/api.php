@@ -1,57 +1,49 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\UsuariController;
-use App\Http\Controllers\ClasseController;
+
+use App\Http\Controllers\AdministracioController;
 use App\Http\Controllers\AssignaturaController;
+use App\Http\Controllers\AssistenciaController;
 use App\Http\Controllers\AulaController;
-use App\Http\Controllers\InscritController;
+use App\Http\Controllers\ClasseController;
+use App\Http\Controllers\CursController;
 use App\Http\Controllers\HorariController;
 use App\Http\Controllers\ImparteixController;
-use App\Http\Controllers\AssistenciaController;
+use App\Http\Controllers\InscritController;
 use App\Http\Controllers\JustificantController;
-use App\Http\Controllers\CursController;
-use App\Http\Controllers\AdministracioController;
 use App\Http\Controllers\PeriodeController;
+use App\Http\Controllers\UsuariController;
 
 Route::prefix('v1')->group(function (): void {
 
-    // Usuaris routes
-    Route::apiResource('usuaris', UsuariController::class);
-
-    // Classes routes
-    Route::apiResource('classes', ClasseController::class);
-    Route::post('classes/assignarAlumnes', [ClasseController::class, 'assignarAlumnes']);
-
-    // Assignatures routes
+    Route::apiResource('administracio', AdministracioController::class);
+        Route::get('/administracio/stats', [AdministracioController::class, 'getEstadistiques']);
+    
     Route::apiResource('assignatures', AssignaturaController::class);
 
-    // Aules routes
+    Route::apiResource('assistencies', AssistenciaController::class);
+        Route::get('assistencies/alumne/{alumneId}', action: [AssistenciaController::class, 'assistenciaPerAlumne']);
+        Route::get('assistencia/assignatura/{id}', [AssistenciaController::class, 'perAssignatura']);
+        Route::post('assistencies/generar', [AssistenciaController::class, 'generar']);
+   
     Route::apiResource('aules', AulaController::class);
 
-    // Inscrits routes
-    Route::apiResource('inscrits', InscritController::class);
+    Route::apiResource('classes', ClasseController::class);
+        Route::post('classes/assignarAlumnes', [ClasseController::class, 'assignarAlumnes']);
 
-    // Horaris routes
-    Route::apiResource('horaris', HorariController::class);
-
-    // Imparteix routes
-    Route::apiResource('imparteix', ImparteixController::class);
-
-    // Assistencia routes
-    Route::apiResource('assistencies', AssistenciaController::class);
-    Route::post('assistencies/generar', [AssistenciaController::class, 'generar']);
-
-    // Justificants routes
-    Route::apiResource('justificants', JustificantController::class);
-
-    // Rutes per als Cursos
     Route::apiResource('cursos', CursController::class);
 
-    // Ruta per les estadistiques admin
-    Route::get('/administracio/stats', [AdministracioController::class, 'getEstadistiques']);
+    Route::apiResource('horaris', HorariController::class);
 
-    // Ruta per als Periodes
+    Route::apiResource('imparteix', ImparteixController::class);
+
+    Route::apiResource('inscrits', InscritController::class);
+
+    Route::apiResource('justificants', JustificantController::class);
+
     Route::apiResource('periodes', PeriodeController::class);
+
+    Route::apiResource('usuaris', UsuariController::class);
 
 });

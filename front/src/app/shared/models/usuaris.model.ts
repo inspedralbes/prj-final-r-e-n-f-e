@@ -8,7 +8,7 @@ export interface Usuari {
   password?: string;
   token: string | null;
   nfc_id: string | null;
-  id_curs: number | null;
+  id_classe: number | null;
   horari_guardies: string | null;
   google_id: string | null;
   created_at: string;

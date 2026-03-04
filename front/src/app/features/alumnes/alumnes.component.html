@@ -1,4 +1,54 @@
-<div class="contenidor"><!-- Renamed from container -->
-    <h2>Portal d'Alumnes</h2>
-    <p>Benvingut a l'àrea d'alumnes.</p>
-</div>
+<main>
+  <h2 class="titol_pagina">Portal d'Alumnes</h2>
+  <div id="container_desplegable">
+    <span class="toggler" [class.obert]="showDespegable()" (click)="showAssignaturas()">
+      {{ showDespegable() ? '▲ Amagar assignatures' : '▼ Veure faltes per assignatura' }}
+    </span>
+    @if (showDespegable()) {
+      <div class="grid-assignatures">
+        @for (assignatura of inscritsPerUsuari(); track $index) {
+          <span
+            class="assignatura-item"
+            (click)="setIndex($index)"
+            [class.actiu]="indexActual() === $index"
+          >
+            {{ assignatura.nom_assignatura[0].nom }}
+          </span>
+        }
+      </div>
+    }
+
+    <div class="container_comptador">
+      <div class="comptador">
+        <span class="numero">
+          @if (indexActual() !== -1) {
+            {{ inscritsPerUsuari()[indexActual()].retards }}
+          } @else {
+            0
+          }
+        </span>
+        <div class="titol_comptador">Retards</div>
+      </div>
+      <div class="comptador">
+        <span class="numero">
+          @if (indexActual() !== -1) {
+            {{ inscritsPerUsuari()[indexActual()].faltes }}
+          } @else {
+            0
+          }
+        </span>
+        <div class="titol_comptador">Faltes</div>
+      </div>
+      <div class="comptador">
+        <span class="numero">
+          @if (indexActual() !== -1) {
+            {{ inscritsPerUsuari()[indexActual()].justificades }}
+          } @else {
+            0
+          }
+        </span>
+        <div class="titol_comptador">Justificades</div>
+      </div>
+    </div>
+  </div>
+</main>

@@ -11,10 +11,11 @@ import { AssignaturesManagerService } from '../../../shared/services/assignature
   styleUrl: './llista-assignatures.component.css',
 })
 export class LlistaAssignaturesComponent implements OnInit {
-  // Inyectamos nuestro manager
   assignaturesManager = inject(AssignaturesManagerService);
 
   novaAssignaturaNom = signal<string>('');
+  novaAssignaturaInterval = signal<number | null>(null);
+  novaAssignaturaExempcio = signal<boolean>(false);
 
   ngOnInit(): void {
     this.assignaturesManager.carregarAssignatures();
@@ -23,15 +24,28 @@ export class LlistaAssignaturesComponent implements OnInit {
 
   crearAssignatura(): void {
     const nom = this.novaAssignaturaNom();
+    const interval = this.novaAssignaturaInterval();
+    const exempcio = this.novaAssignaturaExempcio();
+    
     if (!nom) {
+      alert("El nom de l'assignatura és obligatori.");
       return;
     }
-    this.assignaturesManager.afegirAssignatura({ nom })
+    
+    const requestData: any = { nom, exempcio };
+    if (interval !== null && interval !== undefined) {
+      requestData.interval = interval;
+    }
+    
+    this.assignaturesManager.afegirAssignatura(requestData)
       .then(() => {
         this.novaAssignaturaNom.set('');
+        this.novaAssignaturaInterval.set(null);
+        this.novaAssignaturaExempcio.set(false);
       })
       .catch(err => {
         console.error('Error al crear l\'assignatura', err);
+        alert('No s\'ha pogut crear l\'assignatura.');
       });
   }
 

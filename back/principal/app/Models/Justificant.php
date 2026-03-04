@@ -13,8 +13,8 @@ class Justificant extends Model
 
     protected $fillable = [
         'id_alum',
-        'id_ass_ini',
-        'id_ass_fi',
+        'id_assistencia_ini',
+        'id_assistencia_fi',
         'comentari',
         'document',
         'acceptada',
@@ -29,13 +29,13 @@ class Justificant extends Model
         return $this->belongsTo(Usuari::class, 'id_alum');
     }
 
-    public function assignaturaInici()
+    public function assistenciaInici()
     {
-        return $this->belongsTo(Assignatura::class, 'id_ass_ini');
+        return $this->belongsTo(Assistencia::class, 'id_assistencia_ini');
     }
 
-    public function assignaturaFi()
+    public function assistenciaFi()
     {
-        return $this->belongsTo(Assignatura::class, 'id_ass_fi');
+        return $this->belongsTo(Assistencia::class, 'id_assistencia_fi');
     }
 }

@@ -31,4 +31,9 @@ class Classe extends Model
     {
         return $this->hasMany(Horari::class, 'id_classe');
     }
+
+    public function assignaturesProjecte()
+    {
+        return $this->hasMany(Assignatura::class, 'id_classe_projecte');
+    }
 }
