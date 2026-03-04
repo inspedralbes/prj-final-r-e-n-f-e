@@ -44,7 +44,11 @@ export class AdministracioComponent {
       this.titolPagina = 'Crear un Nou Període';
     } else if (url.includes('editar-periode')) {
       this.titolPagina = 'Edició de Període';
-    } 
+    } else if (url.includes('gestio-usuaris')) {
+      this.titolPagina = 'Gestió d\'Usuaris';
+    }
+
+
      else {
       this.titolPagina = 'Resum General';
     }
