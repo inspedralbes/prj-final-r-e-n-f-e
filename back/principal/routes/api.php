@@ -18,8 +18,11 @@ Route::prefix('v1')->group(function (): void {
     Route::post('auth/google/redirect', [AuthController::class, 'googleRedirectUrl']);
     Route::post('auth/google/callback', [AuthController::class, 'googleCallback']);
 
-    // Usuaris routes
-    Route::apiResource('usuaris', UsuariController::class);
+    // Rutas protegidas por Sanctum para pruebas
+    Route::middleware('auth:sanctum')->group(function () {
+        // Usuaris routes
+        Route::apiResource('usuaris', UsuariController::class);
+    });
 
     // Classes routes
     Route::apiResource('classes', ClasseController::class);
