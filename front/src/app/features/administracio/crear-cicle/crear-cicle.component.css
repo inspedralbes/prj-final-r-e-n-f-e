@@ -122,3 +122,34 @@ input:focus, select:focus {
     font-size: 0.95rem;
   }
 }
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(3px); 
+}
+
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 90vh; 
+  overflow-y: auto; 
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: saltar 0.3s ease-out; 
+}
+
+@keyframes saltar {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}

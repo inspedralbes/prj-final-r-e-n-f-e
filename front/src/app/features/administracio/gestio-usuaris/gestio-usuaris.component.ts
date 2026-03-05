@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { UsuariService } from '../services/usuari.service';
+import { UsuarisManagerService } from '../../../shared/services/usuaris/usuaris-manager.service';
 
 @Component({
   selector: 'app-gestio-usuaris',
@@ -14,37 +14,34 @@ export class GestioUsuarisComponent implements OnInit {
   usuaris: any[] = [];
   carregant: boolean = true;
 
-  constructor(private usuariService: UsuariService, private cdr: ChangeDetectorRef) {}
+  constructor(private usuariService: UsuarisManagerService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {
     this.carregarUsuaris();
   }
 
-  carregarUsuaris() {
+  async carregarUsuaris() {
     this.carregant = true;
-    this.usuariService.getUsuaris().subscribe({
-      next: (dades) => {
-        this.usuaris = dades.data || dades;
-        this.carregant = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error carregant usuaris', err);
-        this.carregant = false;
-        this.cdr.detectChanges();
-      }
-    });
+    try {
+      await this.usuariService.carregarUsuaris();
+      this.usuaris = this.usuariService.usuaris();
+    } catch (err) {
+      console.error('Error carregant usuaris', err);
+    } finally {
+      this.carregant = false;
+      this.cdr.detectChanges();
+    }
   }
 
-  esborrarUsuari(id: number) {
+  async esborrarUsuari(id: number) {
     if (confirm(`Estàs segur que vols eliminar aquest usuari?`)) {
-      this.usuariService.eliminarUsuari(id).subscribe({
-        next: () => {
-          alert('Usuari eliminat correctament');
-          this.carregarUsuaris();
-        },
-        error: (err) => alert('Error al eliminar')
-      });
+      try {
+        await this.usuariService.esborrarUsuari(id);
+        alert('Usuari eliminat correctament');
+        this.carregarUsuaris();
+      } catch (err) {
+        alert('Error al eliminar');
+      }
     }
   }
 }

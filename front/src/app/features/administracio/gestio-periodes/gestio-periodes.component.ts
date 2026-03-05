@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { PeriodeService } from '../services/periode.service';
+import { PeriodesManagerService } from '../../../shared/services/periodes/periodes-manager.service';
 
 @Component({
   selector: 'app-gestio-periodes',
@@ -16,7 +16,7 @@ export class GestioPeriodesComponent implements OnInit {
   carregant: boolean = true;
 
   constructor(
-    private periodeService: PeriodeService,
+    private periodeService: PeriodesManagerService,
     private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object
   ) {}
@@ -29,31 +29,28 @@ export class GestioPeriodesComponent implements OnInit {
     }
   }
 
-  carregarPeriodes() {
+  async carregarPeriodes() {
     this.carregant = true;
-    this.periodeService.getPeriodes().subscribe({
-      next: (dades) => {
-        this.periodes = dades;
-        this.carregant = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error carregant períodes', err);
-        this.carregant = false;
-        this.cdr.detectChanges();
-      }
-    });
+    try {
+      const dades = await this.periodeService.getPeriodes();
+      this.periodes = dades;
+    } catch (err) {
+      console.error('Error carregant períodes', err);
+    } finally {
+      this.carregant = false;
+      this.cdr.detectChanges();
+    }
   }
 
-  esborrarPeriode(id: number) {
+  async esborrarPeriode(id: number) {
     if (confirm(`Estàs segur que vols eliminar aquest període?`)) {
-      this.periodeService.eliminarPeriode(id).subscribe({
-        next: () => {
-          alert('Període eliminat correctament');
-          this.carregarPeriodes(); 
-        },
-        error: (err) => alert('Hi ha hagut un error al eliminar')
-      });
+      try {
+        await this.periodeService.eliminarPeriode(id);
+        alert('Període eliminat correctament');
+        this.carregarPeriodes();
+      } catch (err) {
+        alert('Hi ha hagut un error al eliminar');
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
   
   <div class="cabecera-gestio">
     <h2>Llistat dels Cursos creats</h2>
-    <button class="btn-crear" routerLink="/administracio/crear-cicle">Nou Cicle</button>
+    <button class="btn-crear" (click)="obrirModalCrear()">Nou Cicle</button>
   </div>
 
   <div class="missatge-caixa" *ngIf="carregant">
@@ -39,12 +39,18 @@
           <td>{{ c.id_periode || '-' }}</td>
           
           <td class="accions">
-            <button class="btn-editar" [routerLink]="['/administracio/editar-cicle', c.id]">Editar</button>
+            <button class="btn-editar" (click)="obrirModalEditar(c.id)">Editar</button>
             <button class="btn-eliminar" (click)="esborrarCurs(c.id, c.nom)">Esborrar</button>
           </td>
         </tr>
       </tbody>
   </table>
+
+  <app-crear-cicle 
+  *ngIf="mostrarModal" 
+  [idCursEditar]="idCursSeleccionat" 
+  (tancarModal)="gestionarTancamentModal($event)">
+</app-crear-cicle>
 
   <div class="missatge-caixa" *ngIf="!carregant && ciclesFiltrats.length === 0">
     <p>No s'han trobat cursos amb aquest nom.</p>

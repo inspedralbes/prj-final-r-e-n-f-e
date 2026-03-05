@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AdministracioService } from '../services/administracio.service';
+import { ApiManagerService } from '../../../shared/services/api/api-manager.service';
 
 @Component({
   selector: 'app-tauler-inicial',
@@ -16,12 +16,11 @@ export class TaulerInicialComponent implements OnInit {
     asistencia_media: 0
   };
 
-  constructor(private adminService: AdministracioService) {}
+  constructor(private apiManager: ApiManagerService) {}
 
   ngOnInit(): void {
-    this.adminService.getEstadistiques().subscribe({
-      next: (dades) => { this.estadistiques = dades; },
-      error: (err) => { console.error('Error', err); }
-    });
+    this.apiManager.get<any>('/administracio/stats')
+      .then((dades) => { this.estadistiques = dades; })
+      .catch((err) => { console.error('Error', err); });
   }
 }

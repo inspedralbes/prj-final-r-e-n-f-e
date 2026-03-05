@@ -1,60 +1,74 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, ActivatedRoute, RouterModule } from '@angular/router';
 
-import { CicleService } from '../services/cicle.service';
+import { CiclesManagerService } from '../../../shared/services/cicles/cicles-manager.service';
 
 @Component({
   selector: 'app-crear-cicle',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './crear-cicle.component.html',
   styleUrl: './crear-cicle.component.css'
 })
 export class CrearCicleComponent implements OnInit {
   
-  cicle = { nom: '', tipus: '', id_tutor: null, id_periode: null };
-  esEdicio: boolean = false;
-  idCursActual: number | null = null;
+  @Input() idCursEditar: number | null = null; 
+  
+  @Output() tancarModal = new EventEmitter<boolean>(); 
+
+  cicle = {
+    nom: '', tipus: '', id_tutor: null, id_periode: null
+  };
+
+  erroresServidor: string[] = [];
+  esEdicio: boolean = false; 
 
   constructor(
-    private cicleService: CicleService, 
-    private router: Router,
-    private route: ActivatedRoute
+    private cicleService: CiclesManagerService,
+    private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id');
-
-    if (idParam) {
+  async ngOnInit(): Promise<void> {
+    if (this.idCursEditar) {
       this.esEdicio = true;
-      this.idCursActual = Number(idParam);
-      
-      this.cicleService.getCurs(this.idCursActual).subscribe({
-        next: (dades) => this.cicle = dades,
-        error: (err) => console.error('Error al cargar los datos', err)
-      });
+      try {
+        const dades = await this.cicleService.getCurs(this.idCursEditar);
+        this.cicle = (dades.data || dades);
+        this.cdr.detectChanges();
+      } catch (err) {
+        console.error('Error al cargar', err);
+      }
     }
   }
 
-  guardarCicle() {
-    if (this.esEdicio && this.idCursActual) {
-      this.cicleService.actualitzarCurs(this.idCursActual, this.cicle).subscribe({
-        next: () => {
-          alert('Cicle actualitzat correctament!');
-          this.router.navigate(['/administracio/gestio-cicles']);
-        },
-        error: (err) => alert('Error al actualitzar')
-      });
+  async guardarCicle() {
+    this.erroresServidor = [];
+
+    try {
+      if (this.esEdicio && this.idCursEditar) {
+        await this.cicleService.actualitzarCurs(this.idCursEditar, this.cicle);
+        alert('Cicle actualitzat!');
+        this.tancarModal.emit(true);
+      } else {
+        await this.cicleService.crearCicle(this.cicle);
+        alert('Cicle creat!');
+        this.tancarModal.emit(true);
+      }
+    } catch (err) {
+      this.gestionarError(err);
+    }
+  }
+
+  cancelar() {
+    this.tancarModal.emit(false);
+  }
+
+  gestionarError(err: any) {
+    if (err.status === 422 && err.error.errors) {
+      this.erroresServidor = Object.values(err.error.errors).flat() as string[];
     } else {
-      this.cicleService.crearCicle(this.cicle).subscribe({
-        next: () => {
-          alert('Cicle creat correctament!');
-          this.router.navigate(['/administracio/gestio-cicles']);
-        },
-        error: (err) => alert('Error al crear')
-      });
+      this.erroresServidor = ['Hi ha hagut un error inesperat.'];
     }
   }
 }

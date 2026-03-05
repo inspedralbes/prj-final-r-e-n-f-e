@@ -2,12 +2,13 @@ import { Component, OnInit, ChangeDetectorRef, Inject, PLATFORM_ID } from '@angu
 import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { CicleService } from '../services/cicle.service';
+import { CiclesManagerService } from '../../../shared/services/cicles/cicles-manager.service';
+import { CrearCicleComponent } from '../crear-cicle/crear-cicle.component';
 
 @Component({
   selector: 'app-gestio-cicles',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, CrearCicleComponent],
   templateUrl: './gestio-cicles.component.html',
   styleUrls: ['./gestio-cicles.component.css']
 })
@@ -15,8 +16,9 @@ export class GestioCiclesComponent implements OnInit {
   
 cicles: any[] = [];
   carregant: boolean = true;
-  
   termeCerca: string = '';
+  mostrarModal: boolean = false;
+  idCursSeleccionat: number | null = null;
 
   get ciclesFiltrats() {
     if (!this.termeCerca) {
@@ -29,7 +31,7 @@ cicles: any[] = [];
   }
 
 constructor(
-    private cicleService: CicleService,
+  private cicleService: CiclesManagerService,
     private cdr: ChangeDetectorRef,
     @Inject(PLATFORM_ID) private platformId: Object 
   ) { }
@@ -42,34 +44,47 @@ constructor(
     }
   }
 
-  carregarCursos() {
-    this.carregant = true;
-    this.cicleService.getCursos().subscribe({
-      next: (dades) => {
-        this.cicles = dades;
-        this.carregant = false;
-        this.cdr.detectChanges();
-      },
-      error: (err) => {
-        console.error('Error al cargar cursos', err);
-        this.carregant = false;
-        this.cdr.detectChanges();
-      }
-    });
+  obrirModalCrear() {
+    this.idCursSeleccionat = null;
+    this.mostrarModal = true;
   }
 
-  esborrarCurs(id: number, nom: string) {
+  obrirModalEditar(id: number) {
+    this.idCursSeleccionat = id; 
+    this.mostrarModal = true;
+  }
+
+  gestionarTancamentModal(calActualitzar: boolean) {
+    this.mostrarModal = false;
+    if (calActualitzar) {
+      this.carregarCursos(); 
+    }
+  }
+
+
+  async carregarCursos() {
+    this.carregant = true;
+    try {
+      const dades = await this.cicleService.getCursos();
+      this.cicles = dades;
+    } catch (err) {
+      console.error('Error al cargar cursos', err);
+    } finally {
+      this.carregant = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  async esborrarCurs(id: number, nom: string) {
     if (confirm(`Estàs segur que vols eliminar el curs "${nom}"?`)) {
-      this.cicleService.eliminarCurs(id).subscribe({
-        next: () => {
-          alert('Curs eliminat correctament');
-          this.carregarCursos(); 
-        },
-        error: (err) => {
-          console.error('Error al eliminar', err);
-          alert('Hi ha hagut un error al eliminar el curs');
-        }
-      });
+      try {
+        await this.cicleService.eliminarCurs(id);
+        alert('Curs eliminat correctament');
+        this.carregarCursos();
+      } catch (err) {
+        console.error('Error al eliminar', err);
+        alert('Hi ha hagut un error al eliminar el curs');
+      }
     }
   }
 }
