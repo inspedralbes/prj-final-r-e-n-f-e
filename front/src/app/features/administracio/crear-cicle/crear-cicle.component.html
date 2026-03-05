@@ -4,8 +4,7 @@
     
     <div class="header-form" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
       <h2 style="margin: 0;">{{ esEdicio ? 'Editar Cicle Formatiu' : 'Nou Cicle Formatiu' }}</h2>
-      
-      <button class="btn-tancar" type="button" (click)="cancelar()" style="background: none; border: none; font-size: 20px; cursor: pointer;">Tornar</button>
+      <button class="btn-tancar" type="button" (click)="cancelar()" style="background: none; border: none; font-size: 20px; cursor: pointer;">❌</button>
     </div>
 
     <div class="caja-errores" *ngIf="erroresServidor.length > 0" style="background-color: #fee2e2; color: #991b1b; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
@@ -14,30 +13,39 @@
       </ul>
     </div>
 
-    <div class="form-group">
-      <label for="tipus">Tipus:</label>
-      <select id="tipus" [(ngModel)]="cicle.tipus" name="tipus" required>
-        <option value="" disabled selected>Selecciona un tipus</option>
-        <option value="GS">Grau Superior (GS)</option>
-        <option value="GM">Grau Mitjà (GM)</option>
-      </select>
-    </div>
-
-    <div class="form-row">
+    <form class="cicle-form" #cicleForm="ngForm" (ngSubmit)="guardarCicle()">
+      
       <div class="form-group">
-        <label for="id_tutor">ID Tutor (Opcional):</label>
-        <input type="number" id="id_tutor" [(ngModel)]="cicle.id_tutor" name="id_tutor" placeholder="Ex: 1">
+        <label for="nom">Nom del Cicle:</label>
+        <input type="text" id="nom" [(ngModel)]="cicle.nom" name="nom" required placeholder="Ex: Desenvolupament d'Aplicacions Web">
       </div>
 
       <div class="form-group">
-        <label for="id_periode">ID Període (Opcional):</label>
-        <input type="number" id="id_periode" [(ngModel)]="cicle.id_periode" name="id_periode" placeholder="Ex: 1">
+        <label for="tipus">Tipus:</label>
+        <select id="tipus" [(ngModel)]="cicle.tipus" name="tipus" required>
+          <option value="" disabled selected>Selecciona un tipus</option>
+          <option value="GS">Grau Superior (GS)</option>
+          <option value="GM">Grau Mitjà (GM)</option>
+        </select>
       </div>
-    </div>
 
-    <button type="submit" class="btn-submit">
-      {{ esEdicio ? 'Actualitzar Cicle' : 'Crear Cicle' }}
-    </button>
-  </form>
-  
+      <div class="form-row" style="display: flex; gap: 15px;">
+        <div class="form-group" style="flex: 1;">
+          <label for="id_tutor">ID Tutor (Opcional):</label>
+          <input type="number" id="id_tutor" [(ngModel)]="cicle.id_tutor" name="id_tutor" placeholder="Ex: 1">
+        </div>
+
+        <div class="form-group" style="flex: 1;">
+          <label for="id_periode">ID Període (Opcional):</label>
+          <input type="number" id="id_periode" [(ngModel)]="cicle.id_periode" name="id_periode" placeholder="Ex: 1">
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit" [disabled]="!cicleForm.valid" style="width: 100%; margin-top: 15px;">
+        {{ esEdicio ? 'Actualitzar Cicle' : 'Crear Cicle' }}
+      </button>
+
+    </form>
+    
+  </div>
 </div>

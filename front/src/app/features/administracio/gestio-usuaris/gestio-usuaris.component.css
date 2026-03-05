@@ -1,3 +1,101 @@
+/* 1. El fondo oscuro que tapa el resto de la página */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); /* Color negro semitransparente */
+  z-index: 1000; /* Asegura que esté por encima de todo */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  backdrop-filter: blur(3px); /* Efecto difuminado moderno (opcional) */
+}
+
+/* 2. La caja blanca del formulario */
+.modal-content {
+  background-color: white;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 650px; /* Un poco más ancho porque tienes inputs en dos columnas */
+  width: 90%;
+  max-height: 90vh; /* Si la pantalla es pequeña, no se saldrá por arriba/abajo */
+  overflow-y: auto; /* Añade una barra de scroll interna si el formulario es muy largo */
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  animation: saltar 0.3s ease-out; /* Animación chula al aparecer */
+}
+
+/* 3. La animación de aparición */
+@keyframes saltar {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* 4. Estilos básicos para que los inputs queden bien (por si no los tenías) */
+.header-form {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.btn-tancar-modal {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: #6b7280;
+}
+
+.btn-tancar-modal:hover {
+  color: #ef4444;
+}
+
+.form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #374151;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 12px;
+  background-color: #0891b2;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.btn-submit:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+}
 .gestio-container { padding: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
 
 .cabecera-gestio { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }

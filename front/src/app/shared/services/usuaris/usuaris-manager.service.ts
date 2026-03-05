@@ -20,8 +20,8 @@ export class UsuarisManagerService {
     this.error.set(null);
 
     try {
-      const data = await this.apiManager.get<Usuari[]>('/usuaris');
-      this.usuaris.set(data);
+      const data = await this.apiManager.get<any>('/usuaris');
+      this.usuaris.set(data.data || data);
     } catch (err) {
       this.error.set("No s'han pogut obtenir els usuaris");
       console.error(err);

@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -11,7 +11,9 @@ import { PeriodesManagerService } from '../../../shared/services/periodes/period
   templateUrl: './crear-periode.component.html',
   styleUrls: ['./crear-periode.component.css']
 })
-export class  CrearPeriodeComponent implements OnInit {
+export class CrearPeriodeComponent implements OnInit {
+  @Input() idPeriodeEditar: number | null = null;
+  @Output() tancarModal = new EventEmitter<boolean>();
 
   periode = {
     trimestre_1_ini: '', trimestre_1_fi: '',
@@ -19,8 +21,8 @@ export class  CrearPeriodeComponent implements OnInit {
     trimestre_3_ini: '', trimestre_3_fi: ''
   };
 
- erroresServidor: string[] = [];
-  esEdicio: boolean = false; 
+  erroresServidor: string[] = [];
+  esEdicio: boolean = false;
   idPeriodeActual: number | null = null;
 
   constructor(
@@ -29,12 +31,11 @@ export class  CrearPeriodeComponent implements OnInit {
     private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
-  
+
   async ngOnInit(): Promise<void> {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    if (idParam) {
+    if (this.idPeriodeEditar) {
       this.esEdicio = true;
-      this.idPeriodeActual = Number(idParam);
+      this.idPeriodeActual = this.idPeriodeEditar;
       try {
         const dades = await this.periodeService.getPeriode(this.idPeriodeActual);
         const formatData = (data: string) => data ? data.substring(0, 10) : '';
@@ -53,18 +54,17 @@ export class  CrearPeriodeComponent implements OnInit {
     }
   }
 
-async guardarPeriode() {
+  async guardarPeriode() {
     this.erroresServidor = [];
-
     try {
       if (this.esEdicio && this.idPeriodeActual) {
         await this.periodeService.actualitzarPeriode(this.idPeriodeActual, this.periode);
         alert('Període actualitzat correctament!');
-        this.router.navigate(['/administracio/gestio-periodes']);
+        this.tancarModal.emit(true);
       } else {
         await this.periodeService.crearPeriode(this.periode);
         alert('Període creat correctament!');
-        this.router.navigate(['/administracio/gestio-periodes']);
+        this.tancarModal.emit(true);
       }
     } catch (err) {
       this.gestionarError(err);
@@ -73,15 +73,11 @@ async guardarPeriode() {
 
   gestionarError(err: any) {
     alert('Hi ha hagut un error! Revisa les dates del formulari.');
-
-
     if (err.status === 422 && err.error.errors) {
       this.erroresServidor = Object.values(err.error.errors).flat() as string[];
     } else {
       this.erroresServidor = ['Hi ha hagut un error inesperat al servidor.'];
     }
-
-
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  
-  }}
+  }
+}

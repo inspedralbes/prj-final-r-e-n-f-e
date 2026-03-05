@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, ActivatedRoute, RouterModule } from '@angular/router';
@@ -19,25 +19,23 @@ export class CrearUsuariComponent implements OnInit {
   };
 
   erroresServidor: string[] = [];
-  esEdicio: boolean = false; 
+  @Input() idUsuariEditar: number | null = null;
+  @Output() tancarModal = new EventEmitter<boolean>();
+  esEdicio: boolean = false;
   idUsuariActual: number | null = null;
 
   constructor(
     private usuariService: UsuarisManagerService,
-    private router: Router,
-    private route: ActivatedRoute,
     private cdr: ChangeDetectorRef
   ) {}
 
   async ngOnInit(): Promise<void> {
-    const idParam = this.route.snapshot.paramMap.get('id');
-    const id = idParam ? Number(idParam) : null;
-    if (id !== null && !isNaN(id)) {
+    if (this.idUsuariEditar !== null && !isNaN(this.idUsuariEditar)) {
       this.esEdicio = true;
-      this.idUsuariActual = id;
+      this.idUsuariActual = this.idUsuariEditar;
       try {
         await this.usuariService.carregarUsuaris();
-        const usuariRecuperat = this.usuariService.usuaris().find(u => u.id === id);
+        const usuariRecuperat = this.usuariService.usuaris().find(u => u.id === this.idUsuariEditar);
         if (usuariRecuperat) {
           this.usuari = {
             nom: usuariRecuperat.nom || '',
@@ -62,12 +60,10 @@ export class CrearUsuariComponent implements OnInit {
     try {
       if (this.esEdicio && this.idUsuariActual) {
         await this.usuariService.actualitzarUsuari(this.idUsuariActual, this.usuari);
-        alert('Usuari actualitzat!');
-        this.router.navigate(['/administracio/gestio-usuaris']);
+        this.tancarModal.emit(true);
       } else {
         await this.usuariService.afegirUsuari(this.usuari);
-        alert('Usuari creat!');
-        this.router.navigate(['/administracio/gestio-usuaris']);
+        this.tancarModal.emit(true);
       }
     } catch (err) {
       this.gestionarError(err);
