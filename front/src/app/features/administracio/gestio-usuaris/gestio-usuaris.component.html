@@ -15,7 +15,6 @@
   <table class="taula-cursos" *ngIf="!carregant && usuaris.length > 0">
     <thead>
       <tr>
-        <th>ID</th>
         <th>NOM I COGNOM</th>
         <th>ROL</th>
         <th>EMAIL</th>
@@ -24,7 +23,6 @@
     </thead>
     <tbody>
       <tr *ngFor="let u of usuaris">
-        <td>{{ u.id }}</td>
         <td>{{ u.nom }} {{ u.cognom }}</td>
         <td><strong>{{ u.rol }}</strong></td>
         <td>{{ u.email }}</td>

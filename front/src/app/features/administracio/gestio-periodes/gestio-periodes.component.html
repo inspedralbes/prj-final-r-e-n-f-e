@@ -15,7 +15,6 @@
   <table class="taula-cursos" *ngIf="!carregant && periodes.length > 0">
     <thead>
       <tr>
-        <th>ID</th>
         <th style="text-align: center;">1er TRIMESTRE</th>
         <th style="text-align: center;">2on TRIMESTRE</th>
         <th style="text-align: center;">3er TRIMESTRE</th>
@@ -24,8 +23,6 @@
     </thead>
     <tbody>
       <tr *ngFor="let p of periodes">
-        <td>{{ p.id }}</td>
-        
         <td style="text-align: center;">
           {{ p.trimestre_1_ini | date:'dd/MM/yyyy' }} <br>
           <small style="color: #6b7280;">al</small> <br>
@@ -48,7 +45,6 @@
           <button class="btn-editar" (click)="obrirModalEditar(p.id)">Editar</button>
           <button class="btn-eliminar" (click)="esborrarPeriode(p.id)">Esborrar</button>
         </td>
-      <!-- Modal para crear/editar periode -->
       <div class="modal-overlay" *ngIf="mostrarModal">
         <div class="modal-content">
           <app-crear-periode

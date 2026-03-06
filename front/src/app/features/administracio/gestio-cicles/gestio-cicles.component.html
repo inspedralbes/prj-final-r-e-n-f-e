@@ -21,23 +21,15 @@
   <table class="taula-cursos" *ngIf="!carregant && ciclesFiltrats.length > 0">
       <thead>
         <tr>
-          <th>ID</th>
           <th>Nom del Cicle</th>
           <th>Tipus</th>
-          <th>ID Tutor</th>
-          <th>ID Període</th>
           <th>Accions</th>
         </tr>
       </thead>
       <tbody>
         <tr *ngFor="let c of ciclesFiltrats">
-          <td>{{ c.id }}</td>
           <td>{{ c.nom }}</td>
           <td>{{ c.tipus }}</td>
-          
-          <td>{{ c.id_tutor || '-' }}</td>
-          <td>{{ c.id_periode || '-' }}</td>
-          
           <td class="accions">
             <button class="btn-editar" (click)="obrirModalEditar(c.id)">Editar</button>
             <button class="btn-eliminar" (click)="esborrarCurs(c.id, c.nom)">Esborrar</button>

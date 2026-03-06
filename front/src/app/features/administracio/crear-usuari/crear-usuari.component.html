@@ -32,10 +32,6 @@
               <option value="Alumne">Alumne</option>
           </select>
         </div>
-        <div class="form-group">
-          <label>NFC ID (Opcional):</label>
-          <input type="text" [(ngModel)]="usuari.nfc_id" name="nfc_id">
-        </div>
       </div>
 
       <div class="form-row">
@@ -50,7 +46,7 @@
       </div>
 
       <div class="form-group">
-        <label>Contrasenya (Deixa-la buida si no vols canviar-la al editar):</label>
+        <label>Contrasenya (Min 8 caràcters):</label>
         <input type="password" [(ngModel)]="usuari.password" name="password" [required]="!esEdicio">
       </div>
 
