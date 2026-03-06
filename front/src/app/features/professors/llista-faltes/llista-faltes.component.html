@@ -1,11 +1,52 @@
-<app-sidebar></app-sidebar>
+<!-- 
+    Aquí fem servir el Control Flow modern d'Angular:
+     - @for: Es per fer la llista (el bucle), més net que l'antic ngFor.
+     - @empty: Això es ho que es mostra si la llista no té res (està buida).
+-->
+<div class="disseny-principal">
+  <app-sidebar></app-sidebar>
 
-<div class="fons-organic">
-  <div class="forma forma-1"></div>
-  <div class="forma forma-2"></div>
-  <div class="forma forma-3"></div>
-</div>
 
-<div class="contingut">
-  <div class="targeta-llista"></div>
+  <div class="contingut">
+    <div class="targeta-llista">
+      <div class="capçalera-llista">
+        <h1>Rànquing de Faltes</h1>
+        <p class="setmana-info">Alumnes amb més absències acumulades</p>
+      </div>
+
+      <!-- La taula on es veu qui ha faltat més a cada classe -->
+      <div class="contenedor-taula">
+        <table class="taula-assistencia">
+          <thead>
+            <tr>
+              <th class="col-nom">Nom de l'alumne</th>
+              <th class="col-assignatura">Assignatura</th>
+              <th class="col-faltes">Total de Faltes</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (alumne of assitenciesRanking(); track alumne.nomAlumne + alumne.nomAssignatura) {
+            <tr>
+              <td class="nom-alumne">{{ alumne.nomAlumne }}</td>
+              <td class="nom-assignatura">{{ alumne.nomAssignatura }}</td>
+              <td class="celda-assistencia">
+                <div class="badge-faltes">
+                  {{ alumne.totalFaltes }}
+                </div>
+              </td>
+            </tr>
+            }
+            <!-- Si no hi ha cap falta registrada, ensenyem aquest avís -->
+            @empty {
+            <tr>
+              <td colspan="3" style="text-align: center; padding: 20px; color: #64748b;">
+                No hi ha cap falta registrada al sistema encara.
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 </div>

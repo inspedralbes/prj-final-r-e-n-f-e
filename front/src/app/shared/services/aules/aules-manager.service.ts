@@ -20,8 +20,9 @@ export class AulesManagerService {
     this.error.set(null);
 
     try {
-      const data = await this.apiManager.get<Aula[]>('/aules');
-      this.aules.set(data);
+      const resp = await this.apiManager.get<any>('/aules');
+      const llista = resp.data || resp;
+      this.aules.set(llista);
     } catch (err) {
       this.error.set('Error carregant aules des del servidor');
       console.error(err);

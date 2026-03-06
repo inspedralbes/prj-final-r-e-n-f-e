@@ -1,7 +1,7 @@
 :host {
     display: block;
     width: 100%;
-    height: 80px;
+    height: 100px;
     position: fixed;
     top: 0;
     left: 0;
@@ -9,75 +9,94 @@
 }
 
 .barra-superior {
-    background-color: #6200EA;
-    background-image: linear-gradient(135deg, #6200EA 0%, #7C4DFF 100%);
+    position: absolute;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    min-width: 800px;
+    /* Manté la mida gran en pantalles petites */
+    max-width: 95%;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 60px;
+    background-image: url('/img/menu/menu.png');
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: none;
+    border-radius: 24px;
+}
+
+.contenedor-navegacio-centrat {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
     width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 0 40px;
-    justify-content: space-between;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-    color: white;
-}
-
-.seccio-esquerra {
-    display: flex;
-    align-items: center;
-    gap: 40px;
-}
-
-.enllacos-navegacio {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    align-items: center;
+    max-width: 1200px;
 }
 
 .element-navegacio {
-    color: white;
     text-decoration: none;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.2s ease;
-    border-radius: 12px;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.element-navegacio:active {
+    transform: scale(0.9);
 }
 
 .element-navegacio.actiu .caixa-icona {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.element-navegacio:hover .caixa-icona {
-    background-color: rgba(255, 255, 255, 0.1);
-    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.45);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.6);
 }
 
 .caixa-icona {
-    width: 50px;
-    height: 50px;
+    width: 72px;
+    /* Un pelín més grans */
+    height: 72px;
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.2s ease;
-    border-radius: 12px;
+    background: transparent;
+    /* Icona "nua" per defecte */
+    border: 1px solid transparent;
+    border-radius: 20px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.element-navegacio:hover .caixa-icona {
+    background: rgba(255, 255, 255, 0.3);
+    border-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
 }
 
 .caixa-icona img {
-    width: 28px;
-    height: 28px;
+    width: 38px;
+    /* Proporcionalment més grans */
+    height: 38px;
     object-fit: contain;
 }
 
-.seccio-perfil {
-    display: flex;
-    align-items: center;
+.caixa-icona.perfil {
+    width: 60px;
+    /* L'icona de perfil es manté igual */
+    height: 60px;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 2px;
 }
 
 .caixa-icona.perfil img {
-    width: 35px;
-    height: 35px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.5);
 }

@@ -1,51 +1,96 @@
+<!-- 
+    Aquí hi ha una mica de tot:
+     - @for i @if: Per fer bucles i condicions amb la sintaxi nova, molt més neta.
+     - ngModel: Per fer el "v-model", així ho que poses a l'input va directe al codi.
+     - (blur) i (keydown.enter): Per guardar quan surts de l'input o prems l'Enter.
+-->
 <div class="disseny-principal">
   <app-sidebar></app-sidebar>
 
-  <div class="fons-organic">
-    <div class="forma forma-1"></div>
-    <div class="forma forma-2"></div>
-    <div class="forma forma-3"></div>
-  </div>
 
   <div class="contingut">
     <div class="targeta-llista">
       <div class="capçalera-llista">
-        <h1>Llista de Classe</h1>
-        <p class="setmana-info">Asistència de la setmana</p>
+        <div class="titol-seccio">
+          <h1>Passar Llista</h1>
+          <p class="setmana-info">Registre d'assistència granular</p>
+        </div>
+
+        <!-- El selector per triar quina classe o hora vols passar llista ara mateix -->
+        <div class="selector-sessio-container">
+          <label for="sessioSelect">Sessió:</label>
+          <select id="sessioSelect" class="select-modern" (change)="canviarSessio($event)"
+            [value]="sessioSeleccionadaId()">
+            @for (sessio of sessionsProfessor(); track sessio.id) {
+            <option [value]="sessio.id">
+              {{ sessio.codi_hora }} - {{ sessio.assignatura?.nom }} ({{ sessio.aula?.nom }})
+            </option>
+            }
+            @if (sessionsProfessor().length === 0) {
+            <option value="">No tens sessions configurades</option>
+            }
+          </select>
+        </div>
       </div>
 
+      <!-- La taula amb tots els alumnes i els dies de la setmana -->
       <div class="contenedor-taula">
         <table class="taula-assistencia">
           <thead>
             <tr>
               <th class="col-nom">Alumne</th>
-              @for (dia of diesSetmana; track $index) {
+              <!-- Pintem els noms dels dies i les dates de la setmana dalt de tot -->
+              @for (dia of diesSetmana; track dia; let i = $index) {
               <th class="col-dia">
-                <span class="nom-dia">{{dia}}</span>
-                <span class="data-dia">{{datesSetmana[$index]}}</span>
+                <span class="nom-dia">{{ dia }}</span>
+                <br>
+                <span class="data-dia">{{ datesSetmana[i] }}</span>
               </th>
               }
             </tr>
           </thead>
           <tbody>
-            @for (alumne of alumnes(); track alumne.id; let i = $index) {
+            <!-- Aquí posem una fila per cada alumne que té la classe -->
+            @for (alumne of alumnesFiltrats(); track alumne.id; let filaIndex = $index) {
             <tr>
-              <td class="nom-alumne">{{alumne.nom}}</td>
-              @for (data of datesSetmana; track $index; let j = $index) {
+              <td class="nom-alumne">
+                <div class="alumne-info-cell">
+                  <!-- Un petit cercle amb les inicials de l'alumne i un color aleatori, aquí anira la imatge de perfil -->
+                  <div class="alumne-avatar" [style.background-color]="'hsl(' + (filaIndex * 45) + ', 70%, 80%)'">
+                    {{ alumne.avatar }}
+                  </div>
+                  <span class="nom-text">{{ alumne.nom }}</span>
+                </div>
+              </td>
+
+              <!-- Cada cel·la és un input on escrius la falta (F, R, etc.) -->
+              @for (diaVisible of datesSetmana; track diaVisible; let colIndex = $index) {
               <td class="celda-assistencia">
-                <input type="text" class="estat-input" [attr.data-estat]="alumne.assistencia[data]"
-                  [(ngModel)]="alumne.assistencia[data]" (keyup.enter)="moureFocus(i, j)" [id]="'input-' + i + '-' + j"
-                  maxlength="2" autocomplete="off">
+                <div class="input-container-modern">
+                  <input type="text" [id]="'input-' + filaIndex + '-' + colIndex" class="estat-input"
+                    [attr.data-estat]="alumne.assistencia[diaVisible]" [(ngModel)]="alumne.assistencia[diaVisible]"
+                    (blur)="guardarAssistencia(alumne, diaVisible, alumne.assistencia[diaVisible])"
+                    (keydown.enter)="moureFocus(filaIndex, colIndex)" maxlength="2" placeholder="." autocomplete="off">
+                </div>
               </td>
               }
+            </tr>
+            }
+            <!-- Si no hi ha ningú a la llista, posem aquest missatge -->
+            @if (alumnesFiltrats().length === 0 && sessioSeleccionadaId()) {
+            <tr>
+              <td colspan="6" class="empty-state">
+                No hi ha alumnes convocats per a aquesta sessió.
+              </td>
             </tr>
             }
           </tbody>
         </table>
       </div>
 
+      <!-- La llegenda per a que tothom sàpiga què volen dir les lletres -->
       <div class="llegenda">
-        <div class="item-llegenda"><span class="punt p-0"></span> Pendent (buit)</div>
+        <div class="item-llegenda"><span class="punt p-0"></span> Pendent</div>
         <div class="item-llegenda"><span class="punt p-1"></span> . Assistit</div>
         <div class="item-llegenda"><span class="punt p-2"></span> F Falta</div>
         <div class="item-llegenda"><span class="punt p-3"></span> FJ Justificada</div>

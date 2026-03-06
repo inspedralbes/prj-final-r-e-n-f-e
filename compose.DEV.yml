@@ -1,5 +1,7 @@
 ## docker compose -f compose.DEV.yml up --build
 
+## docker compose exec pfg1-back php artisan migrate:fresh --seed
+
 ## docker exec pfg1-back php artisan db:seed
 services:
   # Frontend Angular
@@ -68,7 +70,7 @@ services:
       - general
 
   pfg1-mongodb:
-    image: mongo:6.0
+    image: mongo:8.2
     restart: always
     ports:
       - 27017:27017
@@ -77,13 +79,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
     volumes:
       - mongo-bd:/data/db
-    # Comprovació que el servei de MongoDB està disponible abans de permetre que el servei de mongo-express s'iniciï.
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5m
-      timeout: 5s
-      retries: 10
-      start_period: 60s
     networks:
       - general
 
@@ -101,8 +96,7 @@ services:
       ME_CONFIG_MONGODB_AUTH_DATABASE: admin
       ME_CONFIG_MONGODB_ENABLE_ADMIN: true
     depends_on:
-      pfg1-mongodb:
-        condition: service_healthy
+      - pfg1-mongodb
     networks:
       - general
 

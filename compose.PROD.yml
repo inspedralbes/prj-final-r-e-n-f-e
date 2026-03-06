@@ -75,22 +75,15 @@ services:
       - general
 
   pfg1-mongodb:
-    image: mongo:6.0
+    image: mongo:8.2
     restart: always
-    ports:
-      - 27017:27017
+    # ports:
+    #   - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes:
       - mongo-bd:/data/db
-    # Comprovació que el servei de MongoDB està disponible abans de permetre que el servei de mongo-express s'iniciï.
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 60s
     networks:
       - general
 
@@ -108,8 +101,7 @@ services:
       ME_CONFIG_MONGODB_AUTH_DATABASE: admin
       ME_CONFIG_MONGODB_ENABLE_ADMIN: true
     depends_on:
-      pfg1-mongodb:
-        condition: service_healthy
+      - pfg1-mongodb
     networks:
       - general
 
@@ -123,8 +115,8 @@ services:
       POSTGRES_DB: prf-renfe
     volumes:
       - postgres-bd:/var/lib/postgresql/data:rw
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432
     networks:
       - general
 

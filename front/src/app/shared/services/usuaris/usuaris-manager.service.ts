@@ -104,4 +104,21 @@ export class UsuarisManagerService {
       throw err;
     }
   }
+
+  /**
+   * Retorna només els usuaris que són Alumnes
+   */
+  getAlumnes(): Usuari[] {
+    const tots = this.usuaris();
+    const result: Usuari[] = [];
+    if (tots && Array.isArray(tots)) {
+      for (let i = 0; i < tots.length; i++) {
+        const u = tots[i];
+        if (u.rol === 'Alumne') {
+          result.push(u);
+        }
+      }
+    }
+    return result;
+  }
 }

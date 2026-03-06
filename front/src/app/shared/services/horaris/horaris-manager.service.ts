@@ -20,8 +20,9 @@ export class HorarisManagerService {
     this.error.set(null);
 
     try {
-      const data = await this.apiManager.get<Horari[]>('/horaris');
-      this.horaris.set(data);
+      const resp = await this.apiManager.get<any>('/horaris');
+      const llista = resp.data || resp;
+      this.horaris.set(llista);
     } catch (err) {
       this.error.set("Hauria d'haver carregat l'horari, però hi ha error");
       console.error(err);
@@ -102,6 +103,33 @@ export class HorarisManagerService {
     } catch (err) {
       console.error(`Error esborrant horari ${id}:`, err);
       throw err;
+    }
+  }
+
+  /**
+   * Actualització granular (Tasca 3): Desa la franja, el profe i els alumnes
+   */
+  async actualitzarHorariGranular(dades: {
+    codi_hora: string;
+    id_classe: number;
+    id_assig: number;
+    id_aula: number;
+    id_profe: number;
+    alumnes_ids: number[];
+  }) {
+    try {
+      this.isLoading.set(true);
+      const resp = await this.apiManager.post<any>('/horaris/granular', dades);
+
+      // Recarreguem els horaris per tenir la versió més nova del servidor
+      await this.carregarHoraris();
+
+      return resp;
+    } catch (err) {
+      console.error('Error en actualització granular:', err);
+      throw err;
+    } finally {
+      this.isLoading.set(false);
     }
   }
 }

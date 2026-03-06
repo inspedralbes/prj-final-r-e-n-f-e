@@ -1,60 +1,54 @@
 <nav class="barra-superior">
-  <div class="seccio-esquerra">
-    <div class="logo">
-      <!-- Espai per logotip si cal -->
-    </div>
+  <div class="contenedor-navegacio-centrat">
+    <!-- 1. Llista d'Assignatures -->
+    <a routerLink="/llista-assignatures" routerLinkActive="actiu" class="element-navegacio">
+      <div class="caixa-icona">
+        <img src="/img/menu/iconos/assignatures-icona.png" alt="Assignatures" />
+      </div>
+    </a>
 
-    <div class="enllacos-navegacio">
-      <!-- Icona Inici -->
-      <a
-        routerLink="/professors"
-        routerLinkActive="actiu"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="element-navegacio"
-      >
-        <div class="caixa-icona">
-          <img src="/img/menu/iconos/inici-icona.png" alt="Inici" />
-        </div>
-      </a>
+    <!-- 2. Gestió Inscrits (Tutor) -->
+    @if (esTutor) {
+    <a routerLink="/gestio-inscrits" routerLinkActive="actiu" class="element-navegacio">
+      <div class="caixa-icona">
+        <img src="/img/menu/iconos/justif-icona.png" alt="Gestió Inscrits" />
+      </div>
+    </a>
+    }
 
-      <!-- Icona Llista / Alumnes -->
-      <a routerLink="/llista-classe" routerLinkActive="actiu" class="element-navegacio">
-        <div class="caixa-icona">
-          <img src="/img/menu/iconos/llista-icona.png" alt="Llista" />
-        </div>
-      </a>
+    <!-- 3. Llista Classe -->
+    <a routerLink="/llista-classe" routerLinkActive="actiu" class="element-navegacio">
+      <div class="caixa-icona">
+        <img src="/img/menu/iconos/llista-icona.png" alt="Llista" />
+      </div>
+    </a>
 
-      <!-- Icona Calendari -->
-      <a routerLink="/professors" class="element-navegacio">
-        <div class="caixa-icona">
-          <img src="/img/menu/iconos/calendari-icona.png" alt="Calendari" />
-        </div>
-      </a>
+    <!-- 4. CENTRE: Professors (Inici) -->
+    <a routerLink="/professors" routerLinkActive="actiu" [routerLinkActiveOptions]="{ exact: true }"
+      class="element-navegacio">
+      <div class="caixa-icona">
+        <img src="/img/menu/iconos/inici-icona.png" alt="Inici" />
+      </div>
+    </a>
 
-      <!-- Icona Documents / Justificants -->
-      <a routerLink="/professors" class="element-navegacio">
-        <div class="caixa-icona">
-          <img src="/img/menu/iconos/justif-icona.png" alt="Justificants" />
-        </div>
-      </a>
+    <!-- 5. Llista Faltes -->
+    <a routerLink="/llista-faltes" routerLinkActive="actiu" class="element-navegacio">
+      <div class="caixa-icona">
+        <img src="/img/menu/iconos/rellotge-icona.png" alt="Faltes" />
+      </div>
+    </a>
 
-      <a routerLink="/llista-assignatures" class="element-navegacio">
-        <div class="caixa-icona">
-          <img src="/img/menu/iconos/assignatures-icona.png" alt="Assignatures" />
-        </div>
-      </a>
+    <!-- 6. Horari Alumnes (Tutor) -->
+    @if (esTutor) {
+    <a routerLink="/horari-alumnes" routerLinkActive="actiu" class="element-navegacio">
+      <div class="caixa-icona">
+        <img src="/img/menu/iconos/calendari-icona.png" alt="Horari Alumnes" />
+      </div>
+    </a>
+    }
 
-      <a routerLink="/llista-faltes" class="element-navegacio">
-        <div class="caixa-icona">
-          <img src="/img/menu/iconos/rellotge-icona.png" alt="Faltes" />
-        </div>
-      </a>
-    </div>
-  </div>
-
-  <!-- Icona Perfil -->
-  <div class="seccio-perfil">
-    <a routerLink="/profile" class="element-navegacio">
+    <!-- 7. Icona Perfil -->
+    <a routerLink="/profile" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona perfil">
         <img src="/img/menu/iconos/usuari-icona.png" alt="Perfil" />
       </div>

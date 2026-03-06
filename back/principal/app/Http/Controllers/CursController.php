@@ -10,9 +10,11 @@ class CursController extends Controller
 
     public function index()
     {
-        $cursos = Curs::all(); 
-        
-        return response()->json($cursos);
+        return response()->json([
+            'success' => true,
+            'data' => Curs::all(),
+            'message' => 'Cursos obtinguts correctament'
+        ], Response::HTTP_OK);
     }
 
     public function store(Request $request)

@@ -36,4 +36,9 @@ class Classe extends Model
     {
         return $this->hasMany(Assignatura::class, 'id_classe_projecte');
     }
+
+    public function aula()
+    {
+        return $this->belongsTo(Aula::class, 'id_aula');
+    }
 }

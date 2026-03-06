@@ -1,0 +1,151 @@
+<!-- 
+    Aquí utilitzem:
+     - *ngIf i *ngFor: Per fer els ifs i els bucles amb la sintaxi de tota la vida.
+     - ng-container: Un contenidor invisible que no surt al DOM (F12), ideal per quan vols niar coses.
+     - ngModel: El "v-model" per als selectors i el modal.
+-->
+<div class="disseny-principal">
+    <app-sidebar></app-sidebar>
+
+
+    <div class="contingut">
+        <!-- Aquesta es la targeta gran que aguanta tot l'horari -->
+        <div class="targeta-horari-premium">
+            <div class="capçalera-moderna">
+                <h1>Horari Semanal</h1>
+                <!-- Ens ensenya el nom de la classe que estàs editant -->
+                <div class="badge-classe" *ngIf="laMevaClasse()">
+                    {{ laMevaClasse()?.nom }} • {{ laMevaClasse()?.curs?.nom }}
+                </div>
+            </div>
+
+            <!-- Aquí es on es munta la quadrícula de l'horari -->
+            <div class="grid-horari">
+                <!-- Headers de dies -->
+                <div></div>
+                <div class="dia-header">Dilluns</div>
+                <div class="dia-header">Dimarts</div>
+                <div class="dia-header">Dimecres</div>
+                <div class="dia-header">Dijous</div>
+                <div class="dia-header">Divendres</div>
+
+                <!-- Recorrem cada fila de l'horari (08:00, 09:00...) -->
+                <ng-container *ngFor="let fila of quadreHorari(); let fIdx = index">
+                    <!-- La columna de l'esquerra amb l'hora -->
+                    <div class="col-temps">{{ fila.hora }}</div>
+
+                    <!-- Per cada dia de la setmana, posem el que toca a cada cel·la -->
+                    <ng-container *ngFor="let cell of fila.sessions; let dIdx = index">
+
+                        <!-- Si no es l'esbarjo, mostrem la sessió normal -->
+                        <div *ngIf="cell !== 'ESBARJO'" class="slot-sessio" [class.buit]="!cell"
+                            (click)="obrirModalEdicio(dIdx, fila.hora)">
+
+                            <div class="icona-afegir" *ngIf="!cell">+</div>
+
+                            <!-- Si hi ha una classe ja configurada, posem el nom i el profe -->
+                            <ng-container *ngIf="cell">
+                                <div class="info-sessio">
+                                    <span class="assignatura">{{ obtenirNomAssig(cell) }}</span>
+                                    <span class="aula">{{ obtenirNomAula(cell) }}</span>
+                                </div>
+
+                                <div class="profe-footer">
+                                    <div class="avatar-mini">
+                                        {{ obtenirInicialsProfe(cell) }}
+                                    </div>
+                                    <span class="nom-profe">{{ obtenirNomProfe(cell) }}</span>
+                                </div>
+                            </ng-container>
+                        </div>
+
+                        <!-- L'esbarjo es una franja especial que creua tota la fila -->
+                        <div *ngIf="cell === 'ESBARJO' && dIdx === 0" class="slot-sessio esbarjo">
+                            ESBARJO
+                        </div>
+                    </ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+
+    <!-- Aquest es el modal (la finestra que surt per sobre) per editar una hora -->
+    <div class="modal-overlay" *ngIf="mostrarModal()">
+        <div class="modal-card">
+            <button class="btn-close" (click)="mostrarModal.set(false)">×</button>
+            <div class="modal-header">
+                <h2>Configurar Sessió</h2>
+                <p class="modal-sub">Edita els detalls de la franja {{ codiHoraSeleccionada() }}</p>
+            </div>
+
+            <div class="modal-body">
+                <!-- Formulari per triar matèria, aula i professor -->
+                <div class="input-group">
+                    <label>Assignatura</label>
+                    <select class="select-modern" [(ngModel)]="idAssignaturaSeleccionada">
+                        <option [ngValue]="null">Selecciona una matèria...</option>
+                        <option *ngFor="let assig of serveiAssignatures.assignatures()" [value]="assig.id">
+                            {{ assig.nom }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="dual-inputs">
+                    <div class="input-group">
+                        <label>Aula</label>
+                        <select class="select-modern" [(ngModel)]="idAulaSeleccionada">
+                            <option [ngValue]="null">Triar aula...</option>
+                            <option *ngFor="let aula of serveiAules.aules()" [value]="aula.id">
+                                {{ aula.nom }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Professor Encarregat</label>
+                        <select class="select-modern" [(ngModel)]="idProfeSeleccionat">
+                            <option [ngValue]="null">Triar professor...</option>
+                            <option *ngFor="let profe of professorsDisponibles()" [value]="profe.id">
+                                {{ profe.nom }} {{ profe.cognom }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Llista d'alumnes per marcar qui ha de venir a aquesta sessió -->
+                <div class="input-group section-alumnes">
+                    <div class="header-alumnes">
+                        <label>Alumnes convocats ({{ alumnesSeleccionatsIds().length }})</label>
+                        <button class="btn-text" (click)="toggleTotsAlumnes()">
+                            {{ totsSeleccionats() ? 'Desmarcar tots' : 'Marcar tots' }}
+                        </button>
+                    </div>
+                    <div class="selector-alumnes">
+                        <div class="alumne-card" *ngFor="let alumne of alumnesDelaClasse()"
+                            [class.selected]="estaSeleccionat(alumne.id)" (click)="toggleAlumne(alumne.id)">
+
+                            <div class="alumne-avatar"
+                                [style.background-color]="estaSeleccionat(alumne.id) ? 'var(--primary)' : '#e2e8f0'">
+                                {{ obtenirInicialsAlumne(alumne) }}
+                            </div>
+
+                            <div class="alumne-info">
+                                <span class="nom">{{ alumne.nom }} {{ alumne.cognom }}</span>
+                                <span class="estat">{{ estaSeleccionat(alumne.id) ? 'Convocat' : 'No convocat' }}</span>
+                            </div>
+
+                            <div class="check-indicator">
+                                <div class="check-dot" *ngIf="estaSeleccionat(alumne.id)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accions del modal: cancelar o guardar -->
+            <div class="modal-actions">
+                <button class="btn btn-secondary" (click)="mostrarModal.set(false)">Cancel·lar</button>
+                <button class="btn btn-primary" (click)="desarCanvis()">Desar Configuració</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,73 +1,105 @@
+<!-- 
+    Aquí utilitzem:
+     - *ngIf: Per mostrar l'estat de càrrega o els errors del servei.
+     - @for / @empty: Sintaxi moderna per llistar assignatures o mostrar missatge si no n'hi ha.
+     - ngModel: Per recollir les dades del formulari de creació.
+-->
 <div class="disseny-principal">
     <app-sidebar></app-sidebar>
 
-    <!-- Fons orgànic amb formes decoratives -->
-    <div class="fons-organic">
-        <div class="forma forma-1"></div>
-        <div class="forma forma-2"></div>
-        <div class="forma forma-3"></div>
-    </div>
-
     <div class="contingut">
-        <div class="encapçalament-tauler">
-            <h1 style="font-size: 2.5rem; color: var(--text-main); margin-bottom: 0.5rem;">Gestió d'Assignatures</h1>
-            <p style="color: var(--text-muted);">Crea o elimina les teves assignatures.</p>
-        </div>
-        <div class="graella-tauler" style="grid-template-columns: 1fr; max-width: 800px; margin: 0 auto;">
+        <div class="targeta-llista">
+            <div class="capçalera-llista">
+                <div>
+                    <h1>Gestió d'Assignatures</h1>
+                    <p class="subtitol">Administració de Assignatures i períodes de Projecte.</p>
+                </div>
 
-            <!-- Targeta per Crear Assignatura -->
-            <div class="targeta-classe-actual">
-                <div class="contingut-targeta">
-                    <h2>Nova Assignatura</h2>
-                    <br>
-                    <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
-                        <!-- Aquí connectem el TS i l'HTML amb ngModel -->
-                        <input type="text" [(ngModel)]="novaAssignaturaNom" placeholder="Nom de l'assignatura *"
-                            style="flex: 2; padding: 12px 20px; border-radius: 12px; border: 1px solid var(--primary-light); background: rgba(255,255,255,0.9); font-family: 'Outfit'; min-width: 200px;">
-                            
-                        <input type="number" [(ngModel)]="novaAssignaturaInterval" placeholder="Interval (opcional)"
-                            style="flex: 1; padding: 12px 20px; border-radius: 12px; border: 1px solid var(--primary-light); background: rgba(255,255,255,0.9); font-family: 'Outfit'; min-width: 120px;">
-                            
-                        <label style="display: flex; align-items: center; gap: 5px; flex: 1; min-width: 100px; padding: 12px 5px; cursor:pointer;" title="Permet Exempció?">
-                            <input type="checkbox" [(ngModel)]="novaAssignaturaExempcio"> Exempció
+                <div class="estat-carrega">
+                    <span *ngIf="isLoading" class="info-badge">Carregant dades...</span>
+                    <span *ngIf="error" style="color: var(--accent-red); font-weight: 800;">
+                        {{ error }}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Formulari de Creació - Estil Premium -->
+            <div class="formulari-creacio">
+                <span class="titol-formulari">Nova Assignatura</span>
+                <div class="grup-inputs">
+                    <!-- Nom de l'Assignatura -->
+                    <div class="input-grup">
+                        <label>Nom del Mòdul / Assignatura</label>
+                        <input type="text" [(ngModel)]="novaAssignaturaNom"
+                            placeholder="Ex: Desenvolupament d'Interfícies" class="input-modern">
+                    </div>
+
+                    <!-- Període Projecte-->
+                    <div class="input-grup">
+                        <label>Període de Projecte (Inici - Fi)</label>
+                        <div class="grup-dates">
+                            <input type="date" [(ngModel)]="novaAssignaturaDataInici" class="input-modern">
+                            <input type="date" [(ngModel)]="novaAssignaturaDataFi" class="input-modern">
+                        </div>
+                    </div>
+
+                    <!-- Opcions i Botó -->
+                    <div class="accions-formulari">
+                        <label class="checkbox-container">
+                            <input type="checkbox" [(ngModel)]="novaAssignaturaExempcio">
+                            <span>Exempció de Faltes</span>
                         </label>
 
-                        <button class="boto-accio" (click)="crearAssignatura()" style="min-width: 150px; flex: 1;">
-                            <span class="icona-fletxa">+</span> Afegir
+                        <button class="boto-afegir" (click)="crearAssignatura()">
+                            Afegir Assignatura
                         </button>
                     </div>
                 </div>
             </div>
-            <!-- Targeta de la Llista actual -->
-            <div class="contenidor-horari" style="margin-top: 30px;">
-                <div class="capçalera-horari">
-                    <h2>Les meves Assignatures</h2>
 
-                    <!-- Mostrar estat de càrrega o error si n'hi ha -->
-                    <span *ngIf="assignaturesManager.isLoading()"
-                        style="color: var(--primary-light);">Carregant...</span>
-                    <span *ngIf="assignaturesManager.error()" style="color: red;">{{ assignaturesManager.error()
-                        }}</span>
-                </div>
-                <div style="padding: 20px;">
-                    <!-- Recorrem les assignatures del Signal -->
-                    @for (assignatura of assignaturesManager.assignatures(); track assignatura.id) {
-                    <div
-                        style="display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid rgba(0,0,0,0.05);">
-                        <span style="font-size: 1.1rem; color: var(--text-main); font-weight: 500;">
-                            {{ assignatura.nom }}
-                        </span>
-                        <button (click)="eliminarAssignatura(assignatura.id!)"
-                            style="background: #ef4444; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-family: 'Outfit'; transition: 0.3s; box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.2);">
-                            Esborrar
-                        </button>
-                    </div>
-                    } @empty {
-                    <div style="padding: 30px; text-align: center; color: var(--text-muted); font-style: italic;">
-                        Encara no tens cap assignatura creada.
-                    </div>
-                    }
-                </div>
+            <!-- Llistat d'Assignatures -->
+            <div class="contenedor-taula">
+                <table class="taula-premium">
+                    <thead>
+                        <tr>
+                            <th>Identificador / Nom</th>
+                            <th>Període Projecte</th>
+                            <th>Estat Exempció</th>
+                            <th style="text-align: right;">Gestió</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @for (assignatura of assignaturesLlista(); track assignatura.id) {
+                        <tr>
+                            <td>
+                                <div class="nom-assignatura">{{ assignatura.nom }}</div>
+                            </td>
+                            <td>
+                                <span class="info-badge">
+                                    {{ formatarInterval(assignatura.interval) }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="info-badge" [class.exempcio-si]="assignatura.exempcio">
+                                    {{ assignatura.exempcio ? 'Habilitada' : 'No Habilitada' }}
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <button class="boto-esborrar" (click)="eliminarAssignatura(assignatura.id!)">
+                                    Esborrar
+                                </button>
+                            </td>
+                        </tr>
+                        } @empty {
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                No s'han trobat assignatures configurades. Utilitza el formulari superior per afegir-ne
+                                una.
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>

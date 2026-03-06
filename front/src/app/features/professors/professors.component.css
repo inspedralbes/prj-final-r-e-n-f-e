@@ -1,107 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
 :host {
-    --primary-color: #6366f1;
-    --primary-light: #818cf8;
-    --secondary-color: #a78bfa;
-    --accent-color: #f472b6;
-    --bg-color: #f8fafc;
-    --card-bg: rgba(255, 255, 255, 0.85);
-    --text-main: #1e293b;
-    --text-muted: #64748b;
-    --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
-    --shadow-hover: 0 20px 40px -10px rgba(99, 102, 241, 0.2);
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
     --radius-large: 32px;
-    --radius-medium: 20px;
-    --radius-small: 12px;
 }
 
 .disseny-principal {
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-color);
-    height: 100vh;
+    min-height: 100vh;
     font-family: 'Outfit', sans-serif;
     position: relative;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
-/* Fons Orgànic */
-.fons-organic {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.forma {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.6;
-    animation: flotar 20s infinite ease-in-out;
-}
-
-.forma-1 {
-    top: -10%;
-    right: -5%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, var(--primary-light), transparent 70%);
-    animation-delay: 0s;
-}
-
-.forma-2 {
-    bottom: -10%;
-    left: -5%;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, var(--secondary-color), transparent 70%);
-    animation-delay: -5s;
-}
-
-.forma-3 {
-    top: 40%;
-    left: 30%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, var(--accent-color), transparent 70%);
-    opacity: 0.4;
-    animation-delay: -10s;
-}
-
-@keyframes flotar {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    33% {
-        transform: translate(30px, -50px) scale(1.1);
-    }
-
-    66% {
-        transform: translate(-20px, 20px) scale(0.9);
-    }
-}
 
 .contingut {
     flex-grow: 1;
-    margin-top: 80px;
-    /* Alçada navbar */
+    margin-top: 180px;
     padding: 20px 40px;
     display: flex;
     flex-direction: column;
-    overflow-y: auto;
     z-index: 1;
-    /* Sobre el fons */
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-light) transparent;
 }
 
 .graella-tauler {
@@ -111,27 +31,23 @@
     max-width: 1400px;
     margin: 0 auto;
     width: 100%;
-    height: 100%;
 }
 
-/* Targeta Classe Actual */
 .targeta-classe-actual {
-    background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+    margin-top: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
     border-radius: var(--radius-large);
     padding: 40px;
-    color: white;
+    color: #1e1b4b;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 20px 50px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 15px 45px rgba(0, 0, 0, 0.05);
     min-height: 200px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: transform 0.3s ease;
-}
-
-.targeta-classe-actual:hover {
-    transform: translateY(-5px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
 }
 
 .contingut-targeta {
@@ -143,234 +59,154 @@
     max-width: 60%;
 }
 
-.cercle-decoratiu {
-    position: absolute;
-    right: -50px;
-    top: -50px;
-    width: 300px;
-    height: 300px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    filter: blur(2px);
-}
-
 .insignia-estat {
-    background-color: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
+    background-color: #dcfce7;
     display: inline-flex;
     align-items: center;
     gap: 10px;
     padding: 8px 16px;
     border-radius: 50px;
     font-size: 0.9rem;
-    font-weight: 600;
-    width: fit-content;
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-weight: 800;
+    color: #166534;
+    border: 1px solid #bbf7d0;
 }
 
 .punt {
     width: 10px;
     height: 10px;
-    background-color: #4ade80;
-    /* Green 400 */
+    background-color: #22c55e;
     border-radius: 50%;
-    box-shadow: 0 0 10px #4ade80;
-    animation: pols 2s infinite;
-}
-
-@keyframes pols {
-    0% {
-        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
-    }
-
-    70% {
-        box-shadow: 0 0 0 10px rgba(74, 222, 128, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
-    }
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
 }
 
 .targeta-classe-actual h1 {
     font-size: 2.8rem;
-    font-weight: 700;
+    font-weight: 800;
     margin: 0;
     line-height: 1.1;
-    letter-spacing: -0.03em;
+    color: #1e1b4b;
 }
 
 .boto-accio {
-    background-color: white;
-    color: var(--primary-color);
+    background: #6366f1;
+    color: white;
     border: none;
     padding: 16px 32px;
     border-radius: 50px;
-    font-weight: 700;
+    font-weight: 800;
     font-size: 1.1rem;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     gap: 12px;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    width: fit-content;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
 }
 
 .boto-accio:hover {
-    transform: scale(1.05);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    transform: scale(1.05) translateY(-3px);
+    background: #4f46e5;
+    box-shadow: 0 15px 30px rgba(99, 102, 241, 0.3);
 }
 
-.icona-fletxa {
-    transition: transform 0.3s ease;
-}
-
-.boto-accio:hover .icona-fletxa {
-    transform: translateX(5px);
-}
-
-/* Horari Container */
+/* Horari Container  */
 .contenidor-horari {
-    background-color: var(--card-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: var(--radius-large);
-    padding: 30px;
-    box-shadow: var(--shadow-soft);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    flex-grow: 1;
+    background: rgba(255, 255, 255, 0.45);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 40px;
+    padding: 40px;
+    padding-bottom: 40px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    height: 60vh;
-    /* Alçada fixa aproximada */
-}
-
-.capçalera-horari {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 25px;
-    padding: 0 10px;
 }
 
 .capçalera-horari h2 {
-    font-size: 1.5rem;
-    color: var(--text-main);
-    font-weight: 700;
+    font-size: 1.8rem;
+    color: #1e1b4b;
+    font-weight: 800;
     margin: 0;
 }
 
 .graella-horari {
     display: grid;
     grid-template-columns: 80px repeat(5, 1fr);
-    grid-template-rows: auto repeat(10, 1fr);
-    /* Ajustat per files */
+    grid-auto-rows: min-content;
     gap: 12px;
-    height: 100%;
-    overflow-y: auto;
-    padding-right: 5px;
+    padding-top: 20px;
 }
 
-.graella-horari::-webkit-scrollbar {
-    width: 6px;
-}
-
-.graella-horari::-webkit-scrollbar-thumb {
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-}
-
-/* Cel·les */
 .cel-la-capçalera {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-weight: 900;
+    color: var(--primary-color, #6366f1);
     text-align: center;
-    padding-bottom: 10px;
+    padding-bottom: 20px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.cel-la-capçalera.buida {
-    /* Espai buit cantonada sup esq */
-    visibility: hidden;
-    /* Ensure it doesn't block anything if it has size */
+    letter-spacing: 0.15em;
 }
 
 .cel-la-hora {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    color: var(--text-muted);
-    font-size: 0.9rem;
+    font-weight: 800;
+    color: #64748b;
+    font-size: 0.85rem;
 }
 
 .cel-la-assignatura {
-    background-color: white;
-    border-radius: var(--radius-medium);
-    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-align: center;
-    font-weight: 500;
-    color: var(--text-main);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-    border: 1px solid rgba(241, 245, 249, 1);
-    transition: all 0.2s ease;
+    font-weight: 800;
+    color: #1e293b;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     min-height: 60px;
-    cursor: default;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
 }
 
 .cel-la-assignatura:hover:not(.esbarjo) {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: var(--shadow-hover);
-    border-color: var(--primary-light);
-    color: var(--primary-color);
+    transform: translateY(-3px) scale(1.03);
+    background-color: white;
+    border-color: #6366f1;
+    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.1);
 }
 
 .cel-la-assignatura.esbarjo {
-    background-color: transparent;
-    color: var(--text-muted);
-    border: 1px dashed rgba(0, 0, 0, 0.1);
-    box-shadow: none;
+    background-color: rgba(255, 255, 255, 0.4);
+    color: #94a3b8;
+    border: 2px dashed rgba(0, 0, 0, 0.15);
     font-style: italic;
-    opacity: 0.7;
+    box-shadow: none;
 }
 
-/* Controls */
 .insignia-hora {
     background: white;
-    color: var(--primary-color);
-    padding: 8px 16px;
+    color: #6366f1;
+    padding: 8px 18px;
     border-radius: 50px;
     font-size: 0.9rem;
-    font-weight: 600;
+    font-weight: 800;
     border: 1px solid rgba(99, 102, 241, 0.2);
     display: flex;
     align-items: center;
     gap: 8px;
-    transition: all 0.2s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .insignia-hora:hover {
-    background: var(--primary-color);
+    background: #6366f1;
     color: white;
     transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(99, 102, 241, 0.3);
-}
-
-.icona-commutador {
-    font-size: 1.1em;
-}
-
-@media (max-width: 1024px) {
-    .graella-horari {
-        grid-template-columns: 60px repeat(5, 1fr);
-        font-size: 0.9em;
-    }
+    box-shadow: 0 8px 15px rgba(99, 102, 241, 0.2);
 }

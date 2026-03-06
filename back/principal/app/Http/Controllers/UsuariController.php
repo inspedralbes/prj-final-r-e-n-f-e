@@ -10,23 +10,23 @@ use Illuminate\Http\Response;
 class UsuariController extends Controller
 {
     /**
-     * Display a listing of all users.
+     * Llista de tots els usuaris.
      */
     public function index()
     {
         return response()->json([
             'success' => true,
             'data' => Usuari::all(),
-            'message' => 'Usuaris obtenits correctament'
+            'message' => 'Usuaris obtinguts correctament'
         ], Response::HTTP_OK);
     }
 
     /**
-     * Store a newly created user.
+     * Desa un nou usuari.
      */
-    public function store(Request $request)
+    public function store(Request $peticio)
     {
-        $validated = $request->validate([
+        $dadesValidades = $peticio->validate([
             'nom' => 'required|string|max:255',
             'cognom' => 'required|string|max:255',
             'email' => 'required|email|unique:usuaris,email',
@@ -36,9 +36,9 @@ class UsuariController extends Controller
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id',
         ]);
 
-        $validated['password'] = bcrypt($validated['password']);
+        $dadesValidades['password'] = bcrypt($dadesValidades['password']);
 
-        $usuari = Usuari::create($validated);
+        $usuari = Usuari::create($dadesValidades);
 
         return response()->json([
             'success' => true,
@@ -48,7 +48,7 @@ class UsuariController extends Controller
     }
 
     /**
-     * Display the specified user.
+     * Mostra un usuari específic.
      */
     public function show($id)
     {
@@ -69,9 +69,9 @@ class UsuariController extends Controller
     }
 
     /**
-     * Update the specified user.
+     * Actualitza un usuari específic.
      */
-    public function update(Request $request, $id)
+    public function update(Request $peticio, $id)
     {
         $usuari = Usuari::find($id);
 
@@ -82,7 +82,7 @@ class UsuariController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $validated = $request->validate([
+        $dadesValidades = $peticio->validate([
             'nom' => 'sometimes|required|string|max:255',
             'cognom' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:usuaris,email,' . $id,
@@ -92,11 +92,11 @@ class UsuariController extends Controller
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id,' . $id,
         ]);
 
-        if (isset($validated['password'])) {
-            $validated['password'] = bcrypt($validated['password']);
+        if (isset($dadesValidades['password'])) {
+            $dadesValidades['password'] = bcrypt($dadesValidades['password']);
         }
 
-        $usuari->update($validated);
+        $usuari->update($dadesValidades);
 
         return response()->json([
             'success' => true,
@@ -106,7 +106,7 @@ class UsuariController extends Controller
     }
 
     /**
-     * Remove the specified user.
+     * Elimina un usuari.
      */
     public function destroy($id)
     {

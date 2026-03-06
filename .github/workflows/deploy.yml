@@ -45,9 +45,6 @@ jobs:
             echo "Creant .env.PROD FRONT..."
             cd front
             cp .env.PROD .env
-            echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> .env
-            echo "GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET" >> .env
-            echo "GOOGLE_REDIRECT_URI=https://renfe.daw.inspedralbes.cat/auth/google/callback" >> .env
             cd ..
 
             # 4. Crear .env.PROD BACK Principal
@@ -55,12 +52,15 @@ jobs:
             cd /prj-final-r-e-n-f-e/back/principal
             echo "Copiant .env.PROD de Back Principal..."
             cp .env.PROD .env
-            echo "DB_CONNECTION=pgsql" >> .env.PROD
-            echo "DB_HOST=pfg1-postgres" >> .env.PROD
-            echo "DB_PORT=5432" >> .env.PROD
-            echo "DB_DATABASE=prf-renfe" >> .env.PROD
-            echo "DB_USERNAME=postgres" >> .env.PROD
-            echo "DB_PASSWORD=$DB_PASSWORD" >> .env.PROD
+            echo "DB_CONNECTION=pgsql" >> .env
+            echo "DB_HOST=pfg1-postgres" >> .env
+            echo "DB_PORT=5432" >> .env
+            echo "DB_DATABASE=prf-renfe" >> .env
+            echo "DB_USERNAME=postgres" >> .env
+            echo "DB_PASSWORD=$DB_PASSWORD" >> .env
+            echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> .env
+            echo "GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET" >> .env
+            echo "GOOGLE_REDIRECT_URI=https://renfe.daw.inspedralbes.cat/auth/google/callback" >> .env
 
             # 5. Crear .env.PROD BACK Dbinsert
             # Crear .env de BACK Dbinsert

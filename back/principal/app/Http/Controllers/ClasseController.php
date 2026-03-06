@@ -116,20 +116,31 @@ class ClasseController extends Controller
     }
 
     /**
+     * Obte la classe on l'usuari es tutor.
+     */
+    public function obtenirClasseTutor($idTutor)
+    {
+        $classe = Classe::with(['curs', 'aula'])->where('id_tutor', $idTutor)->first();
+
+        if (!$classe) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Aquest usuari no és tutor de cap classe.'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $classe,
+            'message' => 'Classe del tutor obtinguda correctament.'
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Assigna alumnes a una classe i els inscriu a totes les assignatures d'aquesta classe.
-     *
-     * BODY:
-     *   {
-     *      "classe_id": 1,
-     *      "emails": [
-     *          "mlopez.pruebas@inspedralbes.cat",
-     *          "ngarcia.pruebas@inspedralbes.cat"
-     *      ]
-     *    }
      */
     public function assignarAlumnes(Request $peticio)
     {
-
         $dadesValidades = $peticio->validate([
             'classe_id' => 'required|exists:classes,id',
             'emails' => 'required|array|min:1',
@@ -175,7 +186,6 @@ class ClasseController extends Controller
         $errors = [];
 
         foreach ($alumnes as $alumne) {
-
             // Assignar l'alumne a la classe (actualitzar id_classe)
             if ($alumne->id_classe !== $classe->id) {
                 $alumne->update(['id_classe' => $classe->id]);
@@ -184,7 +194,6 @@ class ClasseController extends Controller
 
             // Inscriure l'alumne a totes les assignatures de la classe
             foreach ($idsAssignatures as $idAssignatura) {
-
                 // Comprovar si ja està inscrit a l'assignatura
                 $jaExisteix = Inscrit::where('id_alumne', $alumne->id)
                     ->where('id_assignatura', $idAssignatura)

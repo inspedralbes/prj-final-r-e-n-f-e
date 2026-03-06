@@ -10,4 +10,5 @@ import { SidebarService } from '../../services/sidebar.service';
 })
 export class SidebarComponent {
   public sidebarService = inject(SidebarService);
+  public esTutor = true;
 }
