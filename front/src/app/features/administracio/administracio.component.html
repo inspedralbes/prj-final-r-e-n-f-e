@@ -1,13 +1,29 @@
 <div class="layout-principal">
-  
   <aside class="menu-lateral">
     <h2>R.E.N.F.E</h2>
     <ul class="lista-menu">
       <li><a routerLink="/administracio/tauler" routerLinkActive="activo">Tauler Inicial</a></li>
-      <li><a routerLink="/administracio/gestio-usuaris" routerLinkActive="activo">Gestió de Usuaris</a></li>
-      <li><a routerLink="/administracio/gestio-cicles" [class.activo]="menuCiclesActiu">Gestió de Cicles</a></li>
-      <li><a routerLink="/administracio/gestio-periodes" [class.activo]="menuPeriodesActiu">Gestió de Períodes</a></li>
+      <li>
+        <a routerLink="/administracio/gestio-usuaris" routerLinkActive="activo"
+          >Gestió de Usuaris</a
+        >
+      </li>
+      <li>
+        <a routerLink="/administracio/gestio-cicles" [class.activo]="menuCiclesActiu"
+          >Gestió de Cicles</a
+        >
+      </li>
+      <li>
+        <a routerLink="/administracio/gestio-periodes" [class.activo]="menuPeriodesActiu"
+          >Gestió de Períodes</a
+        >
+      </li>
       <li><a routerLink="/administracio/parametres" routerLinkActive="activo">Parametres</a></li>
+      <li>
+        <a routerLink="/administracio/gestio-assignatures" routerLinkActive="activo"
+          >Assignatures</a
+        >
+      </li>
     </ul>
   </aside>
 
@@ -15,8 +31,7 @@
     <div class="cabecera">
       <h1>{{ titolPagina }}</h1>
     </div>
-    
-    <router-outlet></router-outlet>
 
+    <router-outlet></router-outlet>
   </main>
 </div>

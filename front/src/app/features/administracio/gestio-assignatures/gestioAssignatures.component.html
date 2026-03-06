@@ -1,0 +1,55 @@
+<div class="gestio-container">
+  <div class="gestio-capcelera">
+    <h2>Gestió d'assignatures</h2>
+  </div>
+
+  <!-- Modal de crear-->
+  <button class="gestio-crear" (click)="obrirModalCrear()">Crear assignatura</button>
+
+  @if (!carregant) {
+    @if (assignatures.length > 0) {
+      <table class="taula-cursos">
+        <thead>
+          <tr>
+            <th>NOM</th>
+            <th>CLASSE PROJECTE</th>
+            <th colspan="2">INTERVAL</th>
+            <th>EXEMPTE</th>
+            <th>ACCIONS</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (assignatura of assignatures; track assignatura.id) {
+            <tr>
+              <td class="nom-assignatura">{{ assignatura.nom }}</td>
+              @if (assignatura.classe_projecte !== null) {
+                <td class="info-badge-cell">Aquesta assignatura no és projecte</td>
+              } @else {
+                <td class="info-badge-cell">{{ assignatura.classe_projecte }}</td>
+              }
+              <td class="info-badge-cell">{{ assignatura.interval.data_ini }}</td>
+              <td class="info-badge-cell">{{ assignatura.interval.data_fi }}</td>
+              @if (assignatura.exempcio) {
+                <td class="info-badge-cell exempcio-si">Exempte</td>
+              } @else {
+                <td class="info-badge-cell">No exempte</td>
+              }
+              <td class="accions">
+                <button class="btn-editar" (click)="obrirModalCrear(assignatura.id)">Editar</button>
+                <button class="btn-eliminar" (click)="esborrarUsuari(assignatura.id)">
+                  Esborrar
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <div class="missatge-caixa">
+        <p>Encara no hi ha cap assignatura creada.</p>
+      </div>
+    }
+  } @else {
+    <p>Carregant assignatures...</p>
+  }
+</div>

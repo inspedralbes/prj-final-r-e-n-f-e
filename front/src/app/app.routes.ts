@@ -13,6 +13,7 @@ import { CrearPeriodeComponent } from './features/administracio/crear-periode/cr
 import { GestioPeriodesComponent } from './features/administracio/gestio-periodes/gestio-periodes.component';
 import { GestioUsuarisComponent } from './features/administracio/gestio-usuaris/gestio-usuaris.component';
 import { CrearUsuariComponent } from './features/administracio/crear-usuari/crear-usuari.component';
+import { GestioAssignatures } from './features/administracio/gestio-assignatures/gestioAssignatures.component';
 import { LlistaFaltesComponent } from './features/professors/llista-faltes/llista-faltes.component';
 import { GestioInscritsComponent } from './features/professors/gestio-classe/gestio-inscrits.component';
 import { HorariAlumnesComponent } from './features/professors/horari-alumnes/horari-alumnes.component';
@@ -40,6 +41,7 @@ export const routes: Routes = [
       { path: 'gestio-usuaris', component: GestioUsuarisComponent },
       { path: 'crear-usuari', component: CrearUsuariComponent },
       { path: 'editar-usuari/:id', component: CrearUsuariComponent },
+      { path: 'gestio-assignatures', component: GestioAssignatures },
     ],
   },
 
