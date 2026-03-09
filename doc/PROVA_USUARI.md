@@ -11,7 +11,6 @@
 ## URL del document del git amb el resultat de les proves d'usuari:
 ## Còpia del document del git amb el resultat de les proves:
 ### Perfil de cadascun del tester:
-- Nom: Valeria
 - Edat: 27
 - Ocupació: Estudiant de DAW
 - Experiència amb aplicacions similars: Sí, ha utilitzat aplicacions de gestió d'assistència en el passat.
