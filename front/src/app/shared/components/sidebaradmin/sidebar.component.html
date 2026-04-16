@@ -1,0 +1,57 @@
+<nav class="barra-superior">
+  <div class="seccio-esquerra">
+    <div class="logo">
+      <!-- Espai per logotip si cal -->
+    </div>
+
+    <div class="enllacos-navegacio">
+      <!-- Icona Inici -->
+      <a
+        routerLink="/administracio"
+        routerLinkActive="actiu"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="element-navegacio"
+      >
+        <div class="caixa-icona">
+          <img src="/img/menu/iconos/inici-icona.png" alt="Inici" />
+        </div>
+      </a>
+
+      <!-- Llista Assignature -->
+      <a routerLink="/admin-assignatures " routerLinkActive="actiu" class="element-navegacio">
+        <div class="caixa-icona">
+          <img src="/img/menu/iconos/llista-icona.png" alt="Llista" />
+        </div>
+      </a>
+
+      <!-- Llista Usuaris -->
+      <a routerLink="/admin-usuaris" class="element-navegacio">
+        <div class="caixa-icona">
+          <img src="/img/menu/iconos/calendari-icona.png" alt="Calendari" />
+        </div>
+      </a>
+
+      <!-- Llista Classes -->
+      <a routerLink="/admin-classes" class="element-navegacio">
+        <div class="caixa-icona">
+          <img src="/img/menu/iconos/justif-icona.png" alt="Justificants" />
+        </div>
+      </a>
+
+      <a routerLink="/admin-tarjetas" class="element-navegacio">
+        <div class="caixa-icona">
+          <img src="/img/menu/iconos/assignatures-icona.png" alt="Assignatures" />
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Icona Perfil -->
+  <div class="seccio-perfil">
+    <a routerLink="/profile" class="element-navegacio">
+      <div class="caixa-icona perfil">
+        <img src="/img/menu/iconos/usuari-icona.png" alt="Perfil" />
+      </div>
+    </a>
+  </div>
+</nav>

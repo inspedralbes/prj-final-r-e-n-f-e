@@ -1,4 +1,4 @@
-## docker compose -f compose.DEV.yml up --build
+## docker compose -f compose.DEV.yml up --buildl
 
 ## docker exec pfg1-back php artisan db:seed
 services:
