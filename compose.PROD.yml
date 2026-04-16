@@ -45,6 +45,21 @@ services:
       - general
 
   # Backend Sensor nodejs
+  pfg1-back-node:
+    container_name: pfg1-back-node
+    image: node:22-bookworm-slim
+    command: sh -c "cp .env.PROD .env && npm install && node index.js"
+    volumes:
+      - ./back/principal-node:/usr/src/app
+    ports:
+      - "3000:3000"
+    working_dir: /usr/src/app
+    depends_on:
+      - pfg1-back
+    networks:
+      - general
+
+  # Backend Sensor nodejs
   pfg1-sensor:
     container_name: pfg1-sensor
     image: node:22-bookworm-slim
@@ -52,7 +67,7 @@ services:
     volumes:
       - ./back/sensor:/usr/src/app
     ports:
-      - "3000:3000"
+      - "3001:3001"
     working_dir: /usr/src/app
     depends_on:
       - pfg1-rabbitmq
