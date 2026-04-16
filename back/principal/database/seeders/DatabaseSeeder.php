@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
                 // Tablas que dependen de las anteriores
             CursSeeder::class,       // depende de: usuaris, periodes
             ClassesSeeder::class,    // depende de: cursos, usuaris
+            AssignarClassesUsuarisSeeder::class, // asigna clases a alumnos cuando classes ya existe
             AssignaturesSeeder::class,  // depende de: classes
             HorarisSeeder::class,    // depende de: assignatures, classes, aules
         ]);

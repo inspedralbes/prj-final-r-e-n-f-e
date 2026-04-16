@@ -50,7 +50,7 @@ class UsuarisSeeder extends Seeder
                 'password' => null,
                 'token' => null,
                 'nfc_id' => null,
-                'id_classe' => 1, // 1SMIXA1
+                'id_classe' => null,
                 'horari_guardies' => null
             ],
             [
@@ -63,7 +63,7 @@ class UsuarisSeeder extends Seeder
                 'password' => null,
                 'token' => null,
                 'nfc_id' => null,
-                'id_classe' => 1, // 1SMIXA1
+                'id_classe' => null,
                 'horari_guardies' => null
             ]
         ]);
