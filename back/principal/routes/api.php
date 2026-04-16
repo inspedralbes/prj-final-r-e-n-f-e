@@ -27,8 +27,9 @@ Route::prefix('v1')->group(function (): void {
 
     // Rutes de Classes
     Route::get('classes/tutor/{idTutor}', [ClasseController::class, 'obtenirClasseTutor']);
-    Route::apiResource('classes', ClasseController::class);
     Route::post('classes/assignarAlumnes', [ClasseController::class, 'assignarAlumnes']);
+    Route::post('classes/treureAlumne', [ClasseController::class, 'treureAlumne']);
+    Route::apiResource('classes', ClasseController::class);
 
     // Rutes d'Assignatures
     Route::apiResource('assignatures', AssignaturaController::class);

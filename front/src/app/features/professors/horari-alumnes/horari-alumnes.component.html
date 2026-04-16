@@ -29,15 +29,17 @@
         <div class="dia-header">Divendres</div>
 
         <!-- Recorrem cada fila de l'horari (08:00, 09:00...) -->
-        <ng-container *ngFor="let fila of quadreHorari(); let fIdx = index">
+        <ng-container *ngFor="let fila of quadreHorari(); trackBy: trackByHora; let fIdx = index">
           <!-- La columna de l'esquerra amb l'hora -->
           <div class="col-temps">{{ fila.hora }}</div>
 
-          <!-- Per cada dia de la setmana, posem el que toca a cada cel·la -->
-          <ng-container *ngFor="let cell of fila.sessions; let dIdx = index">
-            <!-- Si no es l'esbarjo, mostrem la sessió normal -->
+          <!-- Franja d'esbarjo: un sol bloc que creua tots els dies -->
+          <div *ngIf="fila.esEsbarjo" class="slot-sessio esbarjo">ESBARJO</div>
+
+          <!-- Files normals: sempre 5 cel·les (plenes o buides en blanc) -->
+          <ng-container *ngIf="!fila.esEsbarjo">
             <div
-              *ngIf="cell !== 'ESBARJO'"
+              *ngFor="let cell of fila.sessions; trackBy: trackByDiaIndex; let dIdx = index"
               class="slot-sessio"
               [class.buit]="!cell"
               (click)="obrirModalEdicio(dIdx, fila.hora)"
@@ -59,9 +61,6 @@
                 </div>
               </ng-container>
             </div>
-
-            <!-- L'esbarjo es una franja especial que creua tota la fila -->
-            <div *ngIf="cell === 'ESBARJO' && dIdx === 0" class="slot-sessio esbarjo">ESBARJO</div>
           </ng-container>
         </ng-container>
       </div>

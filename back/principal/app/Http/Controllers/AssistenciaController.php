@@ -222,36 +222,40 @@ class AssistenciaController extends Controller
     public function assistenciaPerAlumne($alumneId){
         $resultat = [];
 
-        //Get inscripcions * alumne
+        // Get all inscripcions for the student, grouped by assignatura
         $inscripcions = DB::table('inscrits')
             ->where('id_alumne', $alumneId)
             ->select('id', 'id_assignatura')
             ->get();
-        
+
+        // Group inscription IDs by id_assignatura
+        $perAssignatura = [];
+        foreach ($inscripcions as $inscripcio) {
+            $perAssignatura[$inscripcio->id_assignatura][] = $inscripcio->id;
+        }
+
         $retard_total = 0;
         $faltes_total = 0;
         $justificades_total = 0;
-        
-        //Get dades
-        foreach ($inscripcions as $inscripcio) {
+
+        foreach ($perAssignatura as $idAssignatura => $inscripcioIds) {
             $retard = 0;
             $faltes = 0;
             $justificades = 0;
 
-            //Get nom assignatura
+            // Get subject name
             $nomAssignatura = DB::table('assignatures')
-                ->where('id', $inscripcio->id_assignatura)
+                ->where('id', $idAssignatura)
                 ->select('nom')
                 ->get();
-            
-            //Get id i estat
-            $assistenciesValue = DB::table('assistencies')
-                ->where('id_inscripcio', $inscripcio->id)
-                ->select('id','estat')
-                ->get();
-            
 
-            foreach($assistenciesValue as $valor) {    
+            // Get all assistencies for all inscripcions of this subject
+            $assistenciesValue = DB::table('assistencies')
+                ->whereIn('id_inscripcio', $inscripcioIds)
+                ->select('id', 'estat')
+                ->get();
+
+            foreach ($assistenciesValue as $valor) {
                 switch ($valor->estat) {
                     case 'Retart':
                         $retard++;
@@ -259,36 +263,36 @@ class AssistenciaController extends Controller
                         break;
                     case 'Falta':
                         $findJustificacio = DB::table('justificants')
-                        ->where('id_assistencia_ini', $valor->id )
-                        ->select('acceptada')
-                        ->get();
+                            ->where('id_assistencia_ini', $valor->id)
+                            ->select('acceptada')
+                            ->first();
 
-                        if ($findJustificacio == true){
+                        if ($findJustificacio !== null) {
                             $justificades++;
                             $justificades_total++;
                         } else {
                             $faltes++;
                             $faltes_total++;
-                        } 
+                        }
                         break;
                 }
             }
-            
-            $entry = (object) array(
-                'nom_assignatura' => $nomAssignatura, 
-                'retards' => $retard, 
-                'faltes' => $faltes,
-                'justificades' => $justificades, 
-            );
-            $resultat[] = $entry;
-        };
 
-        $entry_total = (object) array(
+            $entry = (object) [
+                'nom_assignatura' => $nomAssignatura,
+                'retards'         => $retard,
+                'faltes'          => $faltes,
+                'justificades'    => $justificades,
+            ];
+            $resultat[] = $entry;
+        }
+
+        $entry_total = (object) [
             'nom_assignatura' => [ (object) ['nom' => 'Total'] ],
-            'retards' => $retard_total,
-            'faltes' => $faltes_total,
-            'justificades' => $justificades_total,
-        );
+            'retards'         => $retard_total,
+            'faltes'          => $faltes_total,
+            'justificades'    => $justificades_total,
+        ];
         array_unshift($resultat, $entry_total);
         return $resultat;
     }

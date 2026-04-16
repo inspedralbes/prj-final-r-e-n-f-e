@@ -109,43 +109,52 @@ export class HorariAlumnesComponent implements OnInit {
   quadreHorari = computed(() => {
     const elsMeusHoraris = this.horariDelaClasse();
 
-    // Inicialitzem la graella amb cel·les buides (null o objecte buit)
-    // Utilitzem un tipus any per ara per facilitar la transició visual
+    // Cada fila normal té sempre exactament 5 sessions (una per dia).
+    // La fila d'esbarjo té esEsbarjo=true i sessions buides (no s'itera).
     const graella: any[] = [
-      { hora: '08:00', sessions: [null, null, null, null, null] },
-      { hora: '09:00', sessions: [null, null, null, null, null] },
-      { hora: '10:00', sessions: [null, null, null, null, null] },
-      { hora: '11:00', sessions: ['ESBARJO', 'ESBARJO', 'ESBARJO', 'ESBARJO', 'ESBARJO'] },
-      { hora: '11:30', sessions: [null, null, null, null, null] },
-      { hora: '12:30', sessions: [null, null, null, null, null] },
-      { hora: '13:30', sessions: [null, null, null, null, null] },
+      { hora: '08:00', esEsbarjo: false, sessions: [null, null, null, null, null] },
+      { hora: '09:00', esEsbarjo: false, sessions: [null, null, null, null, null] },
+      { hora: '10:00', esEsbarjo: false, sessions: [null, null, null, null, null] },
+      { hora: '11:00', esEsbarjo: true, sessions: [] },
+      { hora: '11:30', esEsbarjo: false, sessions: [null, null, null, null, null] },
+      { hora: '12:30', esEsbarjo: false, sessions: [null, null, null, null, null] },
+      { hora: '13:30', esEsbarjo: false, sessions: [null, null, null, null, null] },
     ];
 
     if (elsMeusHoraris && Array.isArray(elsMeusHoraris)) {
       for (let i = 0; i < elsMeusHoraris.length; i++) {
         const horari = elsMeusHoraris[i];
-        if (horari.codi_hora) {
-          const lletraDia = horari.codi_hora.charAt(0);
-          const numeroHora = parseInt(horari.codi_hora.substring(1));
+        if (!horari || !horari.codi_hora) continue;
 
-          const dies: { [key: string]: number } = { L: 0, M: 1, X: 2, J: 3, V: 4 };
-          const indexColumna = dies[lletraDia] ?? -1;
+        const lletraDia = horari.codi_hora.charAt(0).toUpperCase();
+        const numeroHora = parseInt(horari.codi_hora.substring(1), 10);
 
-          if (indexColumna !== -1) {
-            let indexFila = -1;
-            if (numeroHora <= 3) indexFila = numeroHora - 1;
-            else if (numeroHora <= 6) indexFila = numeroHora;
+        const dies: { [key: string]: number } = { L: 0, M: 1, X: 2, J: 3, V: 4 };
+        const indexColumna = dies[lletraDia] ?? -1;
 
-            if (indexFila !== -1 && graella[indexFila]) {
-              graella[indexFila].sessions[indexColumna] = horari;
-            }
-          }
+        if (indexColumna === -1 || isNaN(numeroHora)) continue;
+
+        // H1–H3 → files 0,1,2 | H4–H6 → files 4,5,6 (la 3 és l'esbarjo)
+        let indexFila = -1;
+        if (numeroHora >= 1 && numeroHora <= 3) indexFila = numeroHora - 1;
+        else if (numeroHora >= 4 && numeroHora <= 6) indexFila = numeroHora;
+
+        if (indexFila !== -1 && graella[indexFila] && !graella[indexFila].esEsbarjo) {
+          graella[indexFila].sessions[indexColumna] = horari;
         }
       }
     }
 
     return graella;
   });
+
+  trackByHora(_index: number, fila: any): string {
+    return fila.hora;
+  }
+
+  trackByDiaIndex(index: number): number {
+    return index;
+  }
 
   // Mètodes auxiliars per a l'HTML
   obtenirNomAssig(cell: any): string {
@@ -160,7 +169,7 @@ export class HorariAlumnesComponent implements OnInit {
 
   obtenirNomProfe(cell: any): string {
     if (!cell || cell === 'ESBARJO') return '';
-    if (cell.professor) return `${cell.professor.nom} ${cell.professor.cognom}`;
+    if (cell.professor) return `${cell.professor.nom ?? ''} ${cell.professor.cognom ?? ''}`.trim();
     return 'Professor';
   }
 

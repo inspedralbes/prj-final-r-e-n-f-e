@@ -83,4 +83,20 @@ export class ClassesManagerService {
       throw err;
     }
   }
+
+  /**
+   * Treu un alumne d'una classe i elimina les seves inscripcions
+   */
+  async treureAlumne(classe_id: number, alumne_id: number) {
+    try {
+      const resp = await this.apiManager.post<any>('/classes/treureAlumne', {
+        classe_id,
+        alumne_id,
+      });
+      return resp;
+    } catch (err) {
+      console.error('Error treient alumne de la classe:', err);
+      throw err;
+    }
+  }
 }

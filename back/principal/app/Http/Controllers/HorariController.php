@@ -226,13 +226,19 @@ class HorariController extends Controller
         $resultat = [];
         foreach ($diesOrdre as $dia) {
             $entrades = $mapa[$dia['lletra']];
-            if (count($entrades) > 0) {
-                usort($entrades, fn($a, $b) => $a['hora'] - $b['hora']);
-                $resultat[] = [
-                    'dia'          => $dia['nom'],
-                    'assignatures' => array_column($entrades, 'assignatura'),
-                ];
+            // Retornem sempre els 5 dies amb 6 slots (hores 1-6), null si no hi ha res.
+            // Això conserva la posició temporal i permet al frontend renderitzar correctament.
+            $slots = [null, null, null, null, null, null];
+            foreach ($entrades as $entry) {
+                $idx = $entry['hora'] - 1; // hora 1 → index 0, hora 6 → index 5
+                if ($idx >= 0 && $idx < 6) {
+                    $slots[$idx] = $entry['assignatura'];
+                }
             }
+            $resultat[] = [
+                'dia'          => $dia['nom'],
+                'assignatures' => $slots,
+            ];
         }
 
         return response()->json($resultat, Response::HTTP_OK);

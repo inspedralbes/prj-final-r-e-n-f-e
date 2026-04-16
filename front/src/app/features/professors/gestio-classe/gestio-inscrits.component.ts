@@ -78,9 +78,9 @@ export class GestioInscritsComponent implements OnInit {
   }
 
   async treureAlumneDeClasse(alumne: Usuari) {
+    const classe = this.classeTrobada();
     if (confirm(`Estàs segur de treure a ${alumne.nom} de la classe?`)) {
-      // Li traiem la classe (id_classe = null)
-      await this.serveiUsuaris.actualitzarUsuari(alumne.id, { id_classe: undefined });
+      await this.serveiClasses.treureAlumne(classe!.id, alumne.id);
       alert('Alumne tret de la classe.');
       await this.carregarDades(); // Actualitzem la vista
     }

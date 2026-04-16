@@ -90,6 +90,7 @@
 }
 
 .col-temps {
+  grid-column: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -127,6 +128,17 @@
   box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
   border-color: var(--primary-light);
   z-index: 2;
+}
+
+.slot-sessio.buit {
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px dashed rgba(99, 102, 241, 0.15);
+  box-shadow: none;
+}
+
+.slot-sessio.buit:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 /* -- Esbarjo */

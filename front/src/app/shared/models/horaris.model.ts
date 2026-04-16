@@ -24,5 +24,5 @@ export interface Horari {
 
 export interface DiaCalendari {
   dia: string;
-  assignatures: string[];
+  assignatures: (string | null)[];
 }

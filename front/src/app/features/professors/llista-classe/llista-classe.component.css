@@ -177,6 +177,19 @@ h1 {
     box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
 }
 
+.estat-input:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    background-color: #f1f5f9;
+    border-color: transparent;
+    box-shadow: none;
+    transform: none;
+}
+
+.dia-inactiu {
+    opacity: 0.5;
+}
+
 
 .estat-input[data-estat="."] {
     background-color: #dcfce7;

@@ -90,6 +90,7 @@ class UsuariController extends Controller
             'rol' => 'sometimes|required|string|in:admin,professor,alumne,pare',
             'password' => 'sometimes|required|string|min:8',
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id,' . $id,
+            'id_classe' => 'nullable|exists:classes,id',
         ]);
 
         if (isset($dadesValidades['password'])) {

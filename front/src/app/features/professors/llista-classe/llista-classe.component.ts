@@ -46,6 +46,16 @@ export class LlistaClasseComponent implements OnInit {
 
   sessioSeleccionadaId = signal<number | null>(null);
 
+  // Índex de la columna (0=Dilluns ... 4=Divendres) que correspon a la sessió activa
+  diaActivIndex = computed(() => {
+    const idSessio = this.sessioSeleccionadaId();
+    if (!idSessio) return -1;
+    const sessio = this.sessionsProfessor().find(s => s.id === idSessio);
+    if (!sessio) return -1;
+    const lletraMap: { [key: string]: number } = { 'L': 0, 'M': 1, 'X': 2, 'J': 3, 'V': 4 };
+    return lletraMap[sessio.codi_hora.charAt(0).toUpperCase()] ?? -1;
+  });
+
   async ngOnInit() {
     this.inscritsManager.carregarInscrits();
     this.assistenciesManager.carregarAssistencies();

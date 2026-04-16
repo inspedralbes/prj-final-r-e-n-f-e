@@ -65,12 +65,13 @@
 
               <!-- Cada cel·la és un input on escrius la falta (F, R, etc.) -->
               @for (diaVisible of datesSetmana; track diaVisible; let colIndex = $index) {
-              <td class="celda-assistencia">
+              <td class="celda-assistencia" [class.dia-inactiu]="diaActivIndex() !== colIndex">
                 <div class="input-container-modern">
                   <input type="text" [id]="'input-' + filaIndex + '-' + colIndex" class="estat-input"
                     [attr.data-estat]="alumne.assistencia[diaVisible]" [(ngModel)]="alumne.assistencia[diaVisible]"
                     (blur)="guardarAssistencia(alumne, diaVisible, alumne.assistencia[diaVisible])"
-                    (keydown.enter)="moureFocus(filaIndex, colIndex)" maxlength="2" placeholder="." autocomplete="off">
+                    (keydown.enter)="moureFocus(filaIndex, colIndex)" maxlength="2" placeholder="." autocomplete="off"
+                    [disabled]="diaActivIndex() !== colIndex">
                 </div>
               </td>
               }

@@ -225,4 +225,52 @@ class ClasseController extends Controller
             'message' => 'Alumnes assignats i inscrits correctament'
         ], Response::HTTP_OK);
     }
+
+    /**
+     * Treu un alumne d'una classe i elimina les seves inscripcions a les assignatures.
+     */
+    public function treureAlumne(Request $peticio)
+    {
+        $dadesValidades = $peticio->validate([
+            'classe_id' => 'required|exists:classes,id',
+            'alumne_id' => 'required|exists:usuaris,id',
+        ]);
+
+        $classe = Classe::with('horaris')->find($dadesValidades['classe_id']);
+
+        if (!$classe) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Classe no trobada'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        $alumne = Usuari::find($dadesValidades['alumne_id']);
+
+        if (!$alumne) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Alumne no trobat'
+            ], Response::HTTP_NOT_FOUND);
+        }
+
+        // Obtenim les assignatures de la classe a partir dels horaris
+        $idsAssignatures = $classe->horaris()
+            ->pluck('id_assig')
+            ->unique()
+            ->toArray();
+
+        // Eliminem les inscripcions de l'alumne a les assignatures d'aquesta classe
+        Inscrit::where('id_alumne', $alumne->id)
+            ->whereIn('id_assignatura', $idsAssignatures)
+            ->delete();
+
+        // Posem id_classe a null
+        $alumne->update(['id_classe' => null]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Alumne tret de la classe correctament'
+        ], Response::HTTP_OK);
+    }
 }

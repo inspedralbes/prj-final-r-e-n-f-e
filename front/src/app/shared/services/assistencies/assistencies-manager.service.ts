@@ -69,7 +69,8 @@ export class AssistenciesManagerService {
    */
   async afegirAssistencia(novaAssistencia: Partial<Assistencia>) {
     try {
-      const creat = await this.apiManager.post<Assistencia>('/assistencies', novaAssistencia);
+      const resposta = await this.apiManager.post<any>('/assistencies', novaAssistencia);
+      const creat = resposta.data || resposta;
 
       // Lògica primitiva: obtenir, copiar, afegir, guardar
       const llistaActual = this.assistencies();
@@ -93,10 +94,11 @@ export class AssistenciesManagerService {
    */
   async actualitzarAssistencia(id: number, dadesActualitzades: Partial<Assistencia>) {
     try {
-      const actualitzacio = await this.apiManager.put<Assistencia>(
+      const resposta = await this.apiManager.put<any>(
         `/assistencies/${id}`,
         dadesActualitzades,
       );
+      const actualitzacio = resposta.data || resposta;
 
       // Lògica primitiva: bucle manual per actualitzar la llista
       const llistaActual = this.assistencies();
