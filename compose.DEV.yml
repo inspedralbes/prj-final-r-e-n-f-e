@@ -24,15 +24,15 @@ services:
     container_name: pfg1-back
     build:
       context: .
-      dockerfile: ./back/principal/dev.Dockerfile
+      dockerfile: ./back/principal/prod.Dockerfile
     ports:
-      - 8000:8000
+      - 9000:9000
     volumes:
       - ./back/principal:/app
     depends_on:
       - pfg1-postgres
     # entrypoint: ["/bin/sh", "-c"]
-    command: sh -c "cp /app/.env.DEV /app/.env && php artisan key:generate && php artisan storage:link || true && php artisan migrate && php artisan serve --host=0.0.0.0 --port=8000"
+    command: sh -c "cp /app/.env.DEV /app/.env && php artisan key:generate && php artisan storage:link || true && php artisan migrate && php artisan key:generate && php artisan storage:link || true && php-fpm"
     networks:
       - general
 
