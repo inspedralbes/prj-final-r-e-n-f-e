@@ -24,17 +24,32 @@ services:
     container_name: pfg1-back
     build:
       context: .
-      dockerfile: ./back/laravel-api/dev.Dockerfile
+      dockerfile: ./back/laravel-api/prod.Dockerfile
     ports:
-      - 8000:8000
+      - 9000:9000
     volumes:
       - ./back/laravel-api:/app
     depends_on:
       - pfg1-postgres
     # entrypoint: ["/bin/sh", "-c"]
-    command: sh -c "cp /app/.env.DEV /app/.env && php artisan key:generate && php artisan storage:link || true && php artisan migrate && php artisan serve --host=0.0.0.0 --port=8000"
+    command: sh -c "cp /app/.env.DEV /app/.env && php artisan key:generate && php artisan storage:link || true && php-fpm"
     networks:
       - general
+
+  # Nginx
+  pfg1-nginx:
+    container_name: pfg1-nginx
+    image: nginx:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./back/laravel-api/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      pfg1-back:
+        condition: service_started
+    networks:
+      - general
+    restart: unless-stopped
 
   # Backend Principal nodejs
   pfg1-back-node:
