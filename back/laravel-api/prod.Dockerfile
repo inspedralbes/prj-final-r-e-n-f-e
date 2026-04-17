@@ -16,13 +16,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # 1. Copiar solo los archivos de dependencias para aprovechar la caché de Docker
-COPY back/principal/composer.json back/principal/composer.lock* ./
+COPY back/laravel-api/composer.json back/laravel-api/composer.lock* ./
 
 # 2. Instalar dependencias SIN el autoloader (el código de la app aún no está aquí)
 RUN composer install --no-dev --no-scripts --no-autoloader
 
 # 3. Copiar el código fuente de la aplicación
-COPY back/principal/ ./
+COPY back/laravel-api/ ./
 
 # 4. Generar el autoloader optimizado ahora que el código está presente
 RUN composer dump-autoload --optimize
