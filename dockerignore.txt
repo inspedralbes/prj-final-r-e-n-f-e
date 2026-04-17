@@ -1,4 +1,4 @@
-back/principal/public/storage
-back/principal/node_modules
-back/principal/vendor
-back/principal/storage
+back/laravel-api/public/storage
+back/laravel-api/node_modules
+back/laravel-api/vendor
+back/laravel-api/storage

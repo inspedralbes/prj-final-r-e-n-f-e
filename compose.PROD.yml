@@ -33,11 +33,11 @@ services:
     container_name: pfg1-back
     build:
       context: .
-      dockerfile: ./back/principal/prod.Dockerfile
+      dockerfile: ./back/laravel-api/prod.Dockerfile
     ports:
       - 9000:9000
     # volumes:
-    #   - ./back/principal:/app
+    #   - ./back/laravel-api:/app
     depends_on:
       - pfg1-postgres
     command: sh -c "php artisan key:generate && php artisan storage:link || true && php-fpm"
