@@ -24,11 +24,11 @@ services:
     container_name: pfg1-back
     build:
       context: .
-      dockerfile: ./back/principal/dev.Dockerfile
+      dockerfile: ./back/laravel-api/dev.Dockerfile
     ports:
       - 8000:8000
     volumes:
-      - ./back/principal:/app
+      - ./back/laravel-api:/app
     depends_on:
       - pfg1-postgres
     # entrypoint: ["/bin/sh", "-c"]

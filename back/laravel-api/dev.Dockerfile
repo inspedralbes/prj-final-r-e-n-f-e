@@ -10,11 +10,11 @@ RUN apt-get update && apt-get install -y \
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-COPY back/principal/composer.json back/principal/composer.lock* ./
+COPY back/laravel-api/composer.json back/laravel-api/composer.lock* ./
 
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-COPY back/principal/ ./
+COPY back/laravel-api/ ./
 
 RUN composer run-script post-autoload-dump
 
