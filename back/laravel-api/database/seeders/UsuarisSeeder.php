@@ -25,7 +25,8 @@ class UsuarisSeeder extends Seeder
                 'token' => null,
                 'nfc_id' => null,
                 'id_classe' => null,
-                'horari_guardies' => null
+                'horari_guardies' => null,
+                'data_naixement' => null
             ],
             [
                 'id' => 2,
@@ -38,33 +39,36 @@ class UsuarisSeeder extends Seeder
                 'token' => null,
                 'nfc_id' => null,
                 'id_classe' => null,
-                'horari_guardies' => null
+                'horari_guardies' => null,
+                'data_naixement' => null
             ],
             [
                 'id' => 3,
                 'nom' => 'Marcos López',
                 'cognom' => null,
                 'rol' => 'Alumne',
-                'email' => 'mlopez.pruebas@inspedralbes.cat',
+                'email' => 'a23mlopez.pruebas@inspedralbes.cat',
                 'email_pares' => null,
                 'password' => null,
                 'token' => null,
                 'nfc_id' => null,
                 'id_classe' => null,
-                'horari_guardies' => null
+                'horari_guardies' => null,
+                'data_naixement' => '2005-05-03'
             ],
             [
                 'id' => 4,
                 'nom' => 'Noelia García',
                 'cognom' => null,
                 'rol' => 'Alumne',
-                'email' => 'ngarcia.pruebas@inspedralbes.cat',
+                'email' => 'a23ngarcia.pruebas@inspedralbes.cat',
                 'email_pares' => null,
                 'password' => null,
                 'token' => null,
                 'nfc_id' => null,
                 'id_classe' => null,
-                'horari_guardies' => null
+                'horari_guardies' => null,
+                'data_naixement' => '1999-05-03'
             ]
         ]);
 
