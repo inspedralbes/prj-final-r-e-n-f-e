@@ -1,12 +1,12 @@
-FROM php:8.4.2
+FROM php:8.4.2-fpm
 
 WORKDIR /app
 
-# Instalar todo en un RUN (mejor cache)
 RUN apt-get update && apt-get install -y \
     git unzip libpq-dev libzip-dev libonig-dev \
+    libjpeg-dev libpng-dev \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
-    && docker-php-ext-install pdo pdo_pgsql zip bcmath mbstring
+    && docker-php-ext-install pdo pdo_pgsql zip bcmath mbstring gd
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -16,7 +16,11 @@ RUN composer install --no-dev --optimize-autoloader --no-scripts
 
 COPY back/laravel-api/ ./
 
-RUN composer run-script post-autoload-dump
+RUN composer run-script post-autoload-dump \
+    && mkdir -p storage/framework/views storage/framework/cache storage/logs bootstrap/cache \
+    && chown -R www-data:www-data /app
 
-CMD ["sh", "-c", "php artisan storage:link || true && php artisan serve --host=0.0.0.0 --port=8000"]
-EXPOSE 8000
+USER www-data
+EXPOSE 9000
+
+CMD ["php-fpm"]

@@ -11,6 +11,7 @@ use App\Http\Controllers\ImparteixController;
 use App\Http\Controllers\AssistenciaController;
 use App\Http\Controllers\JustificantController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartaFaltesController;
 
 Route::prefix('v1')->group(function (): void {
 
@@ -56,4 +57,7 @@ Route::prefix('v1')->group(function (): void {
 
     // Rutes de Justificants
     Route::apiResource('justificants', JustificantController::class);
+
+    // Rutes de Carta de Faltes
+    Route::post('carta-faltes/generar', [CartaFaltesController::class, 'generar']);
 });

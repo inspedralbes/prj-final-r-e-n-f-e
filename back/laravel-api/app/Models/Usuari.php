@@ -31,7 +31,8 @@ class Usuari extends Authenticatable
         'nfc_id',
         'id_classe',
         'horari_guardies',
-        'photo'
+        'photo',
+        'data_naixement'
     ];
 
     /**
