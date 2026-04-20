@@ -47,7 +47,9 @@ services:
   # Backend Sensor nodejs
   pfg1-back-node:
     container_name: pfg1-back-node
-    image: node:22-bookworm-slim
+    build:
+      dockerfile: ./back/principal-node/prod.Dockerfile
+      context: .
     command: sh -c "cp .env.PROD .env && npm install && node index.js"
     volumes:
       - ./back/principal-node:/usr/src/app
