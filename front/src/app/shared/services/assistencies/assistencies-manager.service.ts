@@ -21,8 +21,9 @@ export class AssistenciesManagerService {
     this.error.set(null);
 
     try {
-      const data = await this.apiManager.get<Assistencia[]>('/assistencies');
-      this.assistencies.set(data);
+      const resp = await this.apiManager.get<any>('/assistencies');
+      const llista = resp.data || resp;
+      this.assistencies.set(llista);
     } catch (err) {
       this.error.set('Hi ha hagut un problema al llegir les assistències');
       console.error(err);
@@ -37,13 +38,22 @@ export class AssistenciesManagerService {
 
     try {
       const assistenciesPeticio: Assistencia[] = [];
-      //Itera cada inscripcio per agafar totes les assistencies de les assignatures on l'alumne previament especificat està inscrit.
-      inscrits.map(async (registre) => {
-        const data = await this.apiManager.get<Assistencia[]>(`/assistencies, ${registre.id}`);
-        data.map((inscripcio) => {
-          assistenciesPeticio.push(inscripcio);
-        });
-      });
+      const llistaInscrits = inscrits;
+
+      if (llistaInscrits && Array.isArray(llistaInscrits)) {
+        for (let i = 0; i < llistaInscrits.length; i++) {
+          const registre = llistaInscrits[i];
+          // Corregim la URL: traiem la coma i l'espai
+          const resp = await this.apiManager.get<any>(`/assistencies/${registre.id}`);
+          const data = resp.data || resp;
+
+          if (data && Array.isArray(data)) {
+            for (let j = 0; j < data.length; j++) {
+              assistenciesPeticio.push(data[j]);
+            }
+          }
+        }
+      }
       this.assistencies.set(assistenciesPeticio);
     } catch (err) {
       this.error.set("Hi ha hagut un problema al llegir l'assistencia de l'alumne");
@@ -53,13 +63,14 @@ export class AssistenciesManagerService {
     }
   }
 
-  
+
   /**
    * Afegeix un nou registre d'assistència (POST)
    */
   async afegirAssistencia(novaAssistencia: Partial<Assistencia>) {
     try {
-      const creat = await this.apiManager.post<Assistencia>('/assistencies', novaAssistencia);
+      const resposta = await this.apiManager.post<any>('/assistencies', novaAssistencia);
+      const creat = resposta.data || resposta;
 
       // Lògica primitiva: obtenir, copiar, afegir, guardar
       const llistaActual = this.assistencies();
@@ -83,10 +94,11 @@ export class AssistenciesManagerService {
    */
   async actualitzarAssistencia(id: number, dadesActualitzades: Partial<Assistencia>) {
     try {
-      const actualitzacio = await this.apiManager.put<Assistencia>(
+      const resposta = await this.apiManager.put<any>(
         `/assistencies/${id}`,
         dadesActualitzades,
       );
+      const actualitzacio = resposta.data || resposta;
 
       // Lògica primitiva: bucle manual per actualitzar la llista
       const llistaActual = this.assistencies();

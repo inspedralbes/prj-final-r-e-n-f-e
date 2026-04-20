@@ -1,0 +1,29 @@
+<nav class="barra-superior">
+  <div class="contenedor-navegacio-centrat">
+    <!-- Icona Inici -->
+    <a
+      routerLink="/alumnes"
+      routerLinkActive="actiu"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="element-navegacio"
+    >
+      <div class="caixa-icona">
+        <img src="/img/menu/iconos/inici-icona.png" alt="Inici" />
+      </div>
+    </a>
+
+    <!-- Icona Horari -->
+    <a routerLink="/alumnes/horaris" routerLinkActive="actiu" class="element-navegacio">
+      <div class="caixa-icona">
+        <img src="/img/menu/iconos/calendari-icona.png" alt="Horari" />
+      </div>
+    </a>
+
+    <!-- Icona Perfil -->
+    <a routerLink="/profile" routerLinkActive="actiu" class="element-navegacio">
+      <div class="caixa-icona">
+        <img src="/img/menu/iconos/usuari-icona.png" alt="Perfil" />
+      </div>
+    </a>
+  </div>
+</nav>

@@ -33,15 +33,31 @@ services:
     container_name: pfg1-back
     build:
       context: .
-      dockerfile: ./back/principal/prod.Dockerfile
+      dockerfile: ./back/laravel-api/prod.Dockerfile
     ports:
-      - 8000:8000
+      - 9000:9000
     # volumes:
-    #   - ./back/principal:/app
+    #   - ./back/laravel-api:/app
     depends_on:
       - pfg1-postgres
-    # entrypoint: ["/bin/sh", "-c"]
-    command: sh -c "php artisan key:generate && php artisan storage:link || true && php artisan serve --host=0.0.0.0 --port=8000"
+    command: sh -c "php artisan key:generate && php artisan storage:link || true && php-fpm"
+    networks:
+      - general
+
+  # Backend Sensor nodejs
+  pfg1-back-node:
+    container_name: pfg1-back-node
+    build:
+      dockerfile: ./back/principal-node/prod.Dockerfile
+      context: .
+    command: sh -c "cp .env.PROD .env && npm install && node index.js"
+    volumes:
+      - ./back/principal-node:/usr/src/app
+    ports:
+      - "3000:3000"
+    working_dir: /usr/src/app
+    depends_on:
+      - pfg1-back
     networks:
       - general
 
@@ -53,7 +69,7 @@ services:
     volumes:
       - ./back/sensor:/usr/src/app
     ports:
-      - "3000:3000"
+      - "3001:3001"
     working_dir: /usr/src/app
     depends_on:
       - pfg1-rabbitmq
@@ -75,22 +91,15 @@ services:
       - general
 
   pfg1-mongodb:
-    image: mongo:6.0
+    image: mongo:8.2
     restart: always
-    ports:
-      - 27017:27017
+    # ports:
+    #   - 27017:27017
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
     volumes:
       - mongo-bd:/data/db
-    # Comprovació que el servei de MongoDB està disponible abans de permetre que el servei de mongo-express s'iniciï.
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 60s
     networks:
       - general
 
@@ -108,8 +117,7 @@ services:
       ME_CONFIG_MONGODB_AUTH_DATABASE: admin
       ME_CONFIG_MONGODB_ENABLE_ADMIN: true
     depends_on:
-      pfg1-mongodb:
-        condition: service_healthy
+      - pfg1-mongodb
     networks:
       - general
 
@@ -123,8 +131,8 @@ services:
       POSTGRES_DB: prf-renfe
     volumes:
       - postgres-bd:/var/lib/postgresql/data:rw
-    ports:
-      - 5432:5432
+    # ports:
+    #   - 5432:5432
     networks:
       - general
 

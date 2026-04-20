@@ -1,84 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
-
 :host {
-    --primary-color: #6366f1;
-    --primary-light: #818cf8;
-    --secondary-color: #a78bfa;
-    --bg-color: #f8fafc;
-    --card-bg: rgba(255, 255, 255, 0.85);
-    --text-main: #1e293b;
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.6);
 }
 
 .disseny-principal {
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-color);
     height: 100vh;
     font-family: 'Outfit', sans-serif;
     position: relative;
     overflow: hidden;
 }
 
-.fons-organic {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-}
-
-.forma {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.6;
-    animation: flotar 20s infinite ease-in-out;
-}
-
-.forma-1 {
-    top: -10%;
-    right: -5%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, var(--primary-light), transparent 70%);
-}
-
-.forma-2 {
-    bottom: -10%;
-    left: -5%;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, var(--secondary-color), transparent 70%);
-    animation-delay: -5s;
-}
-
-.forma-3 {
-    top: 40%;
-    left: 30%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, #f472b6, transparent 70%);
-    opacity: 0.4;
-    animation-delay: -10s;
-}
-
-@keyframes flotar {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    50% {
-        transform: translate(30px, -30px) scale(1.1);
-    }
-}
 
 .contingut {
     flex-grow: 1;
-    margin-top: 80px;
+    margin-top: 180px;
     padding: 20px;
     position: relative;
     z-index: 1;
@@ -89,15 +26,120 @@
 }
 
 .targeta-llista {
-    background-color: var(--card-bg);
-    backdrop-filter: blur(20px);
+    background: var(--glass-bg);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
     border-radius: 32px;
-    padding: 30px;
-    box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+    padding: 40px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
     width: 95%;
-    max-width: 1100px;
+    max-width: 1000px;
     max-height: calc(100vh - 120px);
     display: flex;
     flex-direction: column;
-    margin-bottom: 0;
+    border: 1px solid var(--glass-border);
+}
+
+h1 {
+    color: #1e1b4b;
+    font-size: 2.2rem;
+    margin: 0;
+    font-weight: 800;
+}
+
+.setmana-info {
+    color: #64748b;
+    font-size: 1.1rem;
+    margin-top: 5px;
+}
+
+.contenedor-taula {
+    width: 100%;
+    overflow-y: auto;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    margin-top: 30px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.taula-assistencia {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
+}
+
+.taula-assistencia th {
+    padding: 15px;
+    text-align: left;
+    color: var(--primary-indigo, #6366f1);
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+}
+
+.taula-assistencia td {
+    background: rgba(255, 255, 255, 0.75);
+    padding: 20px 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    color: #1e293b;
+    font-weight: 500;
+}
+
+.taula-assistencia td:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px 0 0 16px;
+    padding-left: 25px;
+}
+
+.taula-assistencia td:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 0 16px 16px 0;
+}
+
+.col-nom {
+    width: 40%;
+}
+
+.col-assignatura {
+    width: 40%;
+}
+
+.col-faltes {
+    width: 20%;
+    text-align: center !important;
+}
+
+.nom-alumne {
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #1e1b4b;
+}
+
+.nom-assignatura {
+    color: #475569;
+    font-weight: 600;
+}
+
+.celda-assistencia {
+    text-align: center;
+}
+
+/* El badge del número de faltes, ara més discret */
+.badge-faltes {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 38px;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 12px;
+    background: #fee2e2;
+    color: #ef4444;
+    font-weight: 900;
+    font-size: 1.1rem;
+    box-shadow: 0 4px 10px rgba(239, 68, 68, 0.15);
+    border: 1px solid #fca5a5;
 }

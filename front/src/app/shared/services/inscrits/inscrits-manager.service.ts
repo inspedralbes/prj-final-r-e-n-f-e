@@ -23,8 +23,9 @@ export class InscritsManagerService {
     this.error.set(null);
 
     try {
-      const data = await this.apiManager.get<Inscrit[]>('/inscrits');
-      this.inscrits.set(data);
+      const resp = await this.apiManager.get<any>('/inscrits');
+      const llista = resp.data || resp;
+      this.inscrits.set(llista);
     } catch (err) {
       this.error.set('Error de comunicació al carregar els inscrits');
       console.error(err);
@@ -42,10 +43,11 @@ export class InscritsManagerService {
     this.error.set(null);
 
     try {
-      const data = await this.apiManager.get<assistenciaPerUsuari[]>(
+      const resp = await this.apiManager.get<any>(
         `/assistencies/alumne/${idAlumne}`,
       );
-      this.inscritsPerUsuari.set(data);
+      const llista = resp.data || resp;
+      this.inscritsPerUsuari.set(llista);
     } catch (err) {
       this.error.set("Error de comunicació al carregar els inscrits de l'alumne");
       console.error(err);

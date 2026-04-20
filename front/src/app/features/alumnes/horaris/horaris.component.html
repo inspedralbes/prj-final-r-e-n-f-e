@@ -1,0 +1,45 @@
+<alumne-sidebar></alumne-sidebar>
+<div id="horari-alumne-page">
+  <div class="contingut">
+    <div class="targeta-horari-premium">
+      <div class="capçalera-moderna">
+        <h2 class="titol_pagina">Horari Semanal</h2>
+      </div>
+
+      @if (horarisManager.isLoading()) {
+        <p class="estat-missatge">Carregant horari…</p>
+      } @else if (horarisManager.error()) {
+        <p class="estat-missatge estat-error">{{ horarisManager.error() }}</p>
+      } @else {
+        <div class="scroll-wrapper">
+          <div class="grid-horari">
+            <div></div>
+            <div class="dia-header">Dilluns</div>
+            <div class="dia-header">Dimarts</div>
+            <div class="dia-header">Dimecres</div>
+            <div class="dia-header">Dijous</div>
+            <div class="dia-header">Divendres</div>
+
+            @for (dia of calendariGraella(); track dia.hora) {
+              <div class="col-temps">{{ dia.hora }}</div>
+
+              @if (dia.esEsbarjo) {
+                <div class="slot-sessio esbarjo">ESBARJO</div>
+              } @else {
+                @for (assignatura of dia.assignatures; track $index) {
+                  <div class="slot-sessio" [class.buit]="!assignatura">
+                    @if (assignatura) {
+                      <div class="info-sessio">
+                        <span class="assignatura-nom">{{ assignatura }}</span>
+                      </div>
+                    }
+                  </div>
+                }
+              }
+            }
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+</div>

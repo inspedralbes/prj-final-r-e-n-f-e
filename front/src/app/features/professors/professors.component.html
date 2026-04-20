@@ -1,32 +1,31 @@
+<!-- 
+    Aquí utilitzem:
+     - @for: S'usa per fer bucles de forma molt neta, substitueix l'antic *ngFor.
+     - {{ }} : Interpolació, serveix per mostrar variables del TypeScript a l'HTML.
+     - (click) : Esdeveniment per executar una funció quan l'usuari clica.
+-->
 <div class="disseny-principal">
     <app-sidebar></app-sidebar>
 
-    <!-- Fons orgànic amb formes decoratives -->
-    <div class="fons-organic">
-        <div class="forma forma-1"></div>
-        <div class="forma forma-2"></div>
-        <div class="forma forma-3"></div>
-    </div>
 
     <div class="contingut">
-
-        <div class="encapçalament-tauler">
-            <!-- Espai per salutació o títol, si cal -->
-        </div>
 
         <!-- Contenidor principal -->
         <div class="graella-tauler">
 
-            <!-- Targeta Classe Actual -->
+            <!-- Targeta de la classe que toca ara mateix -->
             <div class="targeta-classe-actual">
                 <div class="contingut-targeta">
+                    <!-- El puntet de color i si la classe està activa o no -->
                     <div class="insignia-estat">
                         <span class="punt"></span> {{ classeActual().estat }}
 
                     </div>
 
+                    <!-- El nom de l'assignatura o el curs en gran -->
                     <h1>{{ classeActual().nom }}</h1>
 
+                    <!-- El botó per anar directe a passar llista -->
                     <div class="accions">
                         <button class="boto-accio">
                             Passar llista ara
@@ -35,15 +34,15 @@
                     </div>
                 </div>
 
-                <!-- Decoració interna de la targeta -->
-                <div class="cercle-decoratiu"></div>
+
             </div>
 
-            <!-- Horari -->
+            <!-- Aquí tenim l'horari de tota la setmana -->
             <div class="contenidor-horari">
                 <div class="capçalera-horari">
                     <h2>Horari Setmanal</h2>
                     <div class="controls-horari">
+                        <!-- Botó per canviar entre el que fas tu i el que fan els altres (franja) -->
                         <button class="insignia-hora punter" (click)="commutarFranja()" title="Canviar Franja Horària">
                             {{ franjaHoraria() }}
                             <span class="icona-commutador">⇅</span>
@@ -51,18 +50,20 @@
                     </div>
                 </div>
 
+                <!-- La graella on es veuen els dies i les hores -->
                 <div class="graella-horari">
-                    <!-- Capçalera dies -->
+                    <!-- Els noms de la setmana (Dilluns, Dimarts...) -->
                     <div class="cel-la-capçalera buida"></div>
                     @for (dia of diesSetmana; track dia) {
                     <div class="cel-la-capçalera">{{ dia }}</div>
                     }
 
-                    <!-- Files hores i assignatures -->
-                    @for (franja of horariActual(); track franja) {
+                    <!-- Aquí és on es pinten les hores i el que toca a cada hora -->
+                    @for (franja of horariActual(); track franja.hora) {
                     <div class="cel-la-hora">{{ franja.hora }}</div>
-                    @for (assignatura of franja.assignatures; track assignatura) {
-                    <div class="cel-la-assignatura" [class.esbarjo]="assignatura === 'Esbarjo'">
+                    @for (assignatura of franja.assignatures; track $index) {
+                    <!-- Si és l'esbarjo, li posem un color diferent -->
+                    <div class="cel-la-assignatura" [class.esbarjo]="assignatura === 'ESBARJO'">
                         <span class="text-assignatura">{{ assignatura }}</span>
                     </div>
                     }

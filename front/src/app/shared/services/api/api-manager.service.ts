@@ -1,13 +1,14 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiManagerService {
   private http = inject(HttpClient);
-  private readonly baseUrl = 'http://localhost:8000/api/v1';
+  private readonly baseUrl = environment.backendUrl;
 
   /**
    * Petición GET genérica
@@ -19,7 +20,7 @@ export class ApiManagerService {
       return data;
     } catch (error) {
       console.error(`Error en GET ${endpoint}:`, error);
-      throw error; 
+      throw error;
     }
   }
 

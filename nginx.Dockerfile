@@ -5,6 +5,7 @@ COPY front/package.json ./
 RUN npm install
 COPY front/ ./
 COPY ./nginx.conf /app/nginx.conf
+RUN npm run generate-env:prod
 RUN npm run build
 
 # Stage 2: Serve the application with Nginx

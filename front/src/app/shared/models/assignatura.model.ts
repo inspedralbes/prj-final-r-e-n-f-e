@@ -1,8 +1,9 @@
 export interface Assignatura {
   id: number;
   nom: string;
-  interval?: number;
-  exempcio?: boolean;
   created_at: string;
   updated_at: string;
+  interval?: string;
+  exempcio?: boolean;
+  id_classe_projecte: number;
 }

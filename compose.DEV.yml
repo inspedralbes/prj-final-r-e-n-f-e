@@ -1,5 +1,7 @@
 ## docker compose -f compose.DEV.yml up --buildl
 
+## docker compose exec pfg1-back php artisan migrate:fresh --seed
+
 ## docker exec pfg1-back php artisan db:seed
 services:
   # Frontend Angular
@@ -22,15 +24,47 @@ services:
     container_name: pfg1-back
     build:
       context: .
-      dockerfile: ./back/principal/dev.Dockerfile
+      dockerfile: ./back/laravel-api/dev.Dockerfile
     ports:
-      - 8000:8000
+      - 9000:9000
     volumes:
-      - ./back/principal:/app
+      - ./back/laravel-api:/app
     depends_on:
       - pfg1-postgres
     # entrypoint: ["/bin/sh", "-c"]
-    command: sh -c "cp /app/.env.DEV /app/.env && php artisan key:generate && php artisan storage:link || true && php artisan migrate && php artisan serve --host=0.0.0.0 --port=8000"
+    command: sh -c "cp /app/.env.DEV /app/.env && php artisan migrate && php artisan key:generate && php artisan storage:link || true && php-fpm"
+    networks:
+      - general
+
+  # Nginx
+  pfg1-nginx:
+    container_name: pfg1-nginx
+    image: nginx:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./back/laravel-api/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      pfg1-back:
+        condition: service_started
+    networks:
+      - general
+    restart: unless-stopped
+
+  # Backend Principal nodejs
+  pfg1-back-node:
+    container_name: pfg1-back-node
+    build:
+      dockerfile: ./back/principal-node/dev.Dockerfile
+      context: .
+    command: sh -c "cp .env.DEV .env && npm install && nodemon -L index.js"
+    volumes:
+      - ./back/principal-node:/usr/src/app
+    ports:
+      - "3000:3000"
+    working_dir: /usr/src/app
+    depends_on:
+      - pfg1-back
     networks:
       - general
 
@@ -44,7 +78,7 @@ services:
     volumes:
       - ./back/sensor:/usr/src/app
     ports:
-      - "3000:3000"
+      - "3001:3001"
     working_dir: /usr/src/app
     depends_on:
       - pfg1-rabbitmq
@@ -68,7 +102,7 @@ services:
       - general
 
   pfg1-mongodb:
-    image: mongo:6.0
+    image: mongo:8.2
     restart: always
     ports:
       - 27017:27017
@@ -77,13 +111,6 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
     volumes:
       - mongo-bd:/data/db
-    # Comprovació que el servei de MongoDB està disponible abans de permetre que el servei de mongo-express s'iniciï.
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
-      interval: 5m
-      timeout: 5s
-      retries: 10
-      start_period: 60s
     networks:
       - general
 
@@ -101,8 +128,7 @@ services:
       ME_CONFIG_MONGODB_AUTH_DATABASE: admin
       ME_CONFIG_MONGODB_ENABLE_ADMIN: true
     depends_on:
-      pfg1-mongodb:
-        condition: service_healthy
+      - pfg1-mongodb
     networks:
       - general
 

@@ -20,8 +20,9 @@ export class ImparteixManagerService {
     this.error.set(null);
 
     try {
-      const data = await this.apiManager.get<Imparteix[]>('/imparteix');
-      this.imparticions.set(data);
+      const resp = await this.apiManager.get<any>('/imparteix');
+      const llista = resp.data || resp;
+      this.imparticions.set(llista);
     } catch (err) {
       this.error.set("No s'ha pogut connectar per veure qui imparteix què");
       console.error(err);

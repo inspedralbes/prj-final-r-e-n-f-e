@@ -1,6 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -12,19 +13,37 @@ export class LoginComponent {
   usuari = signal<string>('');
   error = signal<string>('');
 
-  constructor(private router: Router) {}
+  constructor(
+    private router: Router,
+    private authService: AuthService
+  ) { }
+
+  loginGoogle() {
+    this.authService.loginWithGoogle();
+  }
 
   iniciarSessio() {
-    const tipus = this.usuari().toLowerCase().trim();
+    const email = this.usuari().toLowerCase().trim();
 
-    if (tipus === 'alumne') {
-      this.router.navigate(['/alumnes']);
-    } else if (tipus === 'professor') {
-      this.router.navigate(['/professors']);
-    } else if (tipus === 'admin') {
-      this.router.navigate(['/administracio']);
-    } else {
-      this.error.set("Usuari no vàlid. Prova 'alumne', 'professor' o 'admin'.");
+    if (!email.includes('@')) {
+      // Suport temporal per a paraules clau si l'usuari no escriu un email
+      if (email === 'alumne') { this.router.navigate(['/alumnes']); return; }
+      if (email === 'professor') { this.router.navigate(['/professors']); return; }
+      if (email === 'admin') { this.router.navigate(['/administracio']); return; }
+
+      this.error.set("Introdueix un email vàlid de la base de dades.");
+      return;
     }
+
+    this.authService.loginTemporal(email).subscribe({
+      next: (response: any) => {
+        if (response.success) {
+          this.authService.guardarSessio(response.data);
+        }
+      },
+      error: (err: any) => {
+        this.error.set("Usuari no trobat a la base de dades.");
+      }
+    });
   }
 }

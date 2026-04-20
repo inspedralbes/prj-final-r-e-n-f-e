@@ -9,7 +9,7 @@
             <div class="grup-input">
                 <label for="usuari">Usuari</label>
                 <div class="input-wrapper">
-                    <input type="text" id="usuari" placeholder="Ex: alumne, professor, admin" [(ngModel)]="usuari"
+                    <input type="text" id="usuari" placeholder="Posa el teu email" [(ngModel)]="usuari"
                         (keyup.enter)="iniciarSessio()">
                     <span class="icona-input">👤</span>
                 </div>
@@ -17,18 +17,21 @@
 
             <button (click)="iniciarSessio()" class="boto-entrar">
                 Iniciar Sessió
-                <span class="fletxa">→</span>
             </button>
 
             @if (error()) {
             <div class="missatge-error">
-                <span class="icona-error">⚠️</span> {{ error() }}
+                <span class="icona-error"></span> {{ error() }}
             </div>
             }
+            <button (click)="loginGoogle()" class="boto-google">
+                <span class="icona-google-img">G</span>
+                Login amb Google
+            </button>
         </div>
 
         <div class="peu-login">
-            <p>© 2024 Projecte Pedralbes</p>
+            <p>© 2026 R.E.N.F.E</p>
         </div>
     </div>
 </div>

@@ -1,105 +1,295 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :host {
-    --primary-color: #6366f1;
-    --primary-light: #818cf8;
-    --secondary-color: #a78bfa;
-    --accent-color: #f472b6;
-    --bg-color: #f8fafc;
-    --card-bg: rgba(255, 255, 255, 0.85);
-    --text-main: #1e293b;
+    --glass-bg: rgba(255, 255, 255, 0.45);
+    --glass-border: rgba(255, 255, 255, 0.6);
+    --primary-indigo: #6366f1;
+    --accent-red: #ef4444;
+    --text-dark: #1e293b;
     --text-muted: #64748b;
-    --shadow-soft: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
-    --shadow-hover: 0 20px 40px -10px rgba(99, 102, 241, 0.2);
-    --radius-large: 32px;
-    --radius-medium: 20px;
-    --radius-small: 12px;
 }
 
 .disseny-principal {
     display: flex;
     flex-direction: column;
-    background-color: var(--bg-color);
     height: 100vh;
     font-family: 'Outfit', sans-serif;
     position: relative;
     overflow: hidden;
 }
 
-/* Fons Orgànic */
-.fons-organic {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-    pointer-events: none;
-    overflow: hidden;
-}
-
-.forma {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.6;
-    animation: flotar 20s infinite ease-in-out;
-}
-
-.forma-1 {
-    top: -10%;
-    right: -5%;
-    width: 600px;
-    height: 600px;
-    background: radial-gradient(circle, var(--primary-light), transparent 70%);
-    animation-delay: 0s;
-}
-
-.forma-2 {
-    bottom: -10%;
-    left: -5%;
-    width: 500px;
-    height: 500px;
-    background: radial-gradient(circle, var(--secondary-color), transparent 70%);
-    animation-delay: -5s;
-}
-
-.forma-3 {
-    top: 40%;
-    left: 30%;
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, var(--accent-color), transparent 70%);
-    opacity: 0.4;
-    animation-delay: -10s;
-}
-
-@keyframes flotar {
-
-    0%,
-    100% {
-        transform: translate(0, 0) scale(1);
-    }
-
-    33% {
-        transform: translate(30px, -50px) scale(1.1);
-    }
-
-    66% {
-        transform: translate(-20px, 20px) scale(0.9);
-    }
-}
 
 .contingut {
     flex-grow: 1;
-    margin-top: 80px;
-    /* Alçada navbar */
+    margin-top: 180px;
     padding: 20px 40px;
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    gap: 30px;
     overflow-y: auto;
-    z-index: 1;
-    /* Sobre el fons */
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-light) transparent;
+}
+
+.targeta-llista {
+    background: var(--glass-bg);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border-radius: 32px;
+    padding: 35px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    max-width: 1200px;
+    border: 1px solid var(--glass-border);
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.capçalera-llista {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+h1 {
+    color: #1e1b4b;
+    font-size: 2.5rem;
+    margin: 0;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.subtitol {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.formulari-creacio {
+    background: rgba(255, 255, 255, 0.3);
+    padding: 30px;
+    border-radius: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+}
+
+.titol-formulari {
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: var(--primary-indigo);
+    margin-bottom: 20px;
+    display: block;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.grup-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.input-grup {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-grup label {
+    font-weight: 800;
+    font-size: 0.9rem;
+    color: #1e1b4b;
+    margin-left: 5px;
+}
+
+.grup-dates {
+    display: flex;
+    gap: 12px;
+}
+
+.input-modern {
+    padding: 14px 20px;
+    border-radius: 16px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background: white;
+    color: var(--text-dark);
+    font-size: 1rem;
+    font-family: 'Outfit', sans-serif;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    outline: none;
+    width: 100%;
+}
+
+.input-modern:focus {
+    border-color: var(--primary-indigo);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.15);
+    transform: translateY(-2px);
+}
+
+.accions-formulari {
+    grid-column: span 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    color: #1e1b4b;
+    font-size: 1rem;
+}
+
+.checkbox-container input {
+    width: 22px;
+    height: 22px;
+    accent-color: var(--primary-indigo);
+    cursor: pointer;
+}
+
+.boto-afegir {
+    background: var(--primary-indigo);
+    color: white;
+    padding: 14px 30px;
+    border-radius: 16px;
+    border: none;
+    font-weight: 900;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+}
+
+.boto-afegir:hover {
+    transform: scale(1.05) translateY(-3px);
+    background: #4f46e5;
+    box-shadow: 0 12px 25px rgba(99, 102, 241, 0.35);
+}
+
+.contenedor-taula {
+    border-radius: 24px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.taula-premium {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.taula-premium th {
+    padding: 15px 20px;
+    text-align: left;
+    color: var(--primary-indigo);
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+}
+
+.taula-premium td {
+    background: rgba(255, 255, 255, 0.75);
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+    color: var(--text-dark);
+    transition: all 0.3s;
+}
+
+.taula-premium tr:hover td {
+    background: rgba(255, 255, 255, 0.7);
+    transform: scale(1.01);
+}
+
+.taula-premium td:first-child {
+    border-left: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 20px 0 0 20px;
+    padding-left: 25px;
+}
+
+.taula-premium td:last-child {
+    border-right: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 0 20px 20px 0;
+}
+
+.nom-assignatura {
+    font-weight: 800;
+    font-size: 1.2rem;
+    color: #1e1b4b;
+}
+
+.info-badge {
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    background: white;
+    color: #1e1b4b;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.exempcio-si {
+    background: #dcfce7;
+    color: #166534;
+    border-color: #bbf7d0;
+}
+
+.boto-esborrar {
+    background: #fee2e2;
+    color: var(--accent-red);
+    padding: 10px 20px;
+    border-radius: 12px;
+    border: 1px solid #fecaca;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.boto-esborrar:hover {
+    background: var(--accent-red);
+    color: white;
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(239, 68, 68, 0.2);
+}
+
+.empty-state {
+    padding: 60px;
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    font-size: 1.1rem;
+    font-weight: 500;
+}
+
+@media (max-width: 900px) {
+    .grup-inputs {
+        grid-template-columns: 1fr;
+    }
+
+    .accions-formulari {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+    }
+
+    .boto-afegir {
+        width: 100%;
+    }
 }

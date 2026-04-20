@@ -4,6 +4,7 @@ import { SidebarComponent } from '../../shared/components/sidebar/sidebar.compon
 import { AssignaturesManagerService } from '../../shared/services/assignatures/assignatures-manager.service';
 import { HorarisManagerService } from '../../shared/services/horaris/horaris-manager.service';
 import { ImparteixManagerService } from '../../shared/services/imparteix/imparteix-manager.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-professors',
@@ -12,11 +13,12 @@ import { ImparteixManagerService } from '../../shared/services/imparteix/imparte
   styleUrl: './professors.component.css',
 })
 export class ProfessorsComponent implements OnInit {
-  assignaturesManager = inject(AssignaturesManagerService);
-  horarisManager = inject(HorarisManagerService);
-  imparteixManager = inject(ImparteixManagerService);
+  private assignaturesManager = inject(AssignaturesManagerService);
+  private horarisManager = inject(HorarisManagerService);
+  private imparteixManager = inject(ImparteixManagerService);
+  private authService = inject(AuthService);
 
-  // Dades de la classe actual conectada a la Base de Datos (ARA REACTIU!)
+  // Dades de la classe actual conectada a la Base de Datos per a la targeta
   classeActual = computed(() => {
     // Això llegeix constantment l'array d'assignatures del Manager
     const llistaDeLaravel = this.assignaturesManager.assignatures();
@@ -48,27 +50,6 @@ export class ProfessorsComponent implements OnInit {
 
   diesSetmana = ['Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres'];
 
-  // // Horari Matí
-  // horariFrontAM = [
-  //     { hora: '08:00', assignatures: ['Matemàtiques', 'Física', 'Química', 'Història', 'Filosofia'] },
-  //     { hora: '09:00', assignatures: ['Anglès', 'Matemàtiques', 'Física', 'Química', 'Història'] },
-  //     { hora: '10:00', assignatures: ['Filosofia', 'Anglès', 'Matemàtiques', 'Física', 'Química'] },
-  //     { hora: '11:00', assignatures: ['Història', 'Filosofia', 'Anglès', 'Matemàtiques', 'Física'] },
-  //     { hora: '11:30', assignatures: ['Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo'] },
-  //     { hora: '12:00', assignatures: ['Química', 'Història', 'Filosofia', 'Anglès', 'Matemàtiques'] },
-  //     { hora: '13:00', assignatures: ['Tutoria', 'Projecte', 'Projecte', 'Esport', 'Lliure'] },
-  // ];
-
-  // // Horari Tarda
-  // horariFrontPM = [
-  //     { hora: '15:00', assignatures: ['Programació', 'Bases de Dades', 'Xarxes', 'Sistemes', 'Anglès Tècnic'] },
-  //     { hora: '16:00', assignatures: ['Bases de Dades', 'Programació', 'Xarxes', 'Sistemes', 'Anglès Tècnic'] },
-  //     { hora: '17:00', assignatures: ['Xarxes', 'Sistemes', 'Programació', 'Bases de Dades', 'Empresa'] },
-  //     { hora: '18:00', assignatures: ['Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo', 'Esbarjo'] },
-  //     { hora: '18:30', assignatures: ['Projecte', 'Empresa', 'FOL', 'Programació', 'Sistemes'] },
-  //     { hora: '19:30', assignatures: ['Projecte', 'Empresa', 'FOL', 'Programació', 'Sistemes'] },
-  // ];
-
   // Retorna l'horari segons la franja seleccionada
   horariActual = computed(() => {
     // 1. Obtenim totes les dades que hem inyectat al ngOnInit
@@ -76,35 +57,19 @@ export class ProfessorsComponent implements OnInit {
     const totsHoraris = this.horarisManager.horaris();
 
     // 2. Definim quin profe som per poder filtrar què ens toca donar
-    const idProfeLoguejat = 1; // Més endavant ho agafarem del Login
+    const usuariLoguejat = this.authService.usuarioInfo;
+    if (!usuariLoguejat || !usuariLoguejat.id) return [];
 
-    // 3. Busquem quines assignatures dono jo
-    const lesMevesAssignatures: number[] = [];
-    for (let i = 0; i < totesImparticions.length; i++) {
-      const imparticioActual = totesImparticions[i];
+    const idProfeLoguejat = usuariLoguejat.id;
 
-      if (imparticioActual.id_profe === idProfeLoguejat) {
-        lesMevesAssignatures.push(imparticioActual.id_assignatura);
-      }
-    }
-
-    // 4. Recollim només els horaris que coincideixin amb les meves assignatures
+    // 3. Busquem els horaris on JO sóc el professor assignat
     const elsMeusHoraris: any[] = [];
-    for (let j = 0; j < totsHoraris.length; j++) {
-      const horariActualAux = totsHoraris[j];
-      let esMeva = false;
-
-      // Comprovem si l'horari actual és d'alguna de les meves assignatures
-      for (let k = 0; k < lesMevesAssignatures.length; k++) {
-        if (horariActualAux.id_assig === lesMevesAssignatures[k]) {
-          esMeva = true;
-          break; // Ja hem trobat que és meva, no cal comprovar més
+    if (totsHoraris && Array.isArray(totsHoraris)) {
+      for (let j = 0; j < totsHoraris.length; j++) {
+        const horariActualAux = totsHoraris[j];
+        if (horariActualAux.id_professor === idProfeLoguejat) {
+          elsMeusHoraris.push(horariActualAux);
         }
-      }
-
-      // Si és meva, la guardem a la llista d'horaris definitius
-      if (esMeva) {
-        elsMeusHoraris.push(horariActualAux);
       }
     }
 
@@ -198,6 +163,18 @@ export class ProfessorsComponent implements OnInit {
         }
       }
     }
+    // 7. Retallem les files buides al final per evitar espai blanc innecessari a la UI
+    while (graella.length > 0) {
+      const ultimaFila = graella[graella.length - 1];
+      const teContingut = ultimaFila.assignatures.some((a: string) => a !== '' && a !== 'ESBARJO');
+      // Si la fila és buida i no és una franja especial (com l'esbarjo si és l'última), la treiem
+      if (!teContingut) {
+        graella.pop();
+      } else {
+        break;
+      }
+    }
+
     return graella;
   });
 

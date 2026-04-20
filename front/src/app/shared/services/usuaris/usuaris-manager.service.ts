@@ -20,8 +20,10 @@ export class UsuarisManagerService {
     this.error.set(null);
 
     try {
-      const data = await this.apiManager.get<Usuari[]>('/usuaris');
-      this.usuaris.set(data);
+      const resp = await this.apiManager.get<any>('/usuaris');
+      // Laravel retorna { success: true, data: [...], message: "..." }
+      const llista = resp.data || resp;
+      this.usuaris.set(llista);
     } catch (err) {
       this.error.set("No s'han pogut obtenir els usuaris");
       console.error(err);
@@ -103,5 +105,22 @@ export class UsuarisManagerService {
       console.error(`Error esborrant usuari ${id}:`, err);
       throw err;
     }
+  }
+
+  /**
+   * Retorna només els usuaris que són Alumnes
+   */
+  getAlumnes(): Usuari[] {
+    const tots = this.usuaris();
+    const result: Usuari[] = [];
+    if (tots && Array.isArray(tots)) {
+      for (let i = 0; i < tots.length; i++) {
+        const u = tots[i];
+        if (u.rol === 'Alumne') {
+          result.push(u);
+        }
+      }
+    }
+    return result;
   }
 }

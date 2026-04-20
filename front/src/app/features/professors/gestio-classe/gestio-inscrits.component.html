@@ -1,0 +1,147 @@
+<!--
+    Aquí utilitzem:
+     - ngIf: Es per mostrar o no mostrar algo.
+     - ngModel: Es per fer el "v-model", així ho que escrius aquí va directe al codi.
+     - ng-container: Un contenidor que no surt al DOM (al F12), ideal per niar coses.
+-->
+
+<div class="disseny-principal">
+    <app-sidebar></app-sidebar>
+
+
+    <div class="contingut">
+        <div class="targeta-llista">
+
+            <div class="capçalera-llista">
+                <div class="titol-seccio">
+                    <h1>Gestió de classes</h1>
+                    <!-- Ensenyem el nom de la classe i l'aula si la trobem -->
+                    <p class="setmana-info" *ngIf="classeTrobada()">
+                        {{ classeTrobada()?.nom }} | {{ classeTrobada()?.curs?.nom }} | {{ classeTrobada()?.aula?.nom ||
+                        'Sense Aula' }}
+                    </p>
+                    <p class="setmana-info" *ngIf="!classeTrobada()">
+                        No s'ha trobat cap classe assignada.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Aquí es on comprovem si tenim una classe assignada per gestionar-la -->
+            <div *ngIf="classeTrobada()" class="seccio-inscrits">
+
+                <!-- Llista dels alumnes que ja estan a la classe ara mateix (Llista Mestra) -->
+                <div class="capçalera-secundaria">
+                    <h3>Alumnes actuals</h3>
+                </div>
+                <div class="contenedor-taula">
+                    <table class="taula-assistencia">
+                        <thead>
+                            <tr>
+                                <th class="col-nom">Nom de l'alumne</th>
+                                <th>Correu Electrònic</th>
+                                <th style="text-align: center;">Accions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Recorrem cada alumne que ja està inscrit a la llista -->
+                            @for (alumne of alumnesDeLaClasse(); track alumne.id) {
+                            <tr>
+                                <td style="font-weight: 600;">{{ alumne.nom }}</td>
+                                <td style="color: #64748b;">{{ alumne.email }}</td>
+                                <td style="text-align: center;">
+                                    <!-- Botó per treure a algú de la classe si ja no hi és -->
+                                    <button class="boto-accio boto-treure" (click)="treureAlumneDeClasse(alumne)">
+                                        Treure
+                                    </button>
+                                </td>
+                            </tr>
+                            }
+                            <!-- Si no n'hi ha cap encara, sortirà això -->
+                            @empty {
+                            <tr>
+                                <td colspan="3" style="text-align: center; padding: 20px; color: #64748b;">
+                                    No hi ha cap alumne inscrit a la llista maestra d'aquesta classe.
+                                </td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Segona part: El cercador per trobar alumnes nous i afegir-los -->
+                <div class="capçalera-secundaria mt-4">
+                    <h3>Afegir nous alumnes</h3>
+                    <!-- Aquí es on es fa la cerca, ngmodel es com v-model -->
+                    <input type="text" class="cerca-input" placeholder="Cerca alumnes per nom o email..."
+                        [(ngModel)]="cercaAlumne">
+                </div>
+
+                <!-- Només ensenyem els resultats si l'usuari ha escrit algo al cercador -->
+                <div class="contenedor-taula" *ngIf="cercaAlumne && cercaAlumne.length > 1">
+                    <table class="taula-assistencia">
+                        <thead>
+                            <tr>
+                                <th class="col-nom">Resultats de la cerca</th>
+                                <th>Estat</th>
+                                <th style="text-align: center;">Acció</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Mentre el servidor busca, ensenyem la boleta de càrrega -->
+                            <tr *ngIf="serveiUsuaris.isLoading()">
+                                <td colspan="3" style="text-align: center; padding: 25px;">
+                                    <div class="loading-spinner-small"></div>
+                                    <span style="color: #64748b; margin-left: 12px; font-weight: 500;">Cercant
+                                        alumnes...</span>
+                                </td>
+                            </tr>
+
+                            <!-- Aquí ja pintem els resultats de la cerca d'alumnes -->
+                            <ng-container *ngIf="!serveiUsuaris.isLoading()">
+                                <ng-container *ngFor="let alumne of alumnesDisponibles()">
+                                    <!-- Filtrem només els que coincideixen amb ho que has escrit -->
+                                    <tr
+                                        *ngIf="alumne.nom.toLowerCase().includes(cercaAlumne.toLowerCase()) || alumne.email.toLowerCase().includes(cercaAlumne.toLowerCase())">
+                                        <td>
+                                            <div style="font-weight: 600;">{{ alumne.nom }}</div>
+                                            <div style="font-size: 0.8rem; color: #94a3b8;">{{ alumne.email }}</div>
+                                        </td>
+                                        <td>
+                                            <!-- Informació sobre si l'alumne ja té una classe o està lliure -->
+                                            <span *ngIf="alumne.id_classe === classeTrobada()?.id"
+                                                class="insignia insignia-success">A la classe</span>
+                                            <span *ngIf="alumne.id_classe && alumne.id_classe !== classeTrobada()?.id"
+                                                class="insignia insignia-warning">Altra classe</span>
+                                            <span *ngIf="!alumne.id_classe" class="insignia"
+                                                style="background: #f1f5f9; color: #64748b;">Lliure</span>
+                                        </td>
+                                        <td style="text-align: center;">
+                                            <!-- Botó per inscriure'l si no està ja a la teva classe -->
+                                            <button *ngIf="alumne.id_classe !== classeTrobada()?.id"
+                                                class="boto-accio boto-afegir"
+                                                (click)="afegirAlumneAClasse(alumne.email)">
+                                                Inscriure
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </ng-container>
+                            </ng-container>
+
+                            <!-- Si no trobem ningú amb aquest nom, posem aquest missatge -->
+                            <tr *ngIf="!hiHaResultats()">
+                                <td colspan="3" style="text-align: center; padding: 20px; color: #64748b;">
+                                    No s'han trobat resultats per a la cerca de "{{ cercaAlumne }}".
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Si ets un profe que no té cap classe assignada, et sortirà això -->
+            <div *ngIf="!classeTrobada()" class="empty-state">
+                <p>No s'ha trobat cap classe de la qual siguis tutor.</p>
+            </div>
+        </div>
+    </div>
+</div>

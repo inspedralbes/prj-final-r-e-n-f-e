@@ -1,0 +1,210 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:host {
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --secondary: #a78bfa;
+  --accent: #f472b6;
+  --text-dark: #1e293b;
+  --text-muted: #64748b;
+}
+
+/* -- Pagina */
+#horari-alumne-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Outfit', sans-serif;
+}
+
+/* -- Contingut */
+.contingut {
+  flex-grow: 1;
+  margin-top: 180px;
+  padding: 20px 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* -- Targeta gran de vidre */
+.targeta-horari-premium {
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 40px;
+  padding: 50px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* -- Capcalera */
+.cap�alera-moderna {
+  width: 100%;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.titol_pagina {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--primary);
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* -- Scroll wrapper */
+.scroll-wrapper {
+  overflow-x: auto;
+  padding: 10px 4px 24px 4px;
+}
+
+/* -- Grid principal */
+.grid-horari {
+  display: grid;
+  grid-template-columns: 80px repeat(5, 1fr);
+  gap: 15px;
+  min-width: 700px;
+  width: 100%;
+}
+
+/* -- Capcaleres dels dies */
+.dia-header {
+  text-align: center;
+  padding: 10px 0 20px 0;
+  font-weight: 900;
+  color: var(--primary);
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 0.15em;
+}
+
+/* -- Columna de temps */
+.columna-temps {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.col-temps {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+  font-weight: 800;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.col-temps.esbarjo-temps {
+  min-height: 50px;
+  font-size: 0.8rem;
+  opacity: 0.7;
+}
+
+/* -- Slot de sessio (tarjeta individual) */
+.slot-sessio {
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 24px;
+  min-height: 100px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: default;
+  position: relative;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.slot-sessio:hover {
+  transform: translateY(-5px) scale(1.03);
+  background: white;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  border-color: var(--primary-light);
+  z-index: 2;
+}
+
+.slot-sessio.buit {
+  background: rgba(255, 255, 255, 0.5);
+  border: 2px dashed rgba(99, 102, 241, 0.15);
+  box-shadow: none;
+}
+
+.slot-sessio.buit:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+/* -- Esbarjo */
+.slot-sessio.esbarjo {
+  grid-column: 2 / -1;
+  background: linear-gradient(90deg, rgba(244, 114, 182, 0.1), rgba(167, 139, 250, 0.1));
+  border: none;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.3em;
+  font-size: 0.75rem;
+  cursor: default;
+  border-radius: 24px;
+  box-shadow: none;
+}
+
+.slot-sessio.esbarjo:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+  background: linear-gradient(90deg, rgba(244, 114, 182, 0.1), rgba(167, 139, 250, 0.1));
+}
+
+/* -- Info de la sessio */
+.info-sessio .assignatura-nom {
+  font-weight: 700;
+  font-size: 1rem;
+  color: var(--text-dark);
+  display: block;
+}
+
+/* -- Estat missatges */
+.estat-missatge {
+  padding: 20px;
+  color: var(--text-muted);
+  font-weight: 500;
+  text-align: center;
+}
+
+.estat-error {
+  color: #dc2626;
+}
+
+/* -- Columna de dia: invisible, pur layout (al final per cascada) */
+.dia-col {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.dia-col:hover,
+.dia-col:focus,
+.dia-col:focus-within {
+  background: transparent;
+  border: none;
+  outline: none;
+  box-shadow: none;
+  transform: none;
+}
