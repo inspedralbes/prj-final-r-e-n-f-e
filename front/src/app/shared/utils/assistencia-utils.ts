@@ -5,11 +5,9 @@ export function getSimbolAssistencia(estat: string, justificat: boolean) {
     case 'Retard':
       return 'R';
     case 'Falta':
-      if (justificat) {
-        return 'FJ';
-      } else {
-        return 'F';
-      }
+      return 'F';
+    case 'Justificada':
+      return 'FJ';
     default:
       return '';
   }
