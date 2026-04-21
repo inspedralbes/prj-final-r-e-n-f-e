@@ -88,4 +88,9 @@ class Usuari extends Authenticatable
     {
         return $this->hasMany(Justificant::class, 'id_alum');
     }
+
+    public function isProfileCompleted()
+    {
+        return $this->rol !== 'alumne';
+    }
 }

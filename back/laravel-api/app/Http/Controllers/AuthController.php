@@ -75,10 +75,9 @@ class AuthController extends Controller
                 $user_rol = 'Profe';
             }
 
-            // Verificar si el usuari ja existeix a la base de dades
+            // Verificar si l'usuari ja existeix a la base de dades
             $user = Usuari::where('email', $user_email)->first();
-
-            // Si el usuario NO existeix
+            // Si l'usuari NO existeix
             if (!$user) {
                 // Descarreguem la foto de perfil
                 $photoPath = null;
@@ -111,12 +110,13 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'user' => $user,
+                'data' => [ 
+                    'user_email' => $user_email,
                     'token' => $token,
-                    'rol' => $user_rol
+                    'rol' => $user_rol,
+                    'isProfileCompleted' => $user->isProfileCompleted()
                 ],
-                'message' => 'Autenticació correcta'
+                'message' => 'Autenticació correcta',
             ], Response::HTTP_OK);
 
         } catch (\Exception $e) {
