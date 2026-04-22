@@ -19,10 +19,11 @@ Route::prefix('v1')->group(function (): void {
     Route::post('auth/google/redirect', [AuthController::class, 'googleRedirectUrl']);
     Route::post('auth/google/callback', [AuthController::class, 'googleCallback']);
     Route::post('auth/login-temporal', [AuthController::class, 'loginTemporal']);
+    Route::patch('/fullfill-user-profile', [UsuariController::class, 'fullfillUserProfile'])->middleware(('auth:sanctum'));
 
     // Grup protegit per policy de perfil completo
     Route::middleware('can:canPerformAction,App\\Models\\Usuari')->group(function () {
-            // Rutes d'Usuaris
+        // Rutes d'Usuaris
         Route::apiResource('usuaris', UsuariController::class);
 
         // Rutes de Cursos
