@@ -87,13 +87,11 @@ class AuthController extends Controller
                         $contents = Http::get($googleUser->getAvatar())->body();
 
                         if($user_rol === 'Alumne'){
-                            error_log('[FOTO] Usuario identificado como Alumne');
                             Storage::disk('public')->makeDirectory('photos/' . 'alumnes');
                             $filename = 'photos/alumnes/' . $user_email . '.jpg';
                         }
 
                         else if($user_rol === 'Profe' || $user_rol === 'Admin') {
-                            error_log('[FOTO] Usuario identificado como Profe');
                             Storage::disk('public')->makeDirectory('photos/' . 'profes');
                             $filename = 'photos/profes/' . $user_email . '.jpg';
                         }
