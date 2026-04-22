@@ -7,7 +7,12 @@
 <div class="disseny-principal">
   <app-sidebar></app-sidebar>
 
-  <div class="contingut">
+  <div class="contingut relative-container">
+    @if (carregantDades()) {
+      <div class="glass-loader-overlay">
+        <div class="glass-spinner"></div>
+      </div>
+    }
     <div class="targeta-llista">
       <div class="capçalera-llista">
         <div class="titol-seccio">

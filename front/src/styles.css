@@ -86,3 +86,46 @@ body::after {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-color);
 }
+
+/* Glass Overlay Loading - Carga Premium */
+.glass-loader-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: inherit;
+    animation: fadeIn 0.3s ease-out;
+    pointer-events: all;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.glass-spinner {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: conic-gradient(from 0deg, transparent 0%, var(--primary-color) 40%, var(--accent-color) 100%);
+    animation: spinOrbital 1s linear infinite;
+    -webkit-mask: radial-gradient(transparent 55%, #000 58%);
+    mask: radial-gradient(transparent 55%, #000 58%);
+    filter: drop-shadow(0 0 10px rgba(99, 102, 241, 0.5));
+}
+
+@keyframes spinOrbital {
+    to { transform: rotate(360deg); }
+}
+
+.relative-container {
+    position: relative !important;
+}

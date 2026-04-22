@@ -18,6 +18,8 @@ export class ProfessorsComponent implements OnInit {
   private imparteixManager = inject(ImparteixManagerService);
   private authService = inject(AuthService);
 
+  carregantDades = computed(() => this.horarisManager.isLoading());
+
   // Dades de la classe actual connectada a la Base de Dades
   classeActual = computed(() => {
     // Escoltem la resposta que ens ha deixat el Backend a classeActualApi

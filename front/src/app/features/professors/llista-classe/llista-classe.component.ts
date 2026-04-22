@@ -29,6 +29,8 @@ export class LlistaClasseComponent implements OnInit {
   alumnesAmbAssistencia = signal<any[]>([]);
   sessioSeleccionadaId = signal<number | null>(null);
 
+  carregantDades = computed(() => this.assistenciesManager.isLoading());
+
   // Ordenem el llistat per pintar al HTML
   sessionsProfessor = computed(() => {
     const llista = this.sessionsProfessorData();
