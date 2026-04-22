@@ -45,6 +45,22 @@ export class ClassesManagerService {
   }
 
   /**
+   * Fase 2: Mètode segur per descarregar NOMÉS els usuaris assignats a aquesta classe
+   */
+  async getAlumnesClasse(idClasse: number) {
+    this.isLoading.set(true);
+    try {
+      const resp = await this.apiManager.get<any>(`/classes/${idClasse}/alumnes`);
+      return resp.data || resp;
+    } catch (err) {
+      console.error(`Error obtenint alumnes de la classe ${idClasse}`, err);
+      return [];
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
    * Crea una nova classe
    */
   async crearClasse(nom: string, curs_id: number) {

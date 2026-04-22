@@ -63,6 +63,21 @@ export class AssistenciesManagerService {
     }
   }
 
+  /**
+   * Fase 2: Descarrega assistència intel·ligent directament de Laravel
+   */
+  async getAssistenciaSetmanal(idHorari: number, dataIni: string, dataFi: string) {
+    this.isLoading.set(true);
+    try {
+      const resp = await this.apiManager.get<any>(`/horaris/${idHorari}/assistencia-setmanal?data_ini=${dataIni}&data_fi=${dataFi}`);
+      return resp.data || resp;
+    } catch (err) {
+      console.error('Error obtenint l\'assistència setmanal de l\'horari', err);
+      return [];
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
 
   /**
    * Afegeix un nou registre d'assistència (POST)

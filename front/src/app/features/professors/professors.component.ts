@@ -18,32 +18,27 @@ export class ProfessorsComponent implements OnInit {
   private imparteixManager = inject(ImparteixManagerService);
   private authService = inject(AuthService);
 
-  // Dades de la classe actual conectada a la Base de Datos per a la targeta
+  // Dades de la classe actual connectada a la Base de Dades
   classeActual = computed(() => {
-    // Això llegeix constantment l'array d'assignatures del Manager
-    const llistaDeLaravel = this.assignaturesManager.assignatures();
+    // Escoltem la resposta que ens ha deixat el Backend a classeActualApi
+    // (Aquesta resposta s'aconsegueix quan cridem a getClasseActual() a l'ngOnInit)
+    const classeApi = this.horarisManager.classeActualApi();
 
-    // Com que la teva base de dades està buida de moment, li diem què mostrar si no hi ha res:
-    if (llistaDeLaravel.length === 0) {
+    // Si la resposta és null (perquè estàs de pati, o ja has plegat, o és cap de setmana)
+    // posem un text genèric dient que no hi ha classe ara mateix.
+    if (!classeApi) {
       return {
-        nom: 'Cap assignatura trobada',
-        estat: 'ESPERANT DADES...',
+        nom: 'Cap assignatura assignada ara mateix',
+        estat: "A L'ESPERA",
         horaInici: '--:--',
         horaFi: '--:--',
-        aula: 'TBD',
+        aula: '-',
       };
     }
-    // Si tenim dades a Laravel, agafem la primera assignatura (només per començar)
-    // (Més endavant ho creuarem amb Horaris i Aules de debò)
-    const primera = llistaDeLaravel[0];
 
-    return {
-      nom: primera.nom,
-      estat: 'EN CURS ARA',
-      horaInici: '08:00',
-      horaFi: '09:00',
-      aula: 'A201',
-    };
+    // Si el Laravel HA TROBAT classe a l'hora actual, l'ensenyem tal qual
+    // (el Laravel ens envia l'objecte amb nom, estat, horaInici, horaFi i aula)
+    return classeApi;
   });
 
   franjaHoraria = signal<'AM' | 'PM'>('AM');
@@ -52,129 +47,105 @@ export class ProfessorsComponent implements OnInit {
 
   // Retorna l'horari segons la franja seleccionada
   horariActual = computed(() => {
-    // 1. Obtenim totes les dades que hem inyectat al ngOnInit
-    const totesImparticions = this.imparteixManager.imparticions();
-    const totsHoraris = this.horarisManager.horaris();
-
-    // 2. Definim quin profe som per poder filtrar què ens toca donar
-    const usuariLoguejat = this.authService.usuarioInfo;
-    if (!usuariLoguejat || !usuariLoguejat.id) return [];
-
-    const idProfeLoguejat = usuariLoguejat.id;
-
-    // 3. Busquem els horaris on JO sóc el professor assignat
-    const elsMeusHoraris: any[] = [];
-    if (totsHoraris && Array.isArray(totsHoraris)) {
-      for (let j = 0; j < totsHoraris.length; j++) {
-        const horariActualAux = totsHoraris[j];
-        if (horariActualAux.id_professor === idProfeLoguejat) {
-          elsMeusHoraris.push(horariActualAux);
-        }
-      }
+    // 1. Agafem l'horari
+    const diesCalendari = this.horarisManager.horarisAssignaturaNet();
+    // 2. Mapegem cada dia usant un for clàssic
+    const mapa: { [dia: string]: (string | null)[] } = {};
+    for (let i = 0; i < diesCalendari.length; i++) {
+      const diaCalendari = diesCalendari[i];
+      mapa[diaCalendari.dia.toLowerCase()] = diaCalendari.assignatures;
     }
-
-    // 5. Construïm la plantilla buida de la teva UI
-    let graella: any[];
-
+    const unDia = ['dilluns', 'dimarts', 'dimecres', 'dijous', 'divendres'];
     const esMati = this.franjaHoraria() === 'AM';
+    // 3. Construïm la graella de presentació
+    let graella: any[] = [];
+
     if (esMati) {
-      graella = [
-        { hora: '08:00', assignatures: ['', '', '', '', ''] },
-        { hora: '09:00', assignatures: ['', '', '', '', ''] },
-        { hora: '10:00', assignatures: ['', '', '', '', ''] },
-        { hora: '11:00', assignatures: ['ESBARJO', 'ESBARJO', 'ESBARJO', 'ESBARJO', 'ESBARJO'] },
-        { hora: '11:30', assignatures: ['', '', '', '', ''] },
-        { hora: '12:30', assignatures: ['', '', '', '', ''] },
-        { hora: '13:30', assignatures: ['', '', '', '', ''] },
-      ];
-    } else {
-      graella = [
-        { hora: '15:00', assignatures: ['', '', '', '', ''] },
-        { hora: '16:00', assignatures: ['', '', '', '', ''] },
-        { hora: '17:00', assignatures: ['', '', '', '', ''] },
-        { hora: '18:00', assignatures: ['ESBARJO', 'ESBARJO', 'ESBARJO', 'ESBARJO', 'ESBARJO'] },
-        { hora: '18:30', assignatures: ['', '', '', '', ''] },
-        { hora: '19:30', assignatures: ['', '', '', '', ''] },
-      ];
-    }
-
-    // 6. Agafem els meus horaris i els col·loquem a la casella de la graella corresponent
-    for (let iterador = 0; iterador < elsMeusHoraris.length; iterador++) {
-      const horariAquest = elsMeusHoraris[iterador];
-      // Si hi ha codi_hora (ex: "X3") el desgranem
-      if (horariAquest.codi_hora) {
-        const lletraDia = horariAquest.codi_hora.charAt(0); // Primera lletra: 'L', 'M', 'X'...
-        const numeroHoraText = horariAquest.codi_hora.substring(1); // La resta: '1', '2', '3'...
-        const numeroHora = parseInt(numeroHoraText);
-        // --- CALCULEM LA COLUMNA (El dia de la setmana) ---
-        let indexColumna = -1;
-        if (lletraDia === 'L') {
-          indexColumna = 0;
-        } else if (lletraDia === 'M') {
-          indexColumna = 1;
-        } else if (lletraDia === 'X') {
-          indexColumna = 2;
-        } else if (lletraDia === 'J') {
-          indexColumna = 3;
-        } else if (lletraDia === 'V') {
-          indexColumna = 4;
+      // Preparem les files del matí
+      const horesMati = ['08:00', '09:00', '10:00', '11:00', '11:30', '12:30', '13:30'];
+      for (let fila = 0; fila < horesMati.length; fila++) {
+        const h = horesMati[fila];
+        if (h === '11:00') {
+          graella.push({
+            hora: h,
+            assignatures: ['ESBARJO', 'ESBARJO', 'ESBARJO', 'ESBARJO', 'ESBARJO'],
+          });
+        } else {
+          graella.push({ hora: h, assignatures: ['', '', '', '', ''] });
         }
+      }
+      // Omplim les assignatures a cada columna comprovant-ho una a una
+      for (let col = 0; col < unDia.length; col++) {
+        const diaString = unDia[col];
+        const llistaAssignaturesDia = mapa[diaString];
 
-        // --- CALCULEM LA FILA (L'hora del dia) ---
-        if (indexColumna !== -1) {
-          let indexFila = -1;
+        if (llistaAssignaturesDia) {
+          // Índex 0 del Laravel -> 08:00 (fila 0)
+          if (llistaAssignaturesDia[0]) graella[0].assignatures[col] = llistaAssignaturesDia[0];
+          // Índex 1 del Laravel -> 09:00 (fila 1)
+          if (llistaAssignaturesDia[1]) graella[1].assignatures[col] = llistaAssignaturesDia[1];
+          // Índex 2 del Laravel -> 10:00 (fila 2)
+          if (llistaAssignaturesDia[2]) graella[2].assignatures[col] = llistaAssignaturesDia[2];
+          // La fila 3 és l'esbarjo, ens la saltem
+          // Índex 3 del Laravel -> 11:30 (fila 4)
+          if (llistaAssignaturesDia[3]) graella[4].assignatures[col] = llistaAssignaturesDia[3];
+          // Índex 4 del Laravel -> 12:30 (fila 5)
+          if (llistaAssignaturesDia[4]) graella[5].assignatures[col] = llistaAssignaturesDia[4];
+          // Índex 5 del Laravel -> 13:30 (fila 6)
+          if (llistaAssignaturesDia[5]) graella[6].assignatures[col] = llistaAssignaturesDia[5];
+        }
+      }
+    } else {
+      // Tardes
+      const horesTarda = ['15:00', '16:00', '17:00', '18:00', '18:30', '19:30'];
+      for (let fila = 0; fila < horesTarda.length; fila++) {
+        const h = horesTarda[fila];
+        if (h === '18:00') {
+          graella.push({
+            hora: h,
+            assignatures: ['ESBARJO', 'ESBARJO', 'ESBARJO', 'ESBARJO', 'ESBARJO'],
+          });
+        } else {
+          graella.push({ hora: h, assignatures: ['', '', '', '', ''] });
+        }
+      }
+      for (let col = 0; col < unDia.length; col++) {
+        const diaString = unDia[col];
+        const llistaAssignaturesDia = mapa[diaString];
 
-          // Lògica per als matins (hores 1 a 6)
-          if (esMati && numeroHora <= 6) {
-            if (numeroHora <= 3) {
-              indexFila = numeroHora - 1; // 1ra hora -> Fila 0
-            } else {
-              indexFila = numeroHora; // 4ta hora -> Fila 4 (salta l'esbarjo, fila 3)
-            }
-          }
-          // Lògica per a les tardes (hores 7 a 12)
-          else if (!esMati && numeroHora >= 7) {
-            const horaTarda = numeroHora - 6; // Convertim "hora 7" en "1ra de la tarda"
-            if (horaTarda <= 3) {
-              indexFila = horaTarda - 1;
-            } else {
-              indexFila = horaTarda;
-            }
-          }
-          // --- INSERIM A LA GRAELLA SI LA CASELLA ESTÀ BUIDA ---
-          if (
-            indexFila !== -1 &&
-            graella[indexFila] &&
-            graella[indexFila].assignatures[indexColumna] === ''
-          ) {
-            // Extraiem els noms protegint-nos de si vénen buits del Back
-            let nomAssignatura = 'Sense Nom';
-            if (horariAquest.assignatura && horariAquest.assignatura.nom) {
-              nomAssignatura = horariAquest.assignatura.nom;
-            }
-            let nomClasse = '';
-            if (horariAquest.classe && horariAquest.classe.nom) {
-              nomClasse = horariAquest.classe.nom;
-            }
-            // Ho juntem a l'estil: "Programació\n(DAW2)"
-            graella[indexFila].assignatures[indexColumna] =
-              nomAssignatura + '\n(' + nomClasse + ')';
-          }
+        if (llistaAssignaturesDia) {
+          // Índex 6 del Laravel -> 15:00 (fila 0)
+          if (llistaAssignaturesDia[6]) graella[0].assignatures[col] = llistaAssignaturesDia[6];
+          // Índex 7 del Laravel -> 16:00 (fila 1)
+          if (llistaAssignaturesDia[7]) graella[1].assignatures[col] = llistaAssignaturesDia[7];
+          // Índex 8 del Laravel -> 17:00 (fila 2)
+          if (llistaAssignaturesDia[8]) graella[2].assignatures[col] = llistaAssignaturesDia[8];
+          // La fila 3 és l'esbarjo
+          // Índex 9 del Laravel -> 18:30 (fila 4)
+          if (llistaAssignaturesDia[9]) graella[4].assignatures[col] = llistaAssignaturesDia[9];
+          // Índex 10 del Laravel -> 19:30 (fila 5)
+          if (llistaAssignaturesDia[10]) graella[5].assignatures[col] = llistaAssignaturesDia[10];
         }
       }
     }
-    // 7. Retallem les files buides al final per evitar espai blanc innecessari a la UI
+    // 4. Esborrem files del final si estan totalment buides usant un bucle
     while (graella.length > 0) {
       const ultimaFila = graella[graella.length - 1];
-      const teContingut = ultimaFila.assignatures.some((a: string) => a !== '' && a !== 'ESBARJO');
-      // Si la fila és buida i no és una franja especial (com l'esbarjo si és l'última), la treiem
+
+      let teContingut = false;
+      for (let i = 0; i < ultimaFila.assignatures.length; i++) {
+        const assig = ultimaFila.assignatures[i];
+        if (assig !== '' && assig !== 'ESBARJO') {
+          teContingut = true;
+          break; // Trenquem el bucle intern
+        }
+      }
       if (!teContingut) {
-        graella.pop();
+        graella.pop(); // Traiem la fila perquè està buida
       } else {
-        break;
+        break; // Trenquem el while perquè hi ha assignatures
       }
     }
-
     return graella;
   });
 
@@ -184,8 +155,7 @@ export class ProfessorsComponent implements OnInit {
 
   // Implementación del método ngOnInit, esto pide a Laravel todas las asignaturas cuando el profe entra a su pantalla
   ngOnInit() {
-    this.assignaturesManager.carregarAssignatures();
-    this.horarisManager.carregarHoraris();
-    this.imparteixManager.carregarImparticions();
+    this.horarisManager.getHorari();
+    this.horarisManager.getClasseActual();
   }
 }

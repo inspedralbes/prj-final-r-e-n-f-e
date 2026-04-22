@@ -21,6 +21,7 @@ Route::prefix('v1')->group(function (): void {
     Route::post('auth/login-temporal', [AuthController::class, 'loginTemporal']);
 
     // Rutes d'Usuaris
+    Route::get('usuaris/rol/{rol}', [UsuariController::class, 'usuarisPerRol']);
     Route::apiResource('usuaris', UsuariController::class);
 
     // Rutes de Cursos
@@ -28,6 +29,7 @@ Route::prefix('v1')->group(function (): void {
 
     // Rutes de Classes
     Route::get('classes/tutor/{idTutor}', [ClasseController::class, 'obtenirClasseTutor']);
+    Route::get('classes/{id}/alumnes', [ClasseController::class, 'getAlumnesClasse']);
     Route::post('classes/assignarAlumnes', [ClasseController::class, 'assignarAlumnes']);
     Route::post('classes/treureAlumne', [ClasseController::class, 'treureAlumne']);
     Route::apiResource('classes', ClasseController::class);
@@ -43,13 +45,17 @@ Route::prefix('v1')->group(function (): void {
 
     // Rutes d'Horaris
     Route::post('horaris/granular', [HorariController::class, 'actualitzarHorariGranular']);
+    Route::get('classes/{id}/horaris', [HorariController::class, 'getHorarisClasse']);
+    Route::get('horaris/professor/{id}', [HorariController::class, 'getSessionsProfessor']);
     Route::apiResource('horaris', HorariController::class);
     Route::get('/horaris/usuari/{id}', [HorariController::class, 'getHorari']);
+    Route::get('/usuaris/{id}/classe-actual', [HorariController::class, 'getClasseActual']);
 
     // Rutes d'Imparteix
     Route::apiResource('imparteix', ImparteixController::class);
 
     // Rutes d'Assistència
+    Route::get('horaris/{idHorari}/assistencia-setmanal', [AssistenciaController::class, 'assistenciaSetmanalHorari']);
     Route::apiResource('assistencies', AssistenciaController::class);
     Route::get('assistencies/alumne/{alumneId}', action: [AssistenciaController::class, 'assistenciaPerAlumne']);
     Route::post('assistencies/generar', [AssistenciaController::class, 'generar']);

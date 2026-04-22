@@ -41,26 +41,17 @@ export class GestioInscritsComponent implements OnInit {
       const classe = await this.serveiClasses.obtenirClasseTutor(usuari.id);
       this.classeTrobada.set(classe);
 
-      // 3. Carreguem tots els usuaris
-      await this.serveiUsuaris.carregarUsuaris();
-      const tots = this.serveiUsuaris.usuaris();
+      // 3. Mètode segur (Fase 2): Descarreguem NOMÉS els usuaris que són alumnes des del Backend
+      // Ens estalviem descarregar centenars de pares d'alumnes i administradors que no necessitem aquí.
+      const nomesAlumnesSegurs = await this.serveiUsuaris.getUsuarisPerRol('Alumne');
+      this.alumnesDisponibles.set(nomesAlumnesSegurs);
 
-      const nomésAlumnes: Usuari[] = [];
-      if (tots && Array.isArray(tots)) {
-        for (let i = 0; i < tots.length; i++) {
-          if (tots[i].rol === 'Alumne') {
-            nomésAlumnes.push(tots[i]);
-          }
-        }
-      }
-      this.alumnesDisponibles.set(nomésAlumnes);
-
-      // Filtrem només els que pertanyen a AQUESTA classe (Llista Mestra)
+      // 4. Filtrem només els que pertanyen a AQUESTA classe usant un bucle primitiu
       if (classe) {
         const elsMeusAlumnes: Usuari[] = [];
-        for (let j = 0; j < nomésAlumnes.length; j++) {
-          if (nomésAlumnes[j].id_classe === classe.id) {
-            elsMeusAlumnes.push(nomésAlumnes[j]);
+        for (let j = 0; j < nomesAlumnesSegurs.length; j++) {
+          if (nomesAlumnesSegurs[j].id_classe === classe.id) {
+            elsMeusAlumnes.push(nomesAlumnesSegurs[j]);
           }
         }
         this.alumnesDeLaClasse.set(elsMeusAlumnes);

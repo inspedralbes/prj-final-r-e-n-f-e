@@ -28,82 +28,46 @@ export class HorariAlumnesComponent implements OnInit {
   serveiAuth = inject(AuthService);
   serveiUsuaris = inject(UsuarisManagerService);
 
-  ngOnInit() {
-    // Carreguem totes les dades necessàries quan entrem a la pantalla
-    this.serveiClasses.carregarClasses();
-    this.serveiHoraris.carregarHoraris();
+  // Nou estat segur (Fase 2) carregat exclusivament del backend
+  laMevaClasse = signal<Classe | null>(null);
+  alumnesDelaClasseSegur = signal<Usuari[]>([]);
+  professorsDisponiblesSegur = signal<Usuari[]>([]);
+  horarisDelaClasseSegur = signal<Horari[]>([]);
+
+  async ngOnInit() {
+    // Phase 2: Només demanem el que estrictament necessitem!
+    
+    // 1. Obtenim la classe on el professor actua com a tutor
+    const usuariLoguejat = this.serveiAuth.usuarioInfo;
+    if (usuariLoguejat && usuariLoguejat.id) {
+        const classe = await this.serveiClasses.obtenirClasseTutor(usuariLoguejat.id);
+        this.laMevaClasse.set(classe);
+
+        if (classe) {
+            // 2. Carreguem nomes els alumnes de la classe, els horaris d'aquesta classe
+            // i tots els usuaris que són profes directament filtrats al Laravel.
+            const [alumnes, horaris, profes] = await Promise.all([
+                this.serveiClasses.getAlumnesClasse(classe.id),
+                this.serveiHoraris.getHorarisClasse(classe.id),
+                this.serveiUsuaris.getUsuarisPerRol('Profe')
+            ]);
+            
+            this.alumnesDelaClasseSegur.set(alumnes);
+            this.horarisDelaClasseSegur.set(horaris);
+            this.professorsDisponiblesSegur.set(profes);
+        }
+    }
+    
+    // Si hem d'obrir modals de les assignatures o aules, encara hem de carregar tot el llistat 
+    // d'Assignatures i Aules disponibles al centre per posar-les al <select> del HTML
     this.serveiAssignatures.carregarAssignatures();
     this.serveiAules.carregarAules();
-    this.serveiUsuaris.carregarUsuaris();
   }
 
-  // Obtenim la classe on el professor loguejat és tutor
-  laMevaClasse = computed(() => {
-    const usuariLoguejat = this.serveiAuth.usuarioInfo;
-    if (!usuariLoguejat || !usuariLoguejat.id) return null;
-
-    const llistaClasses = this.serveiClasses.classes();
-    if (llistaClasses && Array.isArray(llistaClasses)) {
-      for (let i = 0; i < llistaClasses.length; i++) {
-        if (Number(llistaClasses[i].id_tutor) === Number(usuariLoguejat.id)) {
-          return llistaClasses[i];
-        }
-      }
-    }
-    return null;
-  });
-
-  // Alumnes que pertanyen a aquesta classe (Llista Maestra)
-  alumnesDelaClasse = computed(() => {
-    const classe = this.laMevaClasse();
-    if (!classe) return [];
-
-    const usuaris = this.serveiUsuaris.usuaris() as Usuari[];
-    const result: Usuari[] = [];
-    if (usuaris && Array.isArray(usuaris)) {
-      for (let i = 0; i < usuaris.length; i++) {
-        const u = usuaris[i];
-        const rol = u.rol?.toLowerCase() || '';
-        if (rol.includes('alumne') && u.id_classe === classe.id) {
-          result.push(u);
-        }
-      }
-    }
-    return result;
-  });
-
-  // Tots els professors disponibles
-  professorsDisponibles = computed(() => {
-    const usuaris = this.serveiUsuaris.usuaris() as Usuari[];
-    const result: Usuari[] = [];
-    if (usuaris && Array.isArray(usuaris)) {
-      for (let i = 0; i < usuaris.length; i++) {
-        const u = usuaris[i];
-        const rol = u.rol?.toLowerCase() || '';
-        if (rol.includes('profe') || rol.includes('instr')) {
-          result.push(u);
-        }
-      }
-    }
-    return result;
-  });
-
-  // Filtrem els horaris que pertanyen a aquesta classe
-  horariDelaClasse = computed(() => {
-    const classe = this.laMevaClasse();
-    if (!classe) return [];
-
-    const totsHoraris = this.serveiHoraris.horaris() as Horari[];
-    const result: Horari[] = [];
-    if (totsHoraris && Array.isArray(totsHoraris)) {
-      for (let i = 0; i < totsHoraris.length; i++) {
-        if (totsHoraris[i].id_classe === classe.id) {
-          result.push(totsHoraris[i]);
-        }
-      }
-    }
-    return result;
-  });
+  // Compatibilitat amb el HTML existent (que espera un computed d'aquestes variables)
+  alumnesDelaClasse = computed(() => this.alumnesDelaClasseSegur());
+  professorsDisponibles = computed(() => this.professorsDisponiblesSegur());
+  horariDelaClasse = computed(() => this.horarisDelaClasseSegur());
 
   // Graella visual (Estructura de dades per al Grid)
   quadreHorari = computed(() => {
