@@ -282,7 +282,7 @@ class HorariController extends Controller
         return response()->json($resultat, Response::HTTP_OK);
     }
 
-        public function getClasseActual($id)
+    public function getClasseActual($id)
     {
         // 1. Busco qui sóc a la base de dades
         $user = DB::table('usuaris')->where('id', $id)->first();
@@ -291,8 +291,9 @@ class HorariController extends Controller
             return response()->json(['success' => false, 'message' => 'Usuari no trobat'], 404);
         }
 
-        // 2. Determino quin dia de la setmana és avui
-        $diaNumerico = date('N'); 
+        // 2. Determino quin dia de la setmana és avui respectant la zona horària d'Espanya
+        $now = \Carbon\Carbon::now('Europe/Madrid');
+        $diaNumerico = $now->dayOfWeekIso; 
         $lletraDia = '';
         switch ($diaNumerico) {
             case 1: $lletraDia = 'L'; break;
@@ -303,9 +304,9 @@ class HorariController extends Controller
             default: return response()->json(['success' => true, 'data' => null]); // Si sóc en cap de setmana
         }
 
-        // 3. Calculo la franja horària actual basant-me en l'hora del servidor
-        $horaActual = (int) date('H'); 
-        $minutActual = (int) date('i');
+        // 3. Calculo la franja horària actual basant-me en l'hora correcta local
+        $horaActual = $now->hour; 
+        $minutActual = $now->minute;
         
         $franja = 0;
         if ($horaActual == 8) $franja = 1;
