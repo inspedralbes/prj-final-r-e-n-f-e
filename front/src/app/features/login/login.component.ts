@@ -12,6 +12,7 @@ import { AuthService } from '../../services/auth.service';
 export class LoginComponent {
   usuari = signal<string>('');
   error = signal<string>('');
+  isLoading = signal<boolean>(false);
 
   constructor(
     private router: Router,
@@ -23,6 +24,7 @@ export class LoginComponent {
   }
 
   iniciarSessio() {
+    if (this.isLoading()) return;
     const email = this.usuari().toLowerCase().trim();
 
     if (!email.includes('@')) {
@@ -35,13 +37,20 @@ export class LoginComponent {
       return;
     }
 
+    this.isLoading.set(true);
+    this.error.set('');
+
     this.authService.loginTemporal(email).subscribe({
       next: (response: any) => {
         if (response.success) {
           this.authService.guardarSessio(response.data);
+          // Opcional: no quitamos isLoading aqui porque en teoría se navega a otra pantalla altiro
+        } else {
+          this.isLoading.set(false);
         }
       },
       error: (err: any) => {
+        this.isLoading.set(false);
         this.error.set("Usuari no trobat a la base de dades.");
       }
     });
