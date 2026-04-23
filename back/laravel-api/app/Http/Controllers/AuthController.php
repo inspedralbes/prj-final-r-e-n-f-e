@@ -84,12 +84,27 @@ class AuthController extends Controller
                 if ($googleUser->getAvatar()) {
                     try {
                         $contents = Http::get($googleUser->getAvatar())->body();
-                        // Guardar la foto amb el nom basat en l'email de l'usuari
-                        $filename = 'photos/' . $user_email . '.jpg';
-                        Storage::disk('public')->put($filename, $contents);
-                        $photoPath = '/storage/' . $filename; // Aquesta es la ruta per accedir a la foto des del frontend
+
+                        if($user_rol === 'Alumne'){
+                            Storage::disk('public')->makeDirectory('photos/' . 'alumnes');
+                            $filename = 'photos/alumnes/' . $user_email . '.jpg';
+                        }
+
+                        else if($user_rol === 'Profe' || $user_rol === 'Admin') {
+                            Storage::disk('public')->makeDirectory('photos/' . 'profes');
+                            $filename = 'photos/profes/' . $user_email . '.jpg';
+                        }
+                        
+                        // Ahora guardar l'arxiu a la carpeta pública
+                        $filePutResult = Storage::disk('public')->put($filename, $contents);
+                        
+                        if ($filePutResult) {
+                            $photoPath = '/storage/' . $filename;
+                        } else {
+                            error_log('ERROR: put() va retornar false per a ' . $filename);
+                        }
                     } catch (\Exception $e) {
-                        Log::error('Error guardando la foto de perfil: ' . $e->getMessage());
+                        error_log('ERROR: ' . $e->getMessage());
                     }
                 }
 
