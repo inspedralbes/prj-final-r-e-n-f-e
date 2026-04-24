@@ -20,7 +20,6 @@ RUN composer run-script post-autoload-dump \
     && mkdir -p storage/framework/views storage/framework/cache storage/logs bootstrap/cache \
     && chown -R www-data:www-data /app
 
-USER www-data
 EXPOSE 9000
 
 CMD ["php-fpm"]
