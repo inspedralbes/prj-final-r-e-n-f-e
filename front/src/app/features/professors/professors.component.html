@@ -8,14 +8,8 @@
   <app-sidebar></app-sidebar>
 
   <div class="contingut relative-container">
-    @if (carregantDades()) {
-      <div class="glass-loader-overlay">
-        <div class="glass-spinner"></div>
-      </div>
-    }
-
     <!-- Contenidor principal -->
-    <div class="graella-tauler">
+    <div class="graella-tauler" [class.loading-blur-overlay]="carregantDades()">
       <!-- Targeta de la classe que toca ara mateix -->
       <div class="targeta-classe-actual">
         <div class="contingut-targeta">

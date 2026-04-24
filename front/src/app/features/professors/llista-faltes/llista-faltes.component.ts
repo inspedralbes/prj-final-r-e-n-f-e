@@ -12,6 +12,8 @@ import { AssistenciesManagerService } from '../../../shared/services/assistencie
 export class LlistaFaltesComponent implements OnInit {
   private assistenciesManager = inject(AssistenciesManagerService);
 
+  get isLoading() { return this.assistenciesManager.isLoading(); }
+
   ngOnInit() {
     this.assistenciesManager.carregarAssistencies();
   }

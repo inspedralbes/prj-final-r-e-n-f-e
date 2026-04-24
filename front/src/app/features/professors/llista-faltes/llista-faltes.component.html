@@ -7,8 +7,8 @@
   <app-sidebar></app-sidebar>
 
 
-  <div class="contingut">
-    <div class="targeta-llista">
+  <div class="contingut relative-container">
+    <div class="targeta-llista" [class.loading-blur-overlay]="isLoading">
       <div class="capçalera-llista">
         <h1>Rànquing de Faltes</h1>
         <p class="setmana-info">Alumnes amb més absències acumulades</p>

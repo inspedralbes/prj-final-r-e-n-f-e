@@ -77,7 +77,7 @@
                 </div>
 
                 <!-- Només ensenyem els resultats si l'usuari ha escrit algo al cercador -->
-                <div class="contenedor-taula" *ngIf="cercaAlumne && cercaAlumne.length > 1">
+                <div class="contenedor-taula" *ngIf="cercaAlumne && cercaAlumne.length > 1" [class.loading-blur-overlay]="serveiUsuaris.isLoading()">
                     <table class="taula-assistencia">
                         <thead>
                             <tr>
@@ -87,17 +87,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Mentre el servidor busca, ensenyem la boleta de càrrega -->
-                            <tr *ngIf="serveiUsuaris.isLoading()">
-                                <td colspan="3" style="text-align: center; padding: 25px;">
-                                    <div class="loading-spinner-small"></div>
-                                    <span style="color: #64748b; margin-left: 12px; font-weight: 500;">Cercant
-                                        alumnes...</span>
-                                </td>
-                            </tr>
-
-                            <!-- Aquí ja pintem els resultats de la cerca d'alumnes -->
-                            <ng-container *ngIf="!serveiUsuaris.isLoading()">
+                            <!-- La tabla se ve borrosa mientras carga gracias a .loading-blur-overlay -->
                                 <ng-container *ngFor="let alumne of alumnesDisponibles()">
                                     <!-- Filtrem només els que coincideixen amb ho que has escrit -->
                                     <tr
@@ -125,7 +115,6 @@
                                         </td>
                                     </tr>
                                 </ng-container>
-                            </ng-container>
 
                             <!-- Si no trobem ningú amb aquest nom, posem aquest missatge -->
                             <tr *ngIf="!hiHaResultats()">

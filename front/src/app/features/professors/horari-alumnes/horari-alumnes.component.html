@@ -9,7 +9,7 @@
 
   <div class="contingut">
     <!-- Aquesta es la targeta gran que aguanta tot l'horari -->
-    <div class="targeta-horari-premium">
+    <div class="targeta-horari-premium" [class.loading-blur-overlay]="serveiHoraris.isLoading()">
       <div class="capçalera-moderna">
         <h1>Horari Semanal</h1>
         <!-- Ens ensenya el nom de la classe que estàs editant -->
