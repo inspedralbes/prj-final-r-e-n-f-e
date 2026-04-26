@@ -141,7 +141,7 @@ class UsuariController extends Controller
         
         if($request->hasFile('photo'))
             {
-                $path = substr_replace("/storage/public","",$user->photo);
+                $path = str_replace("/storage/public","",$user->photo);
                 Storage::disk('public')->put($path, $request->file('photo'));
             }        
 
@@ -156,4 +156,4 @@ class UsuariController extends Controller
             'message' => 'Perfil completat correctament'
         ]);
     }
-}
+}  

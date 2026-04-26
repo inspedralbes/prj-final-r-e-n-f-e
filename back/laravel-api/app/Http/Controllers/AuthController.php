@@ -118,18 +118,21 @@ class AuthController extends Controller
                     'photo' => $photoPath
                 ]);
             }
-            // Si el usuari YA existe, no modificar res - només autenticar
 
             // Generem el token de Sanctum per l'usuari
             $token = $user->createToken('google-auth')->plainTextToken;
 
             return response()->json([
                 'success' => true,
-                'data' => [ 
-                    'user_email' => $user_email,
+                'data' => [
+                    'user' => [
+                        'id' => $user->id,
+                        'nom' => $user->nom,
+                        'email' => $user->email,
+                        'rol' => $user->rol,
+                        'isProfileComplited' => $user->isProfileCompleted()
+                    ],
                     'token' => $token,
-                    'rol' => $user_rol,
-                    'isProfileCompleted' => $user->isProfileCompleted()
                 ],
                 'message' => 'Autenticació correcta',
             ], Response::HTTP_OK);
@@ -169,7 +172,8 @@ class AuthController extends Controller
                 'data' => [
                     'user' => $user,
                     'token' => $token,
-                    'rol' => $user->rol
+                    'rol' => $user->rol,
+                    'isProfileComplited' => $user->isProfileCompleted()
                 ],
                 'message' => 'Login temporal correcte'
             ], Response::HTTP_OK);

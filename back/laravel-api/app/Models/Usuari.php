@@ -92,7 +92,7 @@ class Usuari extends Authenticatable
     public function isProfileCompleted()
     {
         //Encara que es truqui sempre, només funcionarà amb alumnes
-        if (strcmp($this->rol, 'alumne') == 0)
+        if (strcmp($this->rol, 'Alumne') == 0)
         {
             if($this->data_naixement == null){
                 return false;
