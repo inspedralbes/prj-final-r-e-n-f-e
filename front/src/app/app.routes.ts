@@ -10,6 +10,7 @@ import { Horaris } from './features/alumnes/horaris/horaris.component';
 import { LlistaFaltesComponent } from './features/professors/llista-faltes/llista-faltes.component';
 import { GestioInscritsComponent } from './features/professors/gestio-classe/gestio-inscrits.component';
 import { HorariAlumnesComponent } from './features/professors/horari-alumnes/horari-alumnes.component';
+import { PerfilComponent } from './features/perfil/perfil.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -23,4 +24,5 @@ export const routes: Routes = [
   { path: 'gestio-inscrits', component: GestioInscritsComponent },
   { path: 'horari-alumnes', component: HorariAlumnesComponent },
   { path: 'auth/callback', component: AuthCallbackComponent },
+  { path: 'profile', component: PerfilComponent },
 ];

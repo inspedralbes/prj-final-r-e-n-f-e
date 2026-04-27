@@ -6,6 +6,7 @@ use App\Models\Usuari;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class UsuariController extends Controller
 {
@@ -125,6 +126,41 @@ class UsuariController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Usuari eliminat correctament'
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Obte el perfil de l'usuari autenticat.
+     */
+    public function perfil(Request $request)
+    {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuari no autenticat'
+            ], Response::HTTP_UNAUTHORIZED);
+        }
+
+        $user->load(['classe.curs', 'classe.tutor', 'tutorClasses']);
+
+        $infoAdicional = [];
+        if ($user->rol === 'Alumne' && $user->classe) {
+            $infoAdicional = [
+                'classe' => $user->classe,
+                'curs' => $user->classe->curs,
+                'tutor' => $user->classe->tutor
+            ];
+        } elseif (($user->rol === 'Profe' || $user->rol === 'Admin') && $user->tutorClasses->isNotEmpty()) {
+            $infoAdicional = [
+                'classes_tutor' => $user->tutorClasses
+            ];
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => array_merge($user->toArray(), $infoAdicional)
         ], Response::HTTP_OK);
     }
 }
