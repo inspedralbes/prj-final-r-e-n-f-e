@@ -1,0 +1,6 @@
+@import '../admin-usuaris/admin-usuaris.component.css';
+
+.p-role {
+  background: #edf2f7; 
+  color: #4a5568; 
+}

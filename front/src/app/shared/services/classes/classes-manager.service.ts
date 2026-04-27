@@ -13,7 +13,7 @@ export class ClassesManagerService {
   error = signal<string | null>(null);
 
   /**
-   * Carrega les classes des de Laravel i actualitza els Signals
+   * Obté l'array de classes via GET i actualitza el Signal reactiu.
    */
   async carregarClasses() {
     this.isLoading.set(true);
@@ -32,7 +32,7 @@ export class ClassesManagerService {
   }
 
   /**
-   * Obté la classe assignada a un tutor específic
+   * Demana a l'API la classe referenciada directament per un ID de tutor.
    */
   async obtenirClasseTutor(idTutor: number) {
     try {
@@ -45,7 +45,7 @@ export class ClassesManagerService {
   }
 
   /**
-   * Fase 2: Mètode segur per descarregar NOMÉS els usuaris assignats a aquesta classe
+   * Filtra i retorna únicament l'alumnat validat vinculat a una classe concreta.
    */
   async getAlumnesClasse(idClasse: number) {
     this.isLoading.set(true);
@@ -61,7 +61,7 @@ export class ClassesManagerService {
   }
 
   /**
-   * Crea una nova classe
+   * (Antic) Inicialitza de zero una classe i l'aplica a la llista actual.
    */
   async crearClasse(nom: string, curs_id: number) {
     try {
@@ -85,7 +85,78 @@ export class ClassesManagerService {
   }
 
   /**
-   * Assigna una llista d'emails d'alumnes a una classe
+   * API POST: Afegeix i reconstrueix la llista local per desencadenar reactivitat visual.
+   */
+  async afegirClasse(classe: Partial<Classe>) {
+    try {
+      const resp = await this.apiManager.post<any>('/classes', classe);
+      const novaClasse = resp.data || resp;
+      
+      let copiaClases = [];
+      let clasesActuales = this.classes();
+      for (let i = 0; i < clasesActuales.length; i++) {
+        copiaClases.push(clasesActuales[i]);
+      }
+      copiaClases.push(novaClasse);
+      this.classes.set(copiaClases);
+
+      return novaClasse;
+    } catch (err) {
+      console.error('Error afegint classe:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * API PUT: Substitueix iterativament la instància local afectada per reflectir el canvi.
+   */
+  async actualitzarClasse(id: number, classe: Partial<Classe>) {
+    try {
+      const resp = await this.apiManager.put<any>(`/classes/${id}`, classe);
+      const classeActualitzada = resp.data || resp;
+      
+      let clasesModificadas = [];
+      let clasesActuales = this.classes();
+      for (let i = 0; i < clasesActuales.length; i++) {
+        if (clasesActuales[i].id === id) {
+          clasesModificadas.push(classeActualitzada);
+        } else {
+          clasesModificadas.push(clasesActuales[i]);
+        }
+      }
+      this.classes.set(clasesModificadas);
+
+      return classeActualitzada;
+    } catch (err) {
+      console.error('Error actualitzant classe:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * API DELETE: Omet manualment l'ID esborrat regenerant l'array d'estat.
+   */
+  async esborrarClasse(id: number) {
+    try {
+      await this.apiManager.delete<any>(`/classes/${id}`);
+      
+      let clasesRestantes = [];
+      let clasesActuales = this.classes();
+      for (let i = 0; i < clasesActuales.length; i++) {
+        if (clasesActuales[i].id !== id) {
+          clasesRestantes.push(clasesActuales[i]);
+        }
+      }
+      this.classes.set(clasesRestantes);
+
+    } catch (err) {
+      console.error('Error esborrant classe:', err);
+      throw err;
+    }
+  }
+
+  /**
+   * API POST: Vincula en bloc un array d'emails d'alumnes cap a una mateixa classe.
    */
   async assignarAlumnes(classe_id: number, emails: string[]) {
     try {
@@ -101,7 +172,7 @@ export class ClassesManagerService {
   }
 
   /**
-   * Treu un alumne d'una classe i elimina les seves inscripcions
+   * API POST: Desvincula remotament un alumne i buida les seves inscripcions a aquella classe.
    */
   async treureAlumne(classe_id: number, alumne_id: number) {
     try {
