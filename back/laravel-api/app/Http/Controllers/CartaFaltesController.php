@@ -32,6 +32,11 @@ class CartaFaltesController extends Controller
         $alumne = Usuari::findOrFail($validated['id_alumne']);
         $tutor = Usuari::findOrFail($validated['id_tutor']);
         $CursCicleGrup = Classe::find($alumne->id_classe)->nom;
+        $pathJsonFile = base_path('templates-word/info-words.json');
+        $jsonFile = json_decode(file_get_contents($pathJsonFile), true);
+        $NomCognomDireccio = $jsonFile['NomCognomDireccio'] ?? 'Nom Cognom Direcció';
+
+        error_log('Nom Direcció: ' . $NomCognomDireccio);
 
         $faltes = $validated['faltes'];
 
@@ -50,15 +55,15 @@ class CartaFaltesController extends Controller
         // Comprovem si l'alumne és major d'edat
         if ($esMajor) {
             if ($faltes >= 90) {
-                $templateFile = $templatePath . '(Plantilla) Carta 90 faltes (majors d_edat).docx';
+                $templateFile = $templatePath . '(Plantilla impersonal) Carta 90 faltes (majors d_edat).docx';
             } else {
-                $templateFile = $templatePath . '(Plantilla) Carta 30_60 faltes (majors d_edat).docx';
+                $templateFile = $templatePath . '(Plantilla impersonal) Carta 30_60 faltes (majors d_edat).docx';
             }
         } else {
             if ($faltes >= 90) {
-                $templateFile = $templatePath . '(Plantilla) Carta 90 faltes (menors d_edat).docx';
+                $templateFile = $templatePath . '(Plantilla impersonal) Carta 90 faltes (menors d_edat).docx';
             } else {
-                $templateFile = $templatePath . '(Plantilla) Carta 30_60 faltes (menors d_edat).docx';
+                $templateFile = $templatePath . '(Plantilla impersonal) Carta 30_60 faltes (menors d_edat).docx';
             }
         }
 
@@ -75,12 +80,16 @@ class CartaFaltesController extends Controller
             $nomAlumne = $alumne->nom;
             $nomTutor = $tutor->nom;
 
+            error_log('Dades per la carta:' . ' Alumne: ' . $nomAlumne . ', Tutor: ' . $nomTutor . ', Faltes: ' . $faltes . ', Data: ' . $dataAvui . ', CursCicleGrup: ' . $CursCicleGrup . ', NomCognomDireccio: ' . $NomCognomDireccio);
+
             $processor = new TemplateProcessor($templateFile);
+            error_log('Carregada plantilla: ' . $templateFile);
             $processor->setValue('CognomsNomAlumne', $nomAlumne);
             $processor->setValue('#Hores', (string) $faltes);
             $processor->setValue('Data', $dataAvui);
             $processor->setValue('Tutor', $nomTutor);
             $processor->setValue('CursCicleGrup', $CursCicleGrup);
+            $processor->setValue('NomCognomDireccio', $NomCognomDireccio);
             $processor->setValue('Dia', Carbon::now()->translatedFormat('j'));
             $processor->setValue('Mes', Carbon::now()->translatedFormat('F'));
             $processor->setValue('Any', Carbon::now()->translatedFormat('Y'));
@@ -97,12 +106,14 @@ class CartaFaltesController extends Controller
             $wordFileContent = file_get_contents($tempPath);
             $wordBase64 = base64_encode($wordFileContent);
 
+            error_log('Enviant fitxer a Node API per conversió a PDF: ' . $fileName);
             $response = Http::timeout(60)->post($this->nodeApiUrl . '/api/convert/word-to-pdf', [
                 'fileBase64' => $wordBase64,
                 'fileName' => $fileName,
             ]);
 
             if ($response->successful()) {
+                error_log('Conversió a PDF exitosa per: ' . $fileName);
                 unlink($tempPath);
                 $pdfFileName = str_replace('.docx', '.pdf', $fileName);
                 return response($response->body(), 200, [

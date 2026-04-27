@@ -7,7 +7,7 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root',
 })
 export class ApiManagerService {
-  private http = inject(HttpClient);
+  private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.backendUrl;
 
   /**
@@ -30,6 +30,18 @@ export class ApiManagerService {
       return data;
     } catch (error) {
       console.error(`Error en POST ${endpoint}:`, error);
+      throw error;
+    }
+  }
+
+  async postBlob(endpoint: string, body: any): Promise<Blob> {
+    try {
+      const data = await firstValueFrom(
+        this.http.post(`${this.baseUrl}${endpoint}`, body, { responseType: 'blob' }),
+      );
+      return data;
+    } catch (error) {
+      console.error(`Error en POST BLOB ${endpoint}:`, error);
       throw error;
     }
   }
