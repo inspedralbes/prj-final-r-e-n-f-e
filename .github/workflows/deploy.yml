@@ -3,6 +3,8 @@ name: Deploy and Update Services
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 jobs:
   deploy:
@@ -83,19 +85,7 @@ jobs:
             # Crear .env BACK Principal-node
             echo "Creant .env BACK Principal-node..."
             cd ./back/principal-node
-            # NULL
-            cd ../..
-
-            echo "Creant .env BACK Dbinsert..."
-            cd ./back/dbinsert
-            echo "Copiant .env.PROD de Back Dbinsert..."
-            #Per Ara res més
-
-            # Crear .env de BACK Sensor
-            echo "Creant .env BACK Sensor..."
-            cd ./back/sensor
-            echo "Copiant .env.PROD de Back Sensor..."
-            #Per Ara res més
+            cp .env.PROD .env
             cd ../..
 
             # Configuració inicial (abans de validar certificats)
