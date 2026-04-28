@@ -60,6 +60,7 @@ Route::prefix('v1')->group(function (): void {
 
         // Rutes de Justificants
         Route::apiResource('justificants', JustificantController::class);
+        Route::post('justificants/acceptar/{id}', [JustificantController::class, 'acceptar']);
 
         // Rutes de Carta de Faltes
         Route::post('carta-faltes/generar', [CartaFaltesController::class, 'generar']);
