@@ -203,6 +203,7 @@ export class LlistaClasseComponent implements OnInit {
       case '.': return 'Assistit';
       case 'F': return 'Falta';
       case 'R': return 'Retard';
+      case 'FJ': return 'Justificada';
       default: return 'Assistit';
     }
   }

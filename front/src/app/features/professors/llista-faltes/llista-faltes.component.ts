@@ -16,6 +16,27 @@ export class LlistaFaltesComponent implements OnInit {
     this.assistenciesManager.carregarAssistencies();
   }
 
+  async generarInformeFaltes(id_alumne: number, id_tutor: number, faltes: number) {
+    try {
+      const pdfBlob = await this.assistenciesManager.generarInformeFaltes(
+        id_alumne,
+        id_tutor,
+        faltes,
+      );
+      const url = globalThis.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `carta_faltes_${faltes}_${id_alumne}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      globalThis.URL.revokeObjectURL(url);
+      console.log('Informe de faltes generat correctament');
+    } catch (error) {
+      console.error('Error al generar informe de faltes:', error);
+    }
+  }
+
   faltas = '';
 
   assitenciesRanking = computed(() => {

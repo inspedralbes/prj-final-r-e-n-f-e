@@ -9,6 +9,7 @@ interface GoogleUser {
     nom: string;
     email: string;
     rol: string;
+    isProfileComplited: boolean;
   };
   token?: string;
 }
@@ -40,35 +41,27 @@ export class AuthService {
     }
   }
 
-  /**
-   * Obtenir URL de redirecció de Google des del backend
-   */
   loginWithGoogle() {
     this.http
       .post<{ success: boolean; redirect_url: string }>(`${this.apiUrl}/auth/google/redirect`, {})
       .subscribe({
         next: (response) => {
           if (response.success) {
-            // Redirige al usuario a Google
             window.location.href = response.redirect_url;
           }
         },
         error: (error) => {
-          console.error('Error obteniendo URL de Google:', error);
+          console.error('Error obtaining URL from Google:', error);
         },
       });
   }
 
-  /**
-   * Treballar amb el callback (se llama desde auth-callback.component)
-   */
   handleGoogleCallback(code: string) {
     this.http
       .post<{ success: boolean; data: GoogleUser }>(`${this.apiUrl}/auth/google/callback`, { code })
       .subscribe({
         next: (response) => {
           if (response.success) {
-            // Guardar datos del usuario
             const userData = response.data;
             localStorage.setItem('user', JSON.stringify(userData.user));
             if (userData.token) {
@@ -78,20 +71,21 @@ export class AuthService {
             this.userDataSignal.set(userData);
             this.isAuthenticatedSignal.set(true);
 
-            // Redirigir según el rol
-            this.redirectByRole(userData.user.rol);
+            const perfilComplet = userData.user?.isProfileComplited;
+            if (!perfilComplet && userData.user?.rol?.toLowerCase() === 'alumne') {
+              this.router.navigate(['/completar-perfil']);
+            } else {
+              this.redirectByRole(userData.user.rol);
+            }
           }
         },
         error: (error) => {
-          console.error('Error en callback de Google:', error);
+          console.error('Error in Google callback:', error);
           this.router.navigate(['/']);
         },
       });
   }
 
-  /**
-   * Login temporal amb email (per a proves)
-   */
   loginTemporal(email: string) {
     return this.http.post<{ success: boolean; data: any }>(`${this.apiUrl}/auth/login-temporal`, {
       email,
@@ -99,18 +93,19 @@ export class AuthService {
   }
 
   guardarSessio(data: any) {
-    // data conté { user: {...}, token, rol }
-    localStorage.setItem('user', JSON.stringify(data.user));
-    // També guardem el camp 'usuari' per compatibilitat amb components que busquen 'usuari' en lloc de 'user'
-    localStorage.setItem('usuari', JSON.stringify(data.user));
+    const user = data.user;
+    const token = data.token;
 
-    if (data.token) {
-      localStorage.setItem('token', data.token);
+    localStorage.setItem('user', JSON.stringify(user));
+    localStorage.setItem('usuari', JSON.stringify(user));
+
+    if (token) {
+      localStorage.setItem('token', token);
     }
 
-    this.userDataSignal.set(data);
+    this.userDataSignal.set({ user, token });
     this.isAuthenticatedSignal.set(true);
-    this.redirectByRole(data.user.rol);
+    this.redirectByRole(user.rol);
   }
 
   private redirectByRole(rol: string) {
@@ -131,6 +126,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
     this.userDataSignal.set(null);
     this.isAuthenticatedSignal.set(false);
     this.router.navigate(['/']);
