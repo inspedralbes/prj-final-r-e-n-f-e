@@ -1,0 +1,141 @@
+<div id="contenidor">
+  <app-sidebaradmin></app-sidebaradmin>
+  <div class="contingut">
+    
+    <div class="admin-header">
+      <div class="header-titles">
+        <h2>Gestió d'Assignatures</h2>
+        <p class="subtitle">Administra el catàleg de matèries i examina interactuativament els estudiants que hi tenen accés.</p>
+      </div>
+      <button class="btn-primary" (click)="obrirModalCRUD()">
+        <i class="fi fi-rr-plus"></i> Nova Assignatura
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-overlay glass-panel">
+        <div class="spinner"></div>
+        <p>Sincronitzant assignatures amb la base de dades...</p>
+      </div>
+    } @else {
+      <div class="table-container glass-panel">
+        <table class="premium-table">
+          <thead>
+            <tr>
+              <th>Codi (ID)</th>
+              <th>Informació Nom</th>
+              <th>Data Creació</th>
+              <th>Accions Ràpides</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (assignatura of assignatures(); track assignatura.id) {
+              <tr class="table-row">
+                <td><span class="badge-id">#{{ assignatura.id }}</span></td>
+                <td>
+                  <div class="user-info">
+                    <!-- Petita lletra de recurs per disseny estètic -->
+                    <div class="avatar-placeholder">{{ assignatura.nom.charAt(0) }}</div>
+                    <div class="name-details">
+                      <span class="user-name">{{ assignatura.nom }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="user-email">{{ assignatura.created_at | date:'dd/MM/yyyy' }}</td>
+                <td class="actions">
+                  <button class="btn-icon view" (click)="obrirModalInscrits(assignatura)" title="Veure Alumnes Inscrits">
+                     
+                  </button>
+                  <button class="btn-icon edit" (click)="obrirModalCRUD(assignatura)" title="Canviar Nom">
+                    
+                  </button>
+                  <button class="btn-icon delete" (click)="esborrarAssignatura(assignatura.id)" title="Esborrar per complet">
+                    
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="empty-state">Encara no consta cap assignatura al catàleg de la centraleta.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Modal 1: CRUD de Creació o Edició de Noms -->
+@if (isModalOpen) {
+  <div class="modal-backdrop">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h3>{{ isEditing ? "Actualitzar Nom" : "Registrar Nova Assignatura" }}</h3>
+        <button class="btn-close" (click)="tancarModalCRUD()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardarAssignatura()" #assignaturaForm="ngForm" class="premium-form">
+          <div class="form-group">
+            <label for="nom">Títol de la Matèria</label>
+            <input type="text" id="nom" name="nom" [(ngModel)]="assignaturaActual.nom" required placeholder="Exemple: Matemàtiques Discretes">
+          </div>
+          
+          <div class="form-group">
+            <!-- Normalment ho ocultem o li assignem un input nomès informatiu perquè el backend requereix aquest paràmetre -->
+            <label for="id_classe_projecte">Identitat del Projecte Lligat (id_classe_projecte)</label>
+            <input type="number" id="id_classe_projecte" name="id_classe_projecte" [(ngModel)]="assignaturaActual.id_classe_projecte" required>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="tancarModalCRUD()">Cancel·lar Procés</button>
+            <button type="submit" class="btn-primary" [disabled]="!assignaturaForm.form.valid || isLoading()">
+              {{ isEditing ? 'Guardar Canvis' : 'Introduir al Catàleg' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal 2: Visualització d'Alumnes Inscrits (Master-Detail) -->
+@if (isInscritsModalOpen) {
+  <div class="modal-backdrop">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h3>Llistat Oficial d'Inscrits</h3>
+        <button class="btn-close" (click)="tancarModalInscrits()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+           <label>Assignatura Focus:</label>
+           <!-- Camp només de lectura que adverteix estèticament on ens trobem -->
+           <input type="text" [value]="assignaturaSeleccionada?.nom" disabled style="background:#edf2f7; color:#2d3748; font-weight:bold;">
+        </div>
+
+        <label style="font-size: 13px; font-weight: 600; color: #4a5568; margin-bottom: 8px; display:block;">Estudiants Actius</label>
+        
+        <ul class="inscrits-list">
+            @for (estudiant of estudiantsInscritsLlista; track estudiant.id) {
+               <li>
+                   <div class="avatar-placeholder" style="width:28px; height:28px; font-size:12px;">{{ estudiant.nom.charAt(0) }}</div>
+                   <div style="display:flex; flex-direction:column;">
+                       <span style="font-weight:600; color:#2d3748;">{{ estudiant.nom }} {{ estudiant.cognom }}</span>
+                       <span style="font-size:12px; color:#718096;">{{ estudiant.email }}</span>
+                   </div>
+               </li>
+            } @empty {
+               <li style="justify-content:center; padding: 30px; color:#a0aec0; border:none; text-align:center;">
+                  No observem matriculacions per aquesta matèria ara mateix.
+               </li>
+            }
+        </ul>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="tancarModalInscrits()">Tancar Vista</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

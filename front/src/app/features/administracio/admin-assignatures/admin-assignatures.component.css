@@ -1,0 +1,31 @@
+/* Importació directa de l'estructura Premium Glassify de Gestió d'usuaris */
+@import '../admin-usuaris/admin-usuaris.component.css';
+
+/* Ajustaments exclusius del disseny d'arxius derivats */
+.inscrits-list {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.inscrits-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #edf2f7;
+  font-size: 14px;
+}
+
+.inscrits-list li:last-child {
+  border-bottom: none;
+}
+
+.btn-icon.view {
+  background: transparent;
+}
+.btn-icon.view:hover {
+  background: #e2e8f0;
+}
