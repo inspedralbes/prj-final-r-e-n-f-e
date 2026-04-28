@@ -1,4 +1,4 @@
-<!-- 
+<!--
     Aquí fem servir el Control Flow modern d'Angular:
      - @for: Es per fer la llista (el bucle), més net que l'antic ngFor.
      - @empty: Això es ho que es mostra si la llista no té res (està buida).
@@ -13,6 +13,8 @@
         <h1>Rànquing de Faltes</h1>
         <p class="setmana-info">Alumnes amb més absències acumulades</p>
       </div>
+      <!-- Botó per fer proves al generar l'informe de faltes -->
+      <button (click)="generarInformeFaltes(3,1,30)">Generar Informe de Faltes</button>
 
       <!-- La taula on es veu qui ha faltat més a cada classe -->
       <div class="contenedor-taula">

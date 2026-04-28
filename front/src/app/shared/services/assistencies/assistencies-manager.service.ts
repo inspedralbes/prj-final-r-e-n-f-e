@@ -161,4 +161,20 @@ export class AssistenciesManagerService {
       throw err;
     }
   }
+  /**
+   * Genera un informe de faltes en format PDF
+   */
+  async generarInformeFaltes(id_alumne: number, id_tutor: number, faltes: number) {
+    try {
+      const resp = await this.apiManager.postBlob('/carta-faltes/generar', {
+        id_alumne,
+        id_tutor,
+        faltes,
+      });
+      return resp;
+    } catch (err) {
+      console.error('Error generant informe de faltes:', err);
+      throw err;
+    }
+  }
 }

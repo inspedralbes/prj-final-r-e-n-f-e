@@ -44,6 +44,7 @@ services:
       - "8000:8000"
     volumes:
       - ./back/laravel-api/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./back/laravel-api:/app
     depends_on:
       pfg1-back:
         condition: service_started

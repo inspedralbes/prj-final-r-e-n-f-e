@@ -235,14 +235,11 @@ export class LlistaClasseComponent implements OnInit {
 
   private mapejarSimbolAEstat(simbol: string): string {
     switch (simbol.toUpperCase()) {
-      case '.':
-        return 'Assistit';
-      case 'F':
-        return 'Falta';
-      case 'R':
-        return 'Retard';
-      default:
-        return 'Assistit';
+      case '.': return 'Assistit';
+      case 'F': return 'Falta';
+      case 'R': return 'Retard';
+      case 'FJ': return 'Justificada';
+      default: return 'Assistit';
     }
   }
 }

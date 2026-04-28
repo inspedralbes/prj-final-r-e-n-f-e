@@ -53,7 +53,7 @@ class AssistenciaController extends Controller
         $validated = $request->validate([
             'id_inscripcio' => 'required|exists:inscrits,id',
             'data' => 'required|date',
-            'estat' => 'required|string|in:Assistit,Falta,Retart',
+            'estat' => 'required|string|in:Assistit,Falta,Retard,Retart,Justificada',
             'id_profe' => 'nullable|exists:usuaris,id',
         ]);
 
@@ -98,7 +98,7 @@ class AssistenciaController extends Controller
         $validated = $request->validate([
             'id_inscripcio' => 'sometimes|required|exists:inscrits,id',
             'data' => 'sometimes|required|date',
-            'estat' => 'sometimes|required|string|in:Assistit,Falta,Retart',
+            'estat' => 'sometimes|required|string|in:Assistit,Falta,Retard,Retart,Justificada',
             'id_profe' => 'sometimes|required|exists:usuaris,id',
         ]);
 
@@ -231,7 +231,7 @@ class AssistenciaController extends Controller
         }
     }
     public function perAssignatura($id){
-        $dades = Assistencia::whereHas('inscripcio', 
+        $dades = Assistencia::whereHas('inscripcio',
         function($query) use ($id){
             $query->where('id_assignatura', $id);
         })->get();
@@ -280,11 +280,18 @@ class AssistenciaController extends Controller
 
             foreach ($assistenciesValue as $valor) {
                 switch ($valor->estat) {
+                    case 'Retard':
                     case 'Retart':
                         $retard++;
                         $retard_total++;
                         break;
                     case 'Falta':
+                    case 'Justificada':
+                        if ($valor->estat === 'Justificada') {
+                            $justificades++;
+                            $justificades_total++;
+                            break;
+                        }
                         $findJustificacio = DB::table('justificants')
                             ->where('id_assistencia_ini', $valor->id)
                             ->select('acceptada')
@@ -297,6 +304,8 @@ class AssistenciaController extends Controller
                             $faltes++;
                             $faltes_total++;
                         }
+                        break;
+                    default:
                         break;
                 }
             }
