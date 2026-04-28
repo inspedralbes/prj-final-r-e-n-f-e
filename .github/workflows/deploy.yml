@@ -24,14 +24,14 @@ jobs:
 
       - name: Add to Known Hosts
         run: |
-          echo "Connecting to server ${{ secrets.IP_SERVER }}..."
+          echo "Connecting to server ${{ secrets.SERVER_HOST }}..."
           mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.IP_SERVER }} >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
           chmod 600 ~/.ssh/known_hosts
 
       - name: Update, Configure and Deploy
         run: |
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.USER_SERVER }}@${{ secrets.IP_SERVER }} bash -s << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.USER_SERVER }}@${{ secrets.SERVER_HOST }} bash -s << 'EOF'
             set -euo pipefail
 
             # Anar a la carpeta del projecte (o clonar si no existeix)
