@@ -1,0 +1,61 @@
+<div class="fons-perfil">
+    <div class="targeta-perfil">
+        <div class="encapçalament-perfil">
+            <h1>Completa el teu perfil</h1>
+            <p>Has d'omplir les dades restants per accedir a l'aplicació</p>
+        </div>
+
+        <div class="cos-formulari">
+            <div class="grup-input">
+                <label for="dataNaixement">Data de naixement</label>
+                <div class="input-wrapper">
+                    <input type="date" id="dataNaixement" [(ngModel)]="dataNaixement">
+                </div>
+            </div>
+
+            @if (esMenorEdat()) {
+            <div class="grup-input">
+                <label for="emailPares">Correu dels pares/tutors</label>
+                <div class="input-wrapper">
+                    <input type="email" id="emailPares" placeholder="correu@exemple.com" [(ngModel)]="emailPares">
+                    <span class="icona-input">✉️</span>
+                </div>
+            </div>
+            }
+
+            <div class="grup-input">
+                <label>Foto de perfil</label>
+                <div class="contenedor-foto">
+                    <div class="vista-previa">
+                        @if (photoPreview()) {
+                        <img [src]="photoPreview()" alt="Foto de perfil">
+                        } @else {
+                        <div class="placeholder-foto">
+                            <span>📷</span>
+                        </div>
+                        }
+                    </div>
+                    <label for="photoInput" class="boto-canviar-foto">
+                        Canviar foto
+                    </label>
+                    <input type="file" id="photoInput" accept="image/*" (change)="onFileSelected($event)" hidden>
+                </div>
+            </div>
+
+            @if (error()) {
+            <div class="missatge-error">
+                <span class="icona-error"></span> {{ error() }}
+            </div>
+            }
+
+            <button (click)="guardar()" class="boto-guardar" [disabled]="carregant()">
+                @if (carregant()) {
+                <span class="carregant-spinner"></span>
+                Guardant...
+                } @else {
+                Guardar i continuar
+                }
+            </button>
+        </div>
+    </div>
+</div>
