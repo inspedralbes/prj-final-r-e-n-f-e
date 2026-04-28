@@ -80,7 +80,7 @@ jobs:
             echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
             echo "MAIL_ENCRYPTION=tls" >> .env
             echo "MAIL_FROM_ADDRESS=info@tenfe.cat" >> .env
-            echo "MAIL_FROM_NAME=${APP_NAME}" >> .env
+            echo 'MAIL_FROM_NAME=${APP_NAME}' >> .env
             cd ../..
 
             # Crear .env BACK Principal-node
