@@ -34,12 +34,13 @@ jobs:
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} bash -s << 'EOF'
             set -euo pipefail
 
+            cd /
             # Anar a la carpeta del projecte (o clonar si no existeix)
-            if [ ! -d "/prj-final-r-e-n-f-e/.git" ]; then
+            if [ ! -d "prj-final-r-e-n-f-e/.git" ]; then
               echo "Projecte no trobat, clonant repositori..."
               git clone --branch main https://github.com/inspedralbes/prj-final-r-e-n-f-e.git
             fi
-            cd /prj-final-r-e-n-f-e
+            cd prj-final-r-e-n-f-e
 
             # Baixar els últims canvis del codi
             echo "Baixant canvis de Git..."
