@@ -45,13 +45,13 @@
                 <td class="user-email">{{ obtenirNomTutor(classe.id_tutor) }}</td>
                 <td class="actions">
                   <button class="btn-icon view" (click)="obrirModalAlumnes(classe)" title="Veure Alumnes d'aquesta classe">
-                  
+                    <i class="fi fi-rr-eye"></i>
                   </button>
                   <button class="btn-icon edit" (click)="obrirModal(classe)" title="Editar">
-                    
+                    <i class="fi fi-rr-edit"></i>
                   </button>
                   <button class="btn-icon delete" (click)="esborrarClasse(classe.id)" title="Eliminar">
-                    
+                    <i class="fi fi-rr-trash"></i>
                   </button>
                 </td>
               </tr>

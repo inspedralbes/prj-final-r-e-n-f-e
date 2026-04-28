@@ -1,0 +1,166 @@
+<div id="contenidor">
+  <app-sidebaradmin></app-sidebaradmin>
+  <div class="contingut">
+    
+    <div class="admin-header">
+      <div class="header-titles">
+        <h2>Gestió d'Assignatures</h2>
+        <p class="subtitle">Administra les matèries i els alumnes inscrits.</p>
+      </div>
+      <button class="btn-primary" (click)="obrirModal()">
+        <i class="fi fi-rr-plus"></i> Nova Assignatura
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-overlay glass-panel">
+        <div class="spinner"></div>
+        <p>Carregant assignatures...</p>
+      </div>
+    } @else {
+      <div class="table-container glass-panel">
+        <table class="premium-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nom de l'Assignatura</th>
+              <th>ID Classe Proj.</th>
+              <th>Exempció</th>
+              <th>Accions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (assignatura of assignatures(); track assignatura.id) {
+              <tr class="table-row">
+                <td><span class="badge-id">#{{ assignatura.id }}</span></td>
+                <td>
+                  <div class="user-info">
+                    <div class="avatar-placeholder">{{ assignatura.nom.charAt(0) }}</div>
+                    <div class="name-details">
+                      <span class="user-name">{{ assignatura.nom }}</span>
+                      <span style="font-size: 11px; color: #718096;">Interval: {{ assignatura.interval && assignatura.interval !== '' ? assignatura.interval : 'Sense definir' }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="user-email"><span class="badge-role p-role">Proj {{ assignatura.id_classe_projecte || 1 }}</span></td>
+                <td>
+                  <span class="badge-role" [ngClass]="assignatura.exempcio ? 'admin' : 'alumne'">
+                    {{ assignatura.exempcio ? 'Sí' : 'No' }}
+                  </span>
+                </td>
+                <td class="actions">
+                  <button class="btn-icon view" (click)="obrirModalAlumnes(assignatura)" title="Veure Alumnes Inscrits">
+                    <i class="fi fi-rr-eye"></i>
+                  </button>
+                  <button class="btn-icon edit" (click)="obrirModal(assignatura)" title="Editar">
+                    <i class="fi fi-rr-edit"></i>
+                  </button>
+                  <button class="btn-icon delete" (click)="esborrarAssignatura(assignatura.id)" title="Eliminar">
+                    <i class="fi fi-rr-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-state">No hi ha assignatures registrades al sistema.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Premium Glassify Modal per Crear/Editar Assignatura -->
+@if (isModalOpen) {
+  <div class="modal-backdrop">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Editar Assignatura' : 'Crear Nova Assignatura' }}</h3>
+        <button class="btn-close" (click)="tancarModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardarAssignatura()" #assignaturaForm="ngForm" class="premium-form">
+          
+          <div class="form-group">
+            <label for="nom">Nom de l'Assignatura</label>
+            <input type="text" id="nom" name="nom" [(ngModel)]="assignaturaActual.nom" required placeholder="ex: Matemàtiques">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="id_classe_projecte">ID Classe Projecte</label>
+              <input type="number" id="id_classe_projecte" name="id_classe_projecte" [(ngModel)]="assignaturaActual.id_classe_projecte" required placeholder="ex: 1">
+            </div>
+            
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 25px;">
+              <input type="checkbox" id="exempcio" name="exempcio" [(ngModel)]="assignaturaActual.exempcio" style="width: auto;">
+              <label for="exempcio" style="margin-bottom: 0;">Té Exempció?</label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dataInici">Data d'Inici</label>
+              <input type="date" id="dataInici" name="dataInici" [(ngModel)]="dataInici">
+            </div>
+            
+            <div class="form-group">
+              <label for="dataFi">Data de Finalització</label>
+              <input type="date" id="dataFi" name="dataFi" [(ngModel)]="dataFi">
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="tancarModal()">Cancel·lar</button>
+            <button type="submit" class="btn-primary" [disabled]="!assignaturaForm.form.valid || isLoading()">
+              {{ isEditing ? 'Actualitzar Assignatura' : 'Guardar Nova Assignatura' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal 2: Visualització d'Alumnes Inscrits (Master-Detail) -->
+@if (isAlumnesModalOpen) {
+  <div class="modal-backdrop">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h3>Alumnes Inscrits</h3>
+        <button class="btn-close" (click)="tancarModalAlumnes()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+           <label>Matèria Seleccionada:</label>
+           <!-- Camp de lectura visual -->
+           <input type="text" [value]="assignaturaSeleccionada?.nom" disabled style="background:#edf2f7; color:#2d3748; font-weight:bold;">
+        </div>
+
+        <label style="font-size: 13px; font-weight: 600; color: #4a5568; margin-bottom: 8px; display:block;">Estudiants Matriculats</label>
+        
+        <ul class="inscrits-list">
+            @for (alumne of alumnesInscritsLlista; track alumne.id) {
+               <li>
+                   <div class="avatar-placeholder" style="width:28px; height:28px; font-size:12px;">{{ alumne.nom.charAt(0) }}</div>
+                   <div style="display:flex; flex-direction:column;">
+                       <span style="font-weight:600; color:#2d3748;">{{ alumne.nom }} {{ alumne.cognom }}</span>
+                       <span style="font-size:12px; color:#718096;">ID: #{{ alumne.id }} | {{ alumne.email }}</span>
+                   </div>
+               </li>
+            } @empty {
+               <li style="justify-content:center; padding: 30px; color:#a0aec0; border:none; text-align:center;">
+                  Aquesta assignatura no té cap alumne inscrit actualment.
+               </li>
+            }
+        </ul>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="tancarModalAlumnes()">Tornar a Assignatures</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

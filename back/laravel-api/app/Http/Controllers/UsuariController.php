@@ -49,7 +49,7 @@ class UsuariController extends Controller
             'cognom' => 'required|string|max:255',
             'email' => 'required|email|unique:usuaris,email',
             'email_pares' => 'nullable|email',
-            'rol' => 'required|string|in:admin,professor,alumne,pare',
+            'rol' => 'required|string|in:admin,professor,alumne,pare,Administrador,Professor,Alumne,Pares',
             'password' => 'required|string|min:8',
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id',
         ]);
@@ -105,7 +105,7 @@ class UsuariController extends Controller
             'cognom' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:usuaris,email,' . $id,
             'email_pares' => 'nullable|email',
-            'rol' => 'sometimes|required|string|in:admin,professor,alumne,pare',
+            'rol' => 'sometimes|required|string|in:admin,professor,alumne,pare,Administrador,Professor,Alumne,Pares',
             'password' => 'sometimes|required|string|min:8',
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id,' . $id,
             'id_classe' => 'nullable|exists:classes,id',
