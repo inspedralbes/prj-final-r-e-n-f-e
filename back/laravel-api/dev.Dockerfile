@@ -8,6 +8,9 @@ RUN apt-get update && apt-get install -y \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install pdo pdo_pgsql zip bcmath mbstring gd
 
+RUN docker-php-ext-install opcache
+RUN echo "opcache.enable_cli=1" >> /usr/local/etc/php/conf.d/docker-php-ext-opcache.ini
+
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 COPY back/laravel-api/composer.json back/laravel-api/composer.lock* ./

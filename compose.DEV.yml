@@ -36,6 +36,22 @@ services:
     networks:
       - general
 
+  # Servei de cua
+  pfg1-worker:
+    container_name: pfg1-worker
+    build:
+      context: .
+      dockerfile: ./back/laravel-api/dev.Dockerfile
+    volumes:
+      - ./back/laravel-api:/app
+    depends_on:
+      - pfg1-postgres
+      - pfg1-back
+    command: sh -c "php artisan queue:work --verbose --tries=3"
+    networks:
+      - general
+    restart: unless-stopped
+
   # Nginx
   pfg1-nginx:
     container_name: pfg1-nginx
@@ -70,68 +86,68 @@ services:
       - general
 
   # Backend Sensor nodejs
-  pfg1-sensor:
-    container_name: pfg1-sensor
-    build:
-      dockerfile: ./back/sensor/dev.Dockerfile
-      context: .
-    command: sh -c "cp .env.DEV .env && npm install && nodemon -L index.js"
-    volumes:
-      - ./back/sensor:/usr/src/app
-    ports:
-      - "3001:3001"
-    working_dir: /usr/src/app
-    depends_on:
-      - pfg1-rabbitmq
-    networks:
-      - general
+  # pfg1-sensor:
+  #   container_name: pfg1-sensor
+  #   build:
+  #     dockerfile: ./back/sensor/dev.Dockerfile
+  #     context: .
+  #   command: sh -c "cp .env.DEV .env && npm install && nodemon -L index.js"
+  #   volumes:
+  #     - ./back/sensor:/usr/src/app
+  #   ports:
+  #     - "3001:3001"
+  #   working_dir: /usr/src/app
+  #   depends_on:
+  #     - pfg1-rabbitmq
+  #   networks:
+  #     - general
 
   # Backend DB insert nodejs
-  pfg1-dbinsert:
-    container_name: pfg1-dbinsert
-    build:
-      dockerfile: ./back/dbinsert/dev.Dockerfile
-      context: .
-    command: sh -c "cp .env.DEV .env && npm install && nodemon -L index.js"
-    volumes:
-      - ./back/dbinsert:/usr/src/app
-    working_dir: /usr/src/app
-    depends_on:
-      - pfg1-mongodb
-      - pfg1-sensor
-    networks:
-      - general
+  # pfg1-dbinsert:
+  #   container_name: pfg1-dbinsert
+  #   build:
+  #     dockerfile: ./back/dbinsert/dev.Dockerfile
+  #     context: .
+  #   command: sh -c "cp .env.DEV .env && npm install && nodemon -L index.js"
+  #   volumes:
+  #     - ./back/dbinsert:/usr/src/app
+  #   working_dir: /usr/src/app
+  #   depends_on:
+  #     - pfg1-mongodb
+  #     - pfg1-sensor
+  #   networks:
+  #     - general
 
-  pfg1-mongodb:
-    image: mongo:8.2
-    restart: always
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
-    volumes:
-      - mongo-bd:/data/db
-    networks:
-      - general
+  # pfg1-mongodb:
+  #   image: mongo:8.2
+  #   restart: always
+  #   ports:
+  #     - 27017:27017
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: root
+  #   volumes:
+  #     - mongo-bd:/data/db
+  #   networks:
+  #     - general
 
-  pfg1-mongo-express:
-    image: mongo-express:latest
-    container_name: pfg1-mongo-express
-    restart: on-failure
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: root
-      ME_CONFIG_MONGODB_URL: mongodb://root:root@pfg1-mongodb:27017/?authSource=admin
-      ME_CONFIG_BASICAUTH: false
-      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
-    depends_on:
-      - pfg1-mongodb
-    networks:
-      - general
+  # pfg1-mongo-express:
+  #   image: mongo-express:latest
+  #   container_name: pfg1-mongo-express
+  #   restart: on-failure
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: root
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:root@pfg1-mongodb:27017/?authSource=admin
+  #     ME_CONFIG_BASICAUTH: false
+  #     ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+  #     ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+  #   depends_on:
+  #     - pfg1-mongodb
+  #   networks:
+  #     - general
 
   pfg1-postgres:
     image: postgres:16
@@ -162,21 +178,21 @@ services:
     networks:
       - general
 
-  pfg1-rabbitmq:
-    image: rabbitmq:4.0-management-alpine
-    container_name: pfg1-rabbitmq
-    ports:
-      - 5672:5672
-      - 15672:15672
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    networks:
-      - general
+  # pfg1-rabbitmq:
+  #   image: rabbitmq:4.0-management-alpine
+  #   container_name: pfg1-rabbitmq
+  #   ports:
+  #     - 5672:5672
+  #     - 15672:15672
+  #   volumes:
+  #     - rabbitmq_data:/var/lib/rabbitmq
+  #   networks:
+  #     - general
 
 volumes:
   postgres-bd:
-  mongo-bd:
-  rabbitmq_data:
+  # mongo-bd:
+  # rabbitmq_data:
 
 networks:
   general:

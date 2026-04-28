@@ -69,6 +69,15 @@ jobs:
             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
             echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
             echo "GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" >> .env
+            echo "" >> .env
+            echo "MAIL_MAILER=smtp" >> .env
+            echo "MAIL_HOST=smtp.tenfe.cat" >> .env
+            echo "MAIL_PORT=587" >> .env
+            echo "MAIL_USERNAME=info@tenfe.cat" >> .env
+            echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
+            echo "MAIL_ENCRYPTION=tls" >> .env
+            echo "MAIL_FROM_ADDRESS=info@tenfe.cat" >> .env
+            echo "MAIL_FROM_NAME=${APP_NAME}" >> .env
             cd ../..
 
             # Crear .env BACK Principal-node
@@ -102,7 +111,7 @@ jobs:
             docker compose -f compose.PROD.yml logs certbot
 
             # Comprovar amb ls si existeixen fitxers de certificat i aplicar configuració final
-            if ls certbot/conf/live/renfe.daw.inspedralbes.cat/fullchain.pem certbot/conf/live/renfe.daw.inspedralbes.cat/privkey.pem >/dev/null 2>&1; then
+            if ls certbot/conf/live/tenfe.cat/fullchain.pem certbot/conf/live/tenfe.cat/privkey.pem >/dev/null 2>&1; then
               cp nginx-prod.conf nginx.conf
               echo "✓ Certificats SSL trobats - canviant a configuració de PROD"
               echo "Reiniciant tots els serveis per aplicar la nova configuració..."
