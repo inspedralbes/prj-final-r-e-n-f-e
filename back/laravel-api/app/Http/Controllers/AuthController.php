@@ -9,6 +9,8 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeMessage;
 
 class AuthController extends Controller
 {
@@ -95,10 +97,10 @@ class AuthController extends Controller
                             Storage::disk('public')->makeDirectory('photos/' . 'profes');
                             $filename = 'photos/profes/' . $user_email . '.jpg';
                         }
-                        
+
                         // Ahora guardar l'arxiu a la carpeta pública
                         $filePutResult = Storage::disk('public')->put($filename, $contents);
-                        
+
                         if ($filePutResult) {
                             $photoPath = '/storage/' . $filename;
                         } else {
@@ -118,8 +120,10 @@ class AuthController extends Controller
                     'token' => $googleUser->token,
                     'photo' => $photoPath
                 ]);
-            }
-            // Si el usuari YA existe, no modificar res - només autenticar
+
+                // Enviar Email de confirmació al usuari
+                Mail::to($user_email)->queue(new WelcomeMessage($googleUser->getName(), $user_rol));            }
+            // Si el usuari JA existeix, no modificar res - només autenticar
 
             // Generem el token de Sanctum per l'usuari
             $token = $user->createToken('google-auth')->plainTextToken;
@@ -144,7 +148,6 @@ class AuthController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
     public function loginTemporal(Request $request)
     {
         try {

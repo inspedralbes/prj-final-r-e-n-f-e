@@ -29,7 +29,7 @@ Aplicació web per a la gestió d'assistència d'un centre educatiu de formació
 
 ## URL de producció
 
-- [_\[URL Producció\]_](https://renfe.daw.inspedralbes.cat)
+- [_\[URL Producció\]_](https://tenfe.cat)
 
 ---
 
@@ -68,11 +68,11 @@ Aplicació web per a la gestió d'assistència d'un centre educatiu de formació
 
 ### Vistes del frontend (Angular)
 
-| Rol               | Vistes disponibles                                                                      |
-| ----------------- | --------------------------------------------------------------------------------------- |
-| **Login**         | Pantalla d'inici de sessió (Google i temporal)                                          |
-| **Professor**     | Llista de classe, gestió de classe, llista d'assignatures, gestió d'assistència, horari |
-| **Alumne**        | Horari personal, consulta de faltes                                                     |
+| Rol           | Vistes disponibles                                                                      |
+| ------------- | --------------------------------------------------------------------------------------- |
+| **Login**     | Pantalla d'inici de sessió (Google i temporal)                                          |
+| **Professor** | Llista de classe, gestió de classe, llista d'assignatures, gestió d'assistència, horari |
+| **Alumne**    | Horari personal, consulta de faltes                                                     |
 
 ---
 
