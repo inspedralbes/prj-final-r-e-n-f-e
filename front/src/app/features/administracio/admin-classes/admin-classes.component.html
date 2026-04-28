@@ -44,11 +44,14 @@
                 <td class="user-email"><span class="badge-role p-role">{{ obtenirNomCurs(classe.id_curs) }}</span></td>
                 <td class="user-email">{{ obtenirNomTutor(classe.id_tutor) }}</td>
                 <td class="actions">
+                  <button class="btn-icon view" (click)="obrirModalAlumnes(classe)" title="Veure Alumnes d'aquesta classe">
+                  
+                  </button>
                   <button class="btn-icon edit" (click)="obrirModal(classe)" title="Editar">
-                    📝
+                    
                   </button>
                   <button class="btn-icon delete" (click)="esborrarClasse(classe.id)" title="Eliminar">
-                    🗑️
+                    
                   </button>
                 </td>
               </tr>
@@ -109,6 +112,47 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal 2: Visualització d'Alumnes Pertanyents a la Classe (Master-Detail) -->
+@if (isAlumnesModalOpen) {
+  <div class="modal-backdrop">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h3>Llistat Complet d'Alumnes</h3>
+        <button class="btn-close" (click)="tancarModalAlumnes()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+           <label>Grup Seleccionat:</label>
+           <!-- Camp de lectura visual per reafirmar selecció ràpidament -->
+           <input type="text" [value]="classeSeleccionada?.nom" disabled style="background:#edf2f7; color:#2d3748; font-weight:bold;">
+        </div>
+
+        <label style="font-size: 13px; font-weight: 600; color: #4a5568; margin-bottom: 8px; display:block;">Estudiants Adjudicats</label>
+        
+        <ul class="inscrits-list">
+            @for (alumne of alumnesClasseLlista; track alumne.id) {
+               <li>
+                   <div class="avatar-placeholder" style="width:28px; height:28px; font-size:12px;">{{ alumne.nom.charAt(0) }}</div>
+                   <div style="display:flex; flex-direction:column;">
+                       <span style="font-weight:600; color:#2d3748;">{{ alumne.nom }} {{ alumne.cognom }}</span>
+                       <span style="font-size:12px; color:#718096;">ID: #{{ alumne.id }} | {{ alumne.email }}</span>
+                   </div>
+               </li>
+            } @empty {
+               <li style="justify-content:center; padding: 30px; color:#a0aec0; border:none; text-align:center;">
+                  Aquesta classe encara no conté cap alumne.
+               </li>
+            }
+        </ul>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="tancarModalAlumnes()">Tornar a Classes</button>
+        </div>
       </div>
     </div>
   </div>

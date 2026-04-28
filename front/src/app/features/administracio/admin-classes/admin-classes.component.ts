@@ -39,6 +39,11 @@ export class AdminClassesComponent implements OnInit {
   public isEditing = false;
   public classeActual: Partial<Classe> = {};
 
+  // Gestió de visibilitat pel Sub-Modal Mestre-Detall (Llista d'Alumnes)
+  public isAlumnesModalOpen = false;
+  public classeSeleccionada: Classe | null = null;
+  public alumnesClasseLlista: any[] = [];
+
   ngOnInit(): void {
     // Instància a l'inici totes les dades necessàries des de l'API (Classes, Cursos relacionats i els Usuaris globals)
     this.classesManager.carregarClasses();
@@ -114,5 +119,32 @@ export class AdminClassesComponent implements OnInit {
         this.isLoading.set(false);
       }
     }
+  }
+
+  // Prepara l'estat iterant explícitament els valors i obre el Modal
+  obrirModalAlumnes(classe: Classe) {
+    this.classeSeleccionada = classe;
+    let alumnesTrobats = [];
+    
+    // Obtenim en format brut i estàtic l'emmagatzemament prèviament portat del Backend
+    let totsUsuaris = this.usuarisManager.usuaris();
+    
+    // Iterem mitjançant bucle clàssic per evitar despesa de mètodes d'ordre superior
+    for (let i = 0; i < totsUsuaris.length; i++) {
+       // Filtrem per garantir que l'estudiant encaixa l'ID a la nostra classe oberta
+       if (totsUsuaris[i].id_classe === classe.id && totsUsuaris[i].rol === 'Alumne') {
+           alumnesTrobats.push(totsUsuaris[i]);
+       }
+    }
+    
+    this.alumnesClasseLlista = alumnesTrobats;
+    this.isAlumnesModalOpen = true;
+  }
+
+  // Reseteja memòria de variables a la sortida
+  tancarModalAlumnes() {
+    this.isAlumnesModalOpen = false;
+    this.classeSeleccionada = null;
+    this.alumnesClasseLlista = [];
   }
 }
