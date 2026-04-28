@@ -75,10 +75,9 @@ class AuthController extends Controller
                 $user_rol = 'Profe';
             }
 
-            // Verificar si el usuari ja existeix a la base de dades
+            // Verificar si l'usuari ja existeix a la base de dades
             $user = Usuari::where('email', $user_email)->first();
-
-            // Si el usuario NO existeix
+            // Si l'usuari NO existeix
             if (!$user) {
                 // Descarreguem la foto de perfil
                 $photoPath = null;
@@ -119,7 +118,6 @@ class AuthController extends Controller
                     'photo' => $photoPath
                 ]);
             }
-            // Si el usuari YA existe, no modificar res - només autenticar
 
             // Generem el token de Sanctum per l'usuari
             $token = $user->createToken('google-auth')->plainTextToken;
@@ -127,11 +125,16 @@ class AuthController extends Controller
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'user' => $user,
+                    'user' => [
+                        'id' => $user->id,
+                        'nom' => $user->nom,
+                        'email' => $user->email,
+                        'rol' => $user->rol,
+                        'isProfileComplited' => $user->isProfileCompleted()
+                    ],
                     'token' => $token,
-                    'rol' => $user_rol
                 ],
-                'message' => 'Autenticació correcta'
+                'message' => 'Autenticació correcta',
             ], Response::HTTP_OK);
 
         } catch (\Exception $e) {
@@ -169,7 +172,8 @@ class AuthController extends Controller
                 'data' => [
                     'user' => $user,
                     'token' => $token,
-                    'rol' => $user->rol
+                    'rol' => $user->rol,
+                    'isProfileComplited' => $user->isProfileCompleted()
                 ],
                 'message' => 'Login temporal correcte'
             ], Response::HTTP_OK);
