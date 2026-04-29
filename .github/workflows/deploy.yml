@@ -60,7 +60,7 @@ jobs:
 
             # Crear .env.PROD BACK laravel-api
             cd ./back/laravel-api
-            ls
+            ls -a
             echo "Copiant .env.PROD de Back laravel-api..."
             cp .env.PROD .env
             echo "DB_CONNECTION=pgsql" >> .env
