@@ -62,7 +62,6 @@ jobs:
             cd ./back/laravel-api
             echo "Copiant .env.PROD de Back laravel-api..."
             cp .env.PROD .env
-            pwd
             echo "DB_CONNECTION=pgsql" >> .env
             echo "DB_HOST=pfg1-postgres" >> .env
             echo "DB_PORT=5432" >> .env
@@ -86,7 +85,6 @@ jobs:
             # Crear .env BACK Principal-node
             echo "Creant .env BACK Principal-node..."
             cd ./back/principal-node
-            pwd
             cp .env.PROD .env
             cd ../..
 

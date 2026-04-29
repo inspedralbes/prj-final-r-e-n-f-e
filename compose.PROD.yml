@@ -38,8 +38,8 @@ services:
       dockerfile: ./back/laravel-api/prod.Dockerfile
     ports:
       - 9000:9000
-    # volumes:
-    #   - ./back/laravel-api:/app
+    volumes:
+      - ./back/laravel-api:/app
     depends_on:
       - pfg1-postgres
     command: sh -c "php artisan key:generate && php artisan migrate && php artisan storage:link || true && php-fpm"
@@ -68,7 +68,7 @@ services:
     build:
       dockerfile: ./back/principal-node/prod.Dockerfile
       context: .
-    command: sh -c "cp .env.PROD .env && npm install && node index.js"
+    command: sh -c "npm install && node index.js"
     volumes:
       - ./back/principal-node:/usr/src/app
     ports:
