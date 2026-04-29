@@ -21,10 +21,12 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 COPY back/laravel-api/composer.json back/laravel-api/composer.lock* ./
 
 # 2. Instalar dependencias SIN el autoloader (el código de la app aún no está aquí)
-RUN composer install --no-dev --no-scripts --no-autoloader
+# RUN composer install --no-dev --no-scripts --no-autoloader
 
 # 3. Copiar el código fuente de la aplicación
 COPY back/laravel-api/ ./
+
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # 4. Generar el autoloader optimizado ahora que el código está presente
 RUN composer dump-autoload --optimize
