@@ -40,8 +40,10 @@ services:
       dockerfile: ./back/laravel-api/prod.Dockerfile
     ports:
       - 9000:9000
-    # volumes:
-    #   - ./back/laravel-api:/app
+    volumes:
+      #   - ./back/laravel-api:/app
+      - ./back/laravel-api/public:/app/public
+      - ./back/laravel-api/storage:/app/storage
     depends_on:
       - pfg1-postgres
     command: sh -c "php artisan migrate && php artisan storage:link || true && php-fpm"
@@ -54,8 +56,10 @@ services:
     build:
       context: .
       dockerfile: ./back/laravel-api/prod.Dockerfile
-    # volumes:
-    #   - ./back/laravel-api:/app
+    volumes:
+      #   - ./back/laravel-api:/app
+      - ./back/laravel-api/public:/app/public
+      - ./back/laravel-api/storage:/app/storage
     depends_on:
       - pfg1-postgres
       - pfg1-back
