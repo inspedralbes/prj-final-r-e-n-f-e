@@ -42,7 +42,7 @@ services:
       - 9000:9000
     volumes:
       - ./back/laravel-api:/app
-      - /app/vendor
+      # - /app/vendor
     depends_on:
       - pfg1-postgres
     command: sh -c "php artisan migrate && php artisan storage:link || true && php-fpm"
@@ -57,7 +57,7 @@ services:
       dockerfile: ./back/laravel-api/prod.Dockerfile
     volumes:
       - ./back/laravel-api:/app
-      - /app/vendor
+      # - /app/vendor
     depends_on:
       - pfg1-postgres
       - pfg1-back
