@@ -46,8 +46,8 @@ jobs:
             echo "Baixant canvis de Git..."
             git pull origin main
 
-            # Crear .env laravel-api
-            echo "Creant .env laravel-api..."
+            # Crear .env /
+            echo "Crear .env /..."
             echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" > .env
             echo "POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> .env
@@ -59,7 +59,6 @@ jobs:
             cd ..
 
             # Crear .env.PROD BACK laravel-api
-            echo "Creant .env.PROD BACK laravel-api..."
             cd ./back/laravel-api
             echo "Copiant .env.PROD de Back laravel-api..."
             cp .env.PROD .env
