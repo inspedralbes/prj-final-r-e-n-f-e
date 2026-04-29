@@ -43,6 +43,8 @@ services:
     volumes:
       - ./back/laravel-api:/app
       - /app/vendor
+      - ./back/laravel-api/storage:/app/storage
+      - ./back/laravel-api/bootstrap/cache:/app/bootstrap/cache
     depends_on:
       - pfg1-postgres
     command: sh -c "php artisan migrate && php artisan storage:link || true && php-fpm"
@@ -58,6 +60,8 @@ services:
     volumes:
       - ./back/laravel-api:/app
       - /app/vendor
+      - ./back/laravel-api/storage:/app/storage
+      - ./back/laravel-api/bootstrap/cache:/app/bootstrap/cache
     depends_on:
       - pfg1-postgres
       - pfg1-back

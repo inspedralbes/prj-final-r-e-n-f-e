@@ -90,6 +90,13 @@ jobs:
             cp .env.PROD .env
             cd ../..
 
+            # Crear directorios de Laravel que no existen en git (storage y cache)
+            echo "Creando directorios de Laravel..."
+            mkdir -p back/laravel-api/storage/framework/{cache,sessions,views}
+            mkdir -p back/laravel-api/storage/logs
+            mkdir -p back/laravel-api/bootstrap/cache
+            chmod -R 775 back/laravel-api/storage back/laravel-api/bootstrap/cache
+
             # Configuració inicial (abans de validar certificats)
             cp nginx-init.conf nginx.conf
             echo "Utilitzant configuració INICIAL abans de validar certificats"
