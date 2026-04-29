@@ -39,8 +39,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     libzip4 \
     libonig5 \
-    libjpeg-turbo8 \
-    libpng8 \
+    libjpeg62-turbo \
+    libpng16-16 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copiar composer desde la imagen oficial
