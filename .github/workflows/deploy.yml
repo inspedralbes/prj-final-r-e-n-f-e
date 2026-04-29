@@ -68,7 +68,7 @@ jobs:
             echo "DB_PORT=5432" >> .env
             echo "DB_DATABASE=prf-renfe" >> .env
             echo "DB_USERNAME=postgres" >> .env
-            echo "DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
             echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
             echo "GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" >> .env
