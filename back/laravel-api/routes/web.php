@@ -11,7 +11,7 @@ Route::get('/auth/google/callback', function (\Illuminate\Http\Request $request)
     $code = $request->get('code');
     $error = $request->get('error');
 
-    $frontendUrl = env('FRONTEND_URL', 'http://localhost:4200');
+    $frontendUrl = env('FRONTEND_URL');
 
     if ($error) {
         return redirect()->away($frontendUrl . '/?error=' . $error);
