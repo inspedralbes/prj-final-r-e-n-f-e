@@ -44,7 +44,7 @@ services:
     #   - ./back/laravel-api:/app
     depends_on:
       - pfg1-postgres
-    command: sh -c "php artisan key:generate && php artisan migrate && php artisan storage:link || true && php-fpm"
+    command: sh -c "php artisan migrate && php artisan storage:link || true && php-fpm"
     networks:
       - general
 
