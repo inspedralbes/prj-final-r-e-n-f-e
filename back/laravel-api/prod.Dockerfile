@@ -39,8 +39,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     libzip4 \
     libonig5 \
-    libjpeg-turbo8 \
-    libpng8 \
+    libjpeg62-turbo \
+    libpng16-16 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Copiar composer desde la imagen oficial
@@ -64,16 +64,18 @@ RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/app.ini \
     && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/app.ini \
     && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/app.ini
 
-# Copiar aplicación completa (código + vendor) desde el builder
-COPY --from=builder /app /app
+# Copiar aplicación completa (código + vendor) desde el builder con el propietario correcto
+COPY --from=builder --chown=www-data:www-data /app /app
 
-# Crear directorios necesarios con permisos adecuados
-RUN mkdir -p storage/logs bootstrap/cache \
-    storage/framework/cache \
-    storage/framework/sessions \
-    storage/framework/views \
-    && chown -R www-data:www-data /app \
-    && chmod -R 755 storage bootstrap/cache
+# Crear directorios necesarios con permisos adecuados (incluyendo la carpeta de fotos)
+RUN mkdir -p /app/storage/app/public/photos/profes \
+    /app/storage/framework/cache \
+    /app/storage/framework/sessions \
+    /app/storage/framework/views \
+    /app/storage/logs \
+    /app/bootstrap/cache \
+    && chown -R www-data:www-data /app/storage /app/bootstrap/cache \
+    && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Pre-generar cachés de Laravel (config, rutas)
 RUN cd /app && php artisan config:cache && php artisan route:cache
@@ -81,7 +83,7 @@ RUN cd /app && php artisan config:cache && php artisan route:cache
 # Generar archivo de preload para opcache
 RUN cd /app && php artisan package:discover --ansi
 
-USER www-data
+# USER www-data
 
 EXPOSE 9000
 
