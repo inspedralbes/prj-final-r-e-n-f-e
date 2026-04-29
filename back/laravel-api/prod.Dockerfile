@@ -1,9 +1,12 @@
-# Build stage - Construir dependencias y extensiones
+# ==========================================
+# Etapa 1: Builder (Construcció)
+# ==========================================
 FROM php:8.4.2-fpm AS builder
 
+# Directori de treball
 WORKDIR /app
 
-# Instalar dependencias del sistema requeridas para compilar extensiones
+# Instal·lar dependències del sistema per compilar extensions
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
@@ -15,28 +18,30 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && docker-php-ext-install pdo pdo_pgsql zip bcmath mbstring gd \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# Copiar Composer des de la imatge oficial
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# 1. Copiar solo los archivos de dependencias para aprovechar la caché de Docker
+# 1. Copiar fitxers de dependències primer per aprofitar el cache de capes
 COPY back/laravel-api/composer.json back/laravel-api/composer.lock* ./
 
-# 2. Instalar dependencias SIN el autoloader (el código de la app aún no está aquí)
-# RUN composer install --no-dev --no-scripts --no-autoloader
+# 2. Instal·lar dependències (sense scripts per evitar errors si el codi encara no hi és)
+RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction
 
-# 3. Copiar el código fuente de la aplicación
+# 3. Copiar la resta del codi de l'aplicació
 COPY back/laravel-api/ ./
 
+# 4. Finalitzar instal·lació de Composer (genera l'autoloader i executa scripts)
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# 4. Generar el autoloader optimizado ahora que el código está presente
-RUN composer dump-autoload --optimize
 
-# Production stage - Imagen final ligera
+# ==========================================
+# Etapa 2: Imatge Final (Producció)
+# ==========================================
 FROM php:8.4.2-fpm
 
 WORKDIR /app
 
-# Instalar SOLO librerías en tiempo de ejecución (sin dependencias de compilación)
+# Instal·lar llibreries de temps d'execució (runtime)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
     libzip4 \
@@ -45,45 +50,34 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng16-16 \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copiar composer desde la imagen oficial
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Copiar las extensiones de PHP ya compiladas desde la etapa builder
+# Copiar extensions PHP des del builder
 COPY --from=builder /usr/local/lib/php/extensions/ /usr/local/lib/php/extensions/
 COPY --from=builder /usr/local/etc/php/conf.d/ /usr/local/etc/php/conf.d/
 
-# Copiar configuración PHP optimizada
+# Configuració de PHP per a producció
 RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/app.ini \
-    && echo "max_execution_time=30" >> /usr/local/etc/php/conf.d/app.ini \
-    && echo "upload_max_filesize=20M" >> /usr/local/etc/php/conf.d/app.ini \
-    && echo "post_max_size=20M" >> /usr/local/etc/php/conf.d/app.ini \
-    && echo "expose_php=Off" >> /usr/local/etc/php/conf.d/app.ini \
     && echo "opcache.enable=1" >> /usr/local/etc/php/conf.d/app.ini \
-    && echo "opcache.enable_cli=0" >> /usr/local/etc/php/conf.d/app.ini \
-    && echo "opcache.memory_consumption=256" >> /usr/local/etc/php/conf.d/app.ini \
-    && echo "opcache.interned_strings_buffer=16" >> /usr/local/etc/php/conf.d/app.ini \
-    && echo "opcache.max_accelerated_files=20000" >> /usr/local/etc/php/conf.d/app.ini \
     && echo "opcache.validate_timestamps=0" >> /usr/local/etc/php/conf.d/app.ini \
-    && echo "opcache.revalidate_freq=0" >> /usr/local/etc/php/conf.d/app.ini
+    && echo "expose_php=Off" >> /usr/local/etc/php/conf.d/app.ini
 
-# Copiar aplicación completa (código + vendor) desde el builder
+# Copiar l'aplicació completa (incloent la carpeta VENDOR) des del builder
 COPY --from=builder /app /app
 
-# Crear directorios necesarios con permisos adecuados
+# Assegurar permisos correctes per a Laravel
 RUN mkdir -p storage/logs bootstrap/cache \
-    storage/framework/cache \
+    storage/framework/cache/data \
     storage/framework/sessions \
     storage/framework/views \
     && chown -R www-data:www-data /app \
-    && chmod -R 755 storage bootstrap/cache
+    && chmod -R 775 storage bootstrap/cache
 
-# Pre-generar cachés de Laravel (config, rutas)
-RUN cd /app && php artisan config:cache && php artisan route:cache
-
-# Generar archivo de preload para opcache
-RUN cd /app && php artisan package:discover --ansi
-
+# Canviar a l'usuari www-data per seguretat
 USER www-data
+
+# Optimització interna de Laravel (això crea els fitxers de memòria cau a /app)
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    php artisan view:cache
 
 EXPOSE 9000
 
