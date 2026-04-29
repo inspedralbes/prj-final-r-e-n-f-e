@@ -21,10 +21,13 @@ Route::prefix('v1')->group(function (): void {
     Route::post('auth/login-temporal', [AuthController::class, 'loginTemporal']);
     Route::patch('/fullfill-user-profile', [UsuariController::class, 'fullfillUserProfile'])->middleware(('auth:sanctum'));
 
+    Route::apiResource('cursos', \App\Http\Controllers\CursController::class)->only(['index']);
+
+
     // Grup protegit per policy de perfil completo
     Route::middleware('can:canPerformAction,App\\Models\\Usuari')->group(function () {
         // Rutes d'Usuaris
-        Route::apiResource('usuaris', UsuariController::class);
+        // Route::apiResource('usuaris', UsuariController::class);
 
         // Rutes de Cursos
         Route::apiResource('cursos', \App\Http\Controllers\CursController::class)->only(['index']);
