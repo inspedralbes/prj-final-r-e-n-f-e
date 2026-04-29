@@ -81,7 +81,7 @@ RUN cd /app && php artisan config:cache && php artisan route:cache
 # Generar archivo de preload para opcache
 RUN cd /app && php artisan package:discover --ansi
 
-USER www-data
+# USER www-data
 
 EXPOSE 9000
 
