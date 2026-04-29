@@ -62,12 +62,7 @@ jobs:
             cd ./back/laravel-api
             echo "Copiant .env.PROD de Back laravel-api..."
             cp .env.PROD .env
-            if [ -f .env ]; then
-              echo "El fitxer s'ha creat correctament, afegint variables..."
-            else
-              echo "Error: No s'ha creat el fitxer .env, no es poden afegir variables"
-              exit 1
-            fi
+            pwd
             echo "DB_CONNECTION=pgsql" >> .env
             echo "DB_HOST=pfg1-postgres" >> .env
             echo "DB_PORT=5432" >> .env
@@ -91,6 +86,7 @@ jobs:
             # Crear .env BACK Principal-node
             echo "Creant .env BACK Principal-node..."
             cd ./back/principal-node
+            pwd
             cp .env.PROD .env
             cd ../..
 
