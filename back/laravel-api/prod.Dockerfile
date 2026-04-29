@@ -68,12 +68,12 @@ RUN echo "memory_limit=256M" > /usr/local/etc/php/conf.d/app.ini \
 COPY --from=builder /app /app
 
 # Crear directorios necesarios con permisos adecuados
-RUN mkdir -p storage/logs bootstrap/cache \
-    storage/framework/cache \
-    storage/framework/sessions \
-    storage/framework/views \
-    && chown -R www-data:www-data /app \
-    && chmod -R 755 storage bootstrap/cache
+RUN mkdir -p /app/storage/logs /app/bootstrap/cache \
+    /app/storage/framework/cache \
+    /app/storage/framework/sessions \
+    /app/storage/framework/views \
+    && chown -R www-data:www-data /app/storage /app/bootstrap/cache \
+    && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Pre-generar cachés de Laravel (config, rutas)
 RUN cd /app && php artisan config:cache && php artisan route:cache
