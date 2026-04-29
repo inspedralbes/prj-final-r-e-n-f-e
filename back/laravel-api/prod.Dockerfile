@@ -81,4 +81,9 @@ RUN php artisan config:cache && \
 
 EXPOSE 9000
 
-CMD ["php-fpm"]
+# Entrypoint per ajustar permisos a runtime (per si es mou la carpeta storage fora del container) i iniciar PHP-FPM
+COPY --from=builder /usr/bin/env /usr/bin/env
+COPY --from=builder /bin/sh /bin/sh
+COPY --from=builder /bin/chown /bin/chown
+COPY --from=builder /bin/chmod /bin/chmod
+ENTRYPOINT ["/bin/sh", "-c", "chown -R www-data:www-data /app/storage /app/public/storage && chmod -R 775 /app/storage /app/public/storage && exec php-fpm"]
