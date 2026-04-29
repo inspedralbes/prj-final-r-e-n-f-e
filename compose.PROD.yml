@@ -47,7 +47,7 @@ services:
       - ./back/laravel-api/bootstrap/cache:/app/bootstrap/cache
     depends_on:
       - pfg1-postgres
-    command: sh -c "php artisan migrate && php artisan storage:link || true && php-fpm"
+    command: sh -c "chown -R www-data:www-data /app/storage /app/bootstrap/cache && php artisan migrate && php artisan storage:link || true && php-fpm"
     networks:
       - general
 
@@ -65,7 +65,7 @@ services:
     depends_on:
       - pfg1-postgres
       - pfg1-back
-    command: sh -c "php artisan queue:work --verbose --tries=3"
+    command: sh -c "chown -R www-data:www-data /app/storage /app/bootstrap/cache && php artisan queue:work --verbose --tries=3"
     networks:
       - general
     restart: unless-stopped
