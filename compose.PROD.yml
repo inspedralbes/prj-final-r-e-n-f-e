@@ -1,7 +1,8 @@
 # Generar certificats
 # docker compose -f compose.PROD.yml run --rm --entrypoint prj-final-r-e-n-f-e-certbot-1 certbot certonly --webroot --webroot-path /var/www/certbot -d tenfe.cat --email a23cliferadn@inspedralbes.cat --agree-tos --no-eff-email
 services:
-  nginx:
+  pfg1-nginx:
+    container_name: pfg1-nginx
     build:
       context: .
       dockerfile: nginx.Dockerfile

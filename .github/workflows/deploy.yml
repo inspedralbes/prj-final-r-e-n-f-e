@@ -49,7 +49,7 @@ jobs:
             # Crear .env laravel-api
             echo "Creant .env laravel-api..."
             echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" > .env
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+            echo "POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> .env
 
             # Crear .env.PROD FRONT
