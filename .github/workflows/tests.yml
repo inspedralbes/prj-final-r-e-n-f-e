@@ -95,10 +95,10 @@ jobs:
       # -------------------------
       # Wait for services (IMPORTANT)
       # -------------------------
-      - name: Wait for backend & frontend
-        run: |
-          npx wait-on http://localhost:8000 --timeout 60000
-          npx wait-on http://localhost:4200 --timeout 120000
+      # - name: Wait for backend & frontend
+      #   run: |
+      #     npx wait-on http://localhost:8000 --timeout 60000
+      #     npx wait-on http://localhost:4200 --timeout 120000
 
       # -------------------------
       # Run Cypress E2E tests
