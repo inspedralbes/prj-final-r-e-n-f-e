@@ -72,7 +72,7 @@ jobs:
       # Start full stack (Docker)
       # -------------------------
       - name: Start services (Docker)
-        run: docker compose -f compose.DEV.yml up -d --build
+        run: docker compose -f compose.TEST.yml up -d --build
 
       - name: Wait 30s
         run: sleep 30
