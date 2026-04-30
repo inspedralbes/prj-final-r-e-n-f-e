@@ -13,4 +13,6 @@ export interface Usuari {
   google_id: string | null;
   created_at: string;
   updated_at: string;
+  photo: string;
+  data_naixement: Date;
 }

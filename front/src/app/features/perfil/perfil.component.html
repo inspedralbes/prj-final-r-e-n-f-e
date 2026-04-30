@@ -1,27 +1,26 @@
+@let u = user();
 @if (isLoading()) {
   <div class="loading">
     <p>Carregant perfil...</p>
   </div>
-} @else if (user()) {
+} @else if (u) {
   <div class="perfil-container">
     <!-- Header amb foto i info bàsica -->
     <div class="perfil-header">
       <div class="foto-container">
-        @if (user()?.photo) {
-          <img [src]="user()!.photo" alt="Foto de perfil" class="foto-perfil" />
-        } @else {
-          <div class="foto-placeholder">
-            <span>{{ user()?.nom?.charAt(0) }}{{ user()?.cognom?.charAt(0) }}</span>
-          </div>
-        }
+        <img src="{{ u.photo }}" alt="Foto de perfil" class="foto-perfil" />
       </div>
       <div class="info-basica">
-        <h1>{{ user()?.nom }} {{ user()?.cognom }}</h1>
-        <p class="email">{{ user()?.email }}</p>
-        <span class="rol-badge">{{ user()?.rol }}</span>
+        <h1>{{ u.nom }} {{ u.cognom }}</h1>
+        <p class="email">{{ u.email }}</p>
+        <span class="rol-badge">{{ u.rol }}</span>
       </div>
-      <button class="btn-settings" (click)="toggleMode()" [title]="mode() === 'read' ? 'Editar perfil' : 'Cancel·lar edició'">
-        <img src="/img/menu/iconos/config-icona.png" alt="Configuració" />
+      <button
+        class="btn-settings"
+        (click)="toggleMode()"
+        [title]="mode() === 'read' ? 'Editar perfil' : 'Cancel·lar edició'"
+      >
+        <span>⚙️</span>
       </button>
     </div>
 
@@ -34,30 +33,24 @@
           <div class="info-grid">
             <div class="info-item">
               <label>Nom</label>
-              <p>{{ user()?.nom }}</p>
+              <p>{{ u.nom }}</p>
             </div>
             <div class="info-item">
               <label>Cognom</label>
-              <p>{{ user()?.cognom }}</p>
-            </div>
-            <div class="info-item">
-              <label>Email</label>
-              <p>{{ user()?.email }}</p>
+              <p>{{ u.cognom }}</p>
             </div>
             <div class="info-item">
               <label>Data de naixement</label>
-              <p>{{ user()?.data_naixement || 'No especificat' }}</p>
+              <p>{{ u.data_naixement || 'No especificat' }}</p>
             </div>
-            @if (user()?.email_pares) {
+            <div class="info-item">
+              <label>Email</label>
+              <p>{{ u.email }}</p>
+            </div>
+            @if (u.email_pares) {
               <div class="info-item">
                 <label>Email pares/represenants</label>
-                <p>{{ user()?.email_pares }}</p>
-              </div>
-            }
-            @if (user()?.nfc_id) {
-              <div class="info-item">
-                <label>ID NFC</label>
-                <p>{{ user()?.nfc_id }}</p>
+                <p>{{ u.email_pares }}</p>
               </div>
             }
           </div>
@@ -66,31 +59,26 @@
         <!-- Informació Acadèmica segons rol -->
         <section class="section">
           <h2>Informació Acadèmica</h2>
-          
-          @if (isAlumne && user()?.classe) {
+
+          @if (isAlumne && infoAdicional()?.classe) {
             <div class="info-grid">
               <div class="info-item">
                 <label>Classe</label>
-                <p>{{ user()?.classe?.nom }}</p>
+                <p>{{ infoAdicional()?.classe }}</p>
               </div>
               <div class="info-item">
                 <label>Curs</label>
-                <p>{{ user()?.classe?.curs?.nom }}</p>
+                <p>{{ infoAdicional()?.curs }}</p>
               </div>
               <div class="info-item">
                 <label>Tutor/a</label>
-                <p>{{ user()?.classe?.tutor?.nom }} {{ user()?.classe?.tutor?.cognom }}</p>
+                <p>{{ infoAdicional()?.tutor?.nom }} {{ infoAdicional()?.tutor?.cognom }}</p>
               </div>
             </div>
-          } @else if (isProfeOrAdmin && user()?.classes_tutor?.length) {
+          } @else if (isProfeOrAdmin && infoAdicional()?.classe) {
             <div class="info-grid">
               <div class="info-item">
-                <label>Classes tutoritzades</label>
-                <ul class="llista classes-list">
-                  @for (classe of user()?.classes_tutor; track classe.id) {
-                    <li>{{ classe.nom }}</li>
-                  }
-                </ul>
+                <p>{{ infoAdicional()?.classe }}</p>
               </div>
             </div>
           } @else {
@@ -116,11 +104,21 @@
             </div>
             <div class="form-group">
               <label for="email_pares">Email pares/representants</label>
-              <input type="email" id="email_pares" [(ngModel)]="editedData()['email_pares']" name="email_pares" />
+              <input
+                type="email"
+                id="email_pares"
+                [(ngModel)]="editedData()['email_pares']"
+                name="email_pares"
+              />
             </div>
             <div class="form-group">
               <label for="data_naixement">Data de naixement</label>
-              <input type="date" id="data_naixement" [(ngModel)]="editedData()['data_naixement']" name="data_naixement" />
+              <input
+                type="date"
+                id="data_naixement"
+                [(ngModel)]="editedData()['data_naixement']"
+                name="data_naixement"
+              />
             </div>
           </form>
           <p class="edit-nota">Nota: Els canvis es desaran automàticament.</p>

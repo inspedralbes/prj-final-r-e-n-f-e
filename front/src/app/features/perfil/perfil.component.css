@@ -49,6 +49,7 @@
 
 .info-basica {
   flex: 1;
+  min-width: 0;
 }
 
 .info-basica h1 {
@@ -86,6 +87,7 @@
   align-items: center;
   justify-content: center;
   transition: background 0.3s ease;
+  font-size: x-large;
 }
 
 .btn-settings:hover {
@@ -108,6 +110,8 @@
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .section h2 {

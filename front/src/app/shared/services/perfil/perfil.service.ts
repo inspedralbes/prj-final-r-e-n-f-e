@@ -1,37 +1,21 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ApiManagerService } from '../api/api-manager.service';
+import { Usuari } from '../../models/usuaris.model';
+
+interface expectedAnswer {
+  success: boolean;
+  data: PerfilData;
+}
+
+export interface InfoAdicional {
+  classe: string;
+  curs: string;
+  tutor?: { nom: string; cognom: string | null };
+}
 
 export interface PerfilData {
-  id: number;
-  nom: string;
-  cognom: string;
-  email: string;
-  email_pares: string | null;
-  rol: string;
-  nfc_id: string | null;
-  id_classe: number | null;
-  photo: string | null;
-  data_naixement: string | null;
-  google_id: string | null;
-  created_at: string;
-  updated_at: string;
-  classe?: {
-    id: number;
-    nom: string;
-    curs?: {
-      id: number;
-      nom: string;
-    };
-    tutor?: {
-      id: number;
-      nom: string;
-      cognom: string;
-    };
-  };
-  classes_tutor?: Array<{
-    id: number;
-    nom: string;
-  }>;
+  user: Usuari;
+  info: InfoAdicional;
 }
 
 @Injectable({
@@ -44,15 +28,17 @@ export class PerfilService {
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
 
-  async getPerfil(): Promise<PerfilData | null> {
+  async getPerfil(id: string | null): Promise<expectedAnswer | null> {
+    if (id === null) {
+      return null;
+    }
     this.isLoading.set(true);
     this.error.set(null);
 
     try {
-      const resp = await this.apiManager.get<any>('/usuaris/perfil');
-      const data = resp.data || resp;
-      this.perfilData.set(data);
-      return data;
+      const resp = await this.apiManager.get<expectedAnswer>(`/perfil/${id}`);
+      this.perfilData.set(resp.data);
+      return resp;
     } catch (err) {
       this.error.set("No s'ha pogut obtenir el perfil");
       console.error(err);

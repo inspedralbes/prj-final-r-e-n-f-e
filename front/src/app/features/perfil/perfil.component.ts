@@ -1,7 +1,11 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { PerfilService, PerfilData } from '../../shared/services/perfil/perfil.service';
+import {
+  PerfilService,
+  InfoAdicional,
+} from '../../shared/services/perfil/perfil.service';
+import { Usuari } from '../../shared/models/usuaris.model';
 
 @Component({
   selector: 'app-perfil',
@@ -10,26 +14,31 @@ import { PerfilService, PerfilData } from '../../shared/services/perfil/perfil.s
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css',
 })
+
 export class PerfilComponent implements OnInit {
   private perfilService = inject(PerfilService);
 
-  user = signal<PerfilData | null>(null);
+  currentUser = signal<Usuari | null>(null)
+  user = signal<Usuari | null>(null);
+  infoAdicional = signal<InfoAdicional | null>(null);
   mode = signal<'read' | 'edit'>('read');
   isLoading = signal<boolean>(false);
 
-  editedData = signal<Partial<PerfilData>>({});
+  editedData = signal<Partial<Usuari>>({});
 
   async ngOnInit() {
     this.isLoading.set(true);
-    const data = await this.perfilService.getPerfil();
+    const userString = localStorage.getItem('user');
+    let id = null;
+    if (userString) {
+      const userJSON = JSON.parse(userString!);
+      id = userJSON.id;
+    }
+    const rawData = await this.perfilService.getPerfil(id);
+    const data = rawData?.data;
     if (data) {
-      this.user.set(data);
-      this.editedData.set({
-        nom: data.nom,
-        cognom: data.cognom,
-        email_pares: data.email_pares,
-        data_naixement: data.data_naixement,
-      });
+      this.user.set(data.user);
+      this.infoAdicional.set(data.info);
     }
     this.isLoading.set(false);
   }
@@ -39,15 +48,6 @@ export class PerfilComponent implements OnInit {
       this.mode.set('edit');
     } else {
       this.mode.set('read');
-      const data = this.user();
-      if (data) {
-        this.editedData.set({
-          nom: data.nom,
-          cognom: data.cognom,
-          email_pares: data.email_pares,
-          data_naixement: data.data_naixement,
-        });
-      }
     }
   }
 
