@@ -1,4 +1,21 @@
 services:
+  # DB
+  pfg1-postgres:
+    image: postgres:16
+    container_name: pfg1-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: prf-renfe
+    ports:
+      - "5432:5432"
+    networks:
+      - general
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
   # Backend Laravel
   pfg1-back:
     container_name: pfg1-back
@@ -8,12 +25,13 @@ services:
     volumes:
       - ./back/laravel-api:/app
     depends_on:
-      - pfg1-postgres
-    command: sh -c "cp /app/.env.example /app/.env && php artisan key:generate && php artisan migrate:fresh --seed && php-fpm"
+      pfg1-postgres:
+        condition: service_healthy
     networks:
       - general
+    command: php-fpm
 
-  # Nginx (for API)
+  # Nginx per mostrar el Laravel
   pfg1-nginx:
     container_name: pfg1-nginx
     image: nginx:latest
@@ -23,22 +41,10 @@ services:
       - ./back/laravel-api/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./back/laravel-api:/app
     depends_on:
-      pfg1-back:
-        condition: service_started
-    networks:
-      - general
-
-  pfg1-postgres:
-    image: postgres:16
-    container_name: pfg1-postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: prf-renfe
+      - pfg1-back
     networks:
       - general
 
 networks:
   general:
     driver: bridge
-    name: general
