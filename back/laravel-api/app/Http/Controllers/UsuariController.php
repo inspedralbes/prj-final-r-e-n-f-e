@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuari;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 
 class UsuariController extends Controller
 {
@@ -132,35 +132,43 @@ class UsuariController extends Controller
     /**
      * Obte el perfil de l'usuari autenticat.
      */
-    public function perfil(Request $request)
+    public function enviarPerfil(Request $request, $id)
     {
-        $user = $request->user();
+        $authUser = $request->user();
 
-        if (!$user) {
+        if($authUser->id !== (int) $id){
             return response()->json([
-                'success' => false,
-                'message' => 'Usuari no autenticat'
-            ], Response::HTTP_UNAUTHORIZED);
+                'message' => 'Acceso denegado. No puedes ver la información de otro usuario.'
+            ], 403);
         }
 
-        $user->load(['classe.curs', 'classe.tutor', 'tutorClasses']);
+        $user = Usuari::findOrFail($id);
 
+        $classe = DB::table('classes')->where('id', $user->id_classe)->first(['nom', 'id_curs', 'id_tutor']);
+        $curs = $classe ? DB::table('cursos')->where('id', $classe->id_curs)->first(['nom']) : null;
         $infoAdicional = [];
-        if ($user->rol === 'Alumne' && $user->classe) {
+
+        if ($user->rol === 'Alumne' && $classe) {
+            $tutor = $classe->id_tutor ? DB::table('usuaris')->where('id', $classe->id_tutor)->first(['nom', 'cognom']) : null;
+
             $infoAdicional = [
-                'classe' => $user->classe,
-                'curs' => $user->classe->curs,
-                'tutor' => $user->classe->tutor
+                'classe' => $classe->nom,
+                'curs' => $curs ? $curs->nom : null,
+                'tutor' => $tutor
             ];
-        } elseif (($user->rol === 'Profe' || $user->rol === 'Admin') && $user->tutorClasses->isNotEmpty()) {
+
+        } elseif ($user->rol === 'Profe' && !empty($user->id_classe)) {
             $infoAdicional = [
-                'classes_tutor' => $user->tutorClasses
-            ];
+                'classe' => $classe ? $classe->nom : null,
+                'curs' => $curs ? $curs->nom : null,
+            ];   
         }
 
         return response()->json([
             'success' => true,
-            'data' => array_merge($user->toArray(), $infoAdicional)
-        ], Response::HTTP_OK);
+            'data' => [
+                'user' => $user,    
+                'info' => $infoAdicional,
+            ], Response::HTTP_OK]);
     }
 }

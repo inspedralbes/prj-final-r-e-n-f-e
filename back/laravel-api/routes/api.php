@@ -21,7 +21,7 @@ Route::prefix('v1')->group(function (): void {
     Route::post('auth/login-temporal', [AuthController::class, 'loginTemporal']);
 
     // Rutes d'Usuaris
-    Route::get('usuaris/perfil', [UsuariController::class, 'perfil']);
+    Route::get('perfil/{id}', [UsuariController::class, 'enviarPerfil'])->middleware(['auth:sanctum']);
     Route::apiResource('usuaris', UsuariController::class);
 
     // Rutes de Cursos
