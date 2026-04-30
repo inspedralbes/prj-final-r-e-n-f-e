@@ -69,6 +69,48 @@ class UsuarisSeeder extends Seeder
                 'id_classe' => null,
                 'horari_guardies' => null,
                 'data_naixement' => '1999-05-03'
+            ],
+            [
+                'id' => 5,
+                'nom' => 'Ermengol bota',
+                'cognom' => null,
+                'rol' => 'Admin',
+                'email' => 'ebota@inspedralbes.cat',
+                'email_pares' => null,
+                'password' => null,
+                'token' => null,
+                'nfc_id' => null,
+                'id_classe' => null,
+                'horari_guardies' => null,
+                'data_naixement' => 'null'
+            ],
+            [
+                'id' => 6,
+                'nom' => 'Pol Prats',
+                'cognom' => null,
+                'rol' => 'Profe',
+                'email' => 'pprats@inspedralbes.cat',
+                'email_pares' => null,
+                'password' => null,
+                'token' => null,
+                'nfc_id' => null,
+                'id_classe' => null,
+                'horari_guardies' => null,
+                'data_naixement' => 'null'
+            ],
+            [
+                'id' => 7,
+                'nom' => 'Alvaro Perez',
+                'cognom' => null,
+                'rol' => 'Profe',
+                'email' => 'aperezh@inspedralbes.cat',
+                'email_pares' => null,
+                'password' => null,
+                'token' => null,
+                'nfc_id' => null,
+                'id_classe' => null,
+                'horari_guardies' => null,
+                'data_naixement' => 'null'
             ]
         ]);
 

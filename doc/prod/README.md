@@ -1,0 +1,157 @@
+# Producció
+
+## Desplegament a Producció
+
+El desplegament a producció del projecte està automatitzat mitjançant **GitHub Actions** i la infraestructura es gestiona amb **Docker Compose**.
+
+### Automatització amb GitHub Actions
+
+El workflow de GitHub Actions es troba a `.github/workflows/deploy` i s'activa automàticament quan es fa un `push` a la branca `prod`. El procés és el següent:
+
+1. **Connexió al servidor:**  
+   El workflow utilitza SSH per connectar-se al servidor de producció fent servir les credencials emmagatzemades com a secrets de GitHub.
+
+2. **Actualització del codi:**
+   - Accedeix al directori del projecte al servidor.
+   - Fa `git pull` per obtenir l'última versió del codi.
+
+3. **Configuració d'arxius d'entorn:**
+   - Copia els arxius `.env.PROD` a `.env` per cada servei necessari (backend, frontend, DBinsert, sensor).
+   - Afegeix variables d'entorn sensibles (usuari i contrasenya de MySQL, URI de MongoDB, etc.) a partir dels secrets de GitHub.
+
+4. **Arrencada de Docker:**
+   - Executa `docker compose -f compose.PROD.yml up -d --build` per construir i aixecar tots els serveis definits.
+
+### Orquestració amb Docker Compose
+
+El fitxer `compose.PROD.yml` defineix tota la infraestructura de producció. Cada servei del projecte (frontend, backend, bases de dades, etc.) s'executa en un contenidor independent.
+
+#### Serveis Principals
+
+- **pfg1-nginx:** Servei
+- **pfg1-worker:**
+- **pfg1-back-node:**
+- **pfg1-postgres:**
+- **pfg1-pgadmin:**
+- **certbot:**
+- **portainer:** Gestor de contenidors Docker, port 9443.
+
+#### Volums
+
+S'utilitzen volums Docker per persistir les dades de Postgres i Portainer.
+
+#### Variables d'entorn
+
+Els serveis utilitzen l'arxiu `.env.PROD.DOCKER` per carregar les variables d'entorn necessàries (usuaris, contrasenyes, URIs, etc.).
+
+---
+
+### Procés resumit de desplegament
+
+1. **Push a la branca de producció** (`prod`).
+2. **GitHub Actions** executa el workflow de desplegament.
+3. **El servidor de producció** rep el codi actualitzat, configura els arxius `.env` i aixeca els serveis amb Docker Compose.
+4. **Els serveis** queden disponibles als ports configurats i amb les dades persistides.
+
+> **Nota:**  
+> Per modificar el desplegament, cal editar el workflow de GitHub Actions o el fitxer `compose.PROD.yml` segons les necessitats del projecte.
+
+> **Nota 2:**
+> Si en el procés de desplegament es produeix un error, és recomanable revisar l'estat dels contenidors amb `portainer` o `docker ps` i els logs amb `docker logs <container_id>` per identificar el problema. També es pot accedir a la GUI de RabbitMQ per verificar l'estat de les cues i missatges.
+
+<br>
+
+# Manual d'Instal·lació en una Màquina Nova
+
+Aquest manual explica com desplegar el projecte **prj-final-front-back-tr-final-g6** en una màquina nova, des de zero.
+
+---
+
+## 1. Requisits previs
+
+Abans de començar, assegura't que la màquina compleix els següents requisits:
+
+- **Sistema operatiu:** Ubuntu 20.04/22.04 (o similar)
+- **Accés root** o permisos sudo
+- **Git**
+- **Docker** i **Docker Compose**
+- **Accés a internet**
+
+---
+
+## 2. Clonar el repositori
+
+```bash
+cd /ruta/on/vols/instal-lar
+git clone https://github.com/inspedralbes/prj-final-r-e-n-f-e
+cd prj-final-r-e-n-f-e
+```
+
+---
+
+## 3. Configuració d'arxius d'entorn
+
+Copia els arxius d'entorn de producció als seus llocs corresponents:
+
+```bash
+cp ./back/laravel-api/.env.PROD ./back/laravel-api/.env
+
+cp ./back/principal-node/.env.PROD ./back/principal-node/.env
+
+cp ./front/.env.PROD ./front/.env
+
+cp ./back/services/sensor/.env.PROD ./back/services/sensor/.env
+```
+
+Edita els arxius `.env` per afegir les variables d'entorn reals (usuaris, contrasenyes, URIs, etc.) segons la teva configuració.
+
+---
+
+## 4. Arrencada dels serveis amb Docker Compose
+
+```bash
+docker compose -f compose.PROD.yml up -d --build
+```
+
+Aquesta comanda construirà i aixecarà tots els serveis definits a `compose.PROD.yml`.
+
+---
+
+## 5. Verificació
+
+Comprova que tots els contenidors estan funcionant:
+
+```bash
+docker ps
+```
+
+---
+
+## 6. Actualització del projecte
+
+Per actualitzar el projecte a una nova versió:
+
+```bash
+git pull
+docker compose -f compose.PROD.yml up -d --build
+```
+
+---
+
+## 7. Notes addicionals
+
+- Si algun contenidor falla, consulta els logs amb:
+  ```bash
+  docker logs <nom_o_id_del_contenidor>
+  ```
+- Pots gestionar els contenidors gràficament amb Portainer (`http://localhost:9443`).
+
+---
+
+## 8. Desplegament automàtic (opcional)
+
+Si vols automatitzar el desplegament, configura els secrets i el workflow de GitHub Actions (`.github/workflows/deploy.yaml`) segons la teva infraestructura.
+
+---
+
+**Fi del manual**

@@ -125,6 +125,37 @@ class AuthController extends Controller
             }
 
             // Si el usuari JA existeix, no modificar res - només autenticar
+
+            if (!$user->photo) {
+                try {
+                    $contents = Http::get($googleUser->getAvatar())->body();
+
+                    if($user_rol === 'Alumne'){
+                        Storage::disk('public')->makeDirectory('photos/' . 'alumnes');
+                        $filename = 'photos/alumnes/' . $user_email . '.jpg';
+                   }
+
+                    else if($user_rol === 'Profe' || $user_rol === 'Admin') {
+                        Storage::disk('public')->makeDirectory('photos/' . 'profes');
+                        $filename = 'photos/profes/' . $user_email . '.jpg';
+                    }
+
+                    // Ahora guardar l'arxiu a la carpeta pública
+                    $filePutResult = Storage::disk('public')->put($filename, $contents);
+
+                    if ($filePutResult) {
+                        $photoPath = '/storage/' . $filename;
+                        // Actualitzar la ruta de la foto a la db
+                        $user->update([
+                            'photo' => $photoPath
+                        ]);
+                    } else {
+                        error_log('ERROR: put() va retornar false per a ' . $filename);
+                    }
+                } catch (\Exception $e) {
+                    error_log('ERROR: ' . $e->getMessage());
+                }
+            }
             
             // Generem el token de Sanctum per l'usuari
             $token = $user->createToken('google-auth')->plainTextToken;
