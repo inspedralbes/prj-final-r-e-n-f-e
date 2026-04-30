@@ -15,6 +15,10 @@ use App\Http\Controllers\CartaFaltesController;
 
 Route::prefix('v1')->group(function (): void {
 
+    Route::get('/health', function () {
+        return response()->json(['status' => 'ok']);
+    });
+
     // Rutes d'autenticació (sense autenticació requerida)
     Route::post('auth/google/redirect', [AuthController::class, 'googleRedirectUrl']);
     Route::post('auth/google/callback', [AuthController::class, 'googleCallback']);
