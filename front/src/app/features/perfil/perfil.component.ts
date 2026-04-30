@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -18,6 +18,8 @@ import { Usuari } from '../../shared/models/usuaris.model';
 export class PerfilComponent implements OnInit {
   private perfilService = inject(PerfilService);
 
+  @Input() id?: string;
+
   currentUser = signal<Usuari | null>(null)
   user = signal<Usuari | null>(null);
   infoAdicional = signal<InfoAdicional | null>(null);
@@ -28,13 +30,18 @@ export class PerfilComponent implements OnInit {
 
   async ngOnInit() {
     this.isLoading.set(true);
+    
     const userString = localStorage.getItem('user');
-    let id = null;
+    let currentUserId = null;
     if (userString) {
       const userJSON = JSON.parse(userString!);
-      id = userJSON.id;
+      currentUserId = userJSON.id;
+      this.currentUser.set(userJSON);
     }
-    const rawData = await this.perfilService.getPerfil(id);
+    
+    const perfilId = this.id || currentUserId;
+    
+    const rawData = await this.perfilService.getPerfil(perfilId);
     const data = rawData?.data;
     if (data) {
       this.user.set(data.user);
@@ -58,5 +65,12 @@ export class PerfilComponent implements OnInit {
   get isProfeOrAdmin(): boolean {
     const rol = this.user()?.rol;
     return rol === 'Profe' || rol === 'Admin';
+  }
+
+  get mostarRueda(): boolean {
+    const userLogueado = this.currentUser();
+    if (!userLogueado) return false;
+    
+    return userLogueado.rol === 'Profe' || userLogueado.rol === 'Admin';
   }
 }

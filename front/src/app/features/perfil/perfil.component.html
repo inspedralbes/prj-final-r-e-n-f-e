@@ -15,13 +15,15 @@
         <p class="email">{{ u.email }}</p>
         <span class="rol-badge">{{ u.rol }}</span>
       </div>
-      <button
-        class="btn-settings"
-        (click)="toggleMode()"
-        [title]="mode() === 'read' ? 'Editar perfil' : 'Cancel·lar edició'"
-      >
-        <span>⚙️</span>
-      </button>
+      @if (mostarRueda) {
+        <button
+          class="btn-settings"
+          (click)="toggleMode()"
+          [title]="mode() === 'read' ? 'Editar perfil' : 'Cancel·lar edició'"
+        >
+          <span>⚙️</span>
+        </button>
+      }
     </div>
 
     <!-- Mode Lectura -->

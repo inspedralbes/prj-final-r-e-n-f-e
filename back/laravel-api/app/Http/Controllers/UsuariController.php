@@ -136,7 +136,7 @@ class UsuariController extends Controller
     {
         $authUser = $request->user();
 
-        if($authUser->id !== (int) $id){
+        if(!in_array($authUser->rol, ['Admin', 'Profe']) && $authUser->id !== (int) $id){
             return response()->json([
                 'message' => 'Acceso denegado. No puedes ver la información de otro usuario.'
             ], 403);

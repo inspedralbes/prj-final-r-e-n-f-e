@@ -25,4 +25,5 @@ export const routes: Routes = [
   { path: 'horari-alumnes', component: HorariAlumnesComponent },
   { path: 'auth/callback', component: AuthCallbackComponent },
   { path: 'profile', component: PerfilComponent },
+  { path: 'profile/:id', component: PerfilComponent },
 ];
