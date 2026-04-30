@@ -69,12 +69,18 @@ jobs:
         run: npm ci
 
       # -------------------------
-      # Start full stack (Docker)
+      # Start full stack (Docker + Frontend)
       # -------------------------
       - name: Start services (Docker)
         run: docker compose -f compose.TEST.yml up -d --build
 
-      - name: Wait 30s
+      - name: Start frontend
+        working-directory: front
+        run: |
+          npm run generate-env
+          npm run start &
+
+      - name: Wait 30s for services to stabilize
         run: sleep 30
 
       - name: Debug containers
@@ -91,8 +97,8 @@ jobs:
       # -------------------------
       - name: Wait for backend & frontend
         run: |
-          npx wait-on http://localhost:8000
-          npx wait-on http://localhost:4200
+          npx wait-on http://localhost:8000 --timeout 60000
+          npx wait-on http://localhost:4200 --timeout 120000
 
       # -------------------------
       # Run Cypress E2E tests

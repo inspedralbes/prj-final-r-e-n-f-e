@@ -40,8 +40,9 @@ jobs:
         run: |
           docker compose -f compose.TEST.yml up -d
           cd front
+          npm run generate-env
           npm run start &
-          npx wait-on http://localhost:4200 --timeout 60000
+          npx wait-on http://localhost:4200 --timeout 120000
 
       - name: Run Cypress Tests
         working-directory: front
