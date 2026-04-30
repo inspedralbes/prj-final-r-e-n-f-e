@@ -5,57 +5,10 @@ on:
     branches: [main]
 
 jobs:
-  test:
-    name: Run Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.2'
-          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
-          coverage: none
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-
-      - name: Install Backend Dependencies
-        working-directory: back/laravel-api
-        run: composer install --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-
-      - name: Install Frontend Dependencies
-        working-directory: front
-        run: npm install
-
-      - name: Run Laravel Tests
-        working-directory: back/laravel-api
-        run: php artisan test
-
-      - name: Start Services for E2E Tests
-        run: |
-          docker compose -f compose.TEST.yml up -d
-          cd front
-          npm run generate-env
-          npm run start &
-          npx wait-on http://localhost:4200 --timeout 120000
-
-      - name: Run Cypress Tests
-        working-directory: front
-        run: npm run test:e2e
-
-      - name: Stop Services
-        if: always()
-        run: docker compose -f compose.TEST.yml down
-
   deploy:
     name: Full Deploy Process
-    needs: test
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -80,28 +33,34 @@ jobs:
             set -euo pipefail
 
             cd /
+            # Anar a la carpeta del projecte (o clonar si no existeix)
             if [ ! -d "prj-final-r-e-n-f-e/.git" ]; then
               echo "Projecte no trobat, clonant repositori..."
               git clone --branch main https://github.com/inspedralbes/prj-final-r-e-n-f-e.git
             fi
             cd prj-final-r-e-n-f-e
 
+            # Baixar els últims canvis del codi
             echo "Baixant canvis de Git..."
             git pull origin main
 
+            # Crear .env /
             echo "Crear .env /..."
             echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" > .env
             echo "POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> .env
 
+            # Crear .env.PROD FRONT
             echo "Creant .env.PROD FRONT..."
             cd front
             cp .env.PROD .env
             cd ..
 
+            # Crear .env.PROD BACK laravel-api
             cd ./back/laravel-api
             echo "Copiant .env.PROD de Back laravel-api..."
             cp .env.PROD .env
+            ls -l /prj-final-r-e-n-f-e/back/laravel-api/.env
             echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
             echo "DB_CONNECTION=pgsql" >> .env
             echo "DB_HOST=pfg1-postgres" >> .env
@@ -123,26 +82,36 @@ jobs:
             echo 'MAIL_FROM_NAME=${APP_NAME}' >> .env
             cd ../..
 
+            # Crear .env BACK Principal-node
             echo "Creant .env BACK Principal-node..."
             cd ./back/principal-node
             cp .env.PROD .env
             cd ../..
 
+            # Crear directorios de Laravel que no existen en git (storage y cache)
             echo "Creando directorios de Laravel..."
             mkdir -p back/laravel-api/storage/framework/{cache,sessions,views}
             mkdir -p back/laravel-api/storage/logs
             mkdir -p back/laravel-api/bootstrap/cache
             chmod -R 775 back/laravel-api/storage back/laravel-api/bootstrap/cache
 
+            # Configuració inicial (abans de validar certificats)
             cp nginx-init.conf nginx.conf
             echo "Utilitzant configuració INICIAL abans de validar certificats"
 
+            # Aixecar contenidors reconstruint la imatge
             echo " Construint i aixecant contenidors..."
             docker compose -f compose.PROD.yml up --build -d
 
+            # Mostrar logs de certbot després de l'arrencada
+            echo "Mostrant logs de certbot..."
+            docker compose -f compose.PROD.yml logs certbot
+
+            # Comprovar amb ls si existeixen fitxers de certificat i aplicar configuració final
             if ls certbot/conf/live/tenfe.cat/fullchain.pem certbot/conf/live/tenfe.cat/privkey.pem >/dev/null 2>&1; then
               cp nginx-prod.conf nginx.conf
               echo "✓ Certificats SSL trobats - canviant a configuració de PROD"
+              echo "Reiniciant tots els serveis per aplicar la nova configuració..."
               docker compose -f compose.PROD.yml restart
             else
               echo "⚠ Encara no hi ha certificats SSL - es manté configuració INICIAL"
