@@ -1,4 +1,45 @@
-.contenidor {
-    /* Renamed from container */
-    padding: 20px;
+/* Layout principal: navbar a dalt, contingut a sota */
+.pagina-admin {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
 }
+
+/* Zona de contingut (deixa espai per la navbar flotant: 16px marge + 52px alçada + 16px espai) */
+.contingut-admin {
+  flex: 1;
+  padding: 84px 40px 40px 40px;
+  overflow-y: auto;
+}
+
+.titol-dashboard {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 32px;
+}
+
+/* Targeta glassmorphism que conté el gràfic */
+.targeta-grafic {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  border-radius: var(--radius-m);
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.titol-grafic {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 20px;
+}
+
+/* Hem de definir l'alçada aquí perquè Chart.js la necessita */
+.contenidor-canvas {
+  position: relative;
+  height: 320px;
+}
