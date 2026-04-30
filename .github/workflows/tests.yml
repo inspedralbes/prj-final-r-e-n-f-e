@@ -74,6 +74,18 @@ jobs:
       - name: Start services (Docker)
         run: docker compose -f compose.TEST.yml up -d --build
 
+      - name: Wait 30s
+        run: sleep 30
+
+      - name: Debug containers
+        run: docker ps
+
+      - name: Debug logs backend
+        run: docker logs pfg1-back
+
+      - name: Debug logs nginx
+        run: docker logs pfg1-nginx
+
       # -------------------------
       # Wait for services (IMPORTANT)
       # -------------------------
