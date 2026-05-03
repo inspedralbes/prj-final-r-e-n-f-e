@@ -11,6 +11,7 @@ import { LlistaFaltesComponent } from './features/professors/llista-faltes/llist
 import { GestioInscritsComponent } from './features/professors/gestio-classe/gestio-inscrits.component';
 import { HorariAlumnesComponent } from './features/professors/horari-alumnes/horari-alumnes.component';
 import { PerfilComponent } from './features/perfil/perfil.component';
+import { CompletarPerfilComponent } from './features/completar-perfil/completar-perfil.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -26,4 +27,5 @@ export const routes: Routes = [
   { path: 'auth/callback', component: AuthCallbackComponent },
   { path: 'profile', component: PerfilComponent },
   { path: 'profile/:id', component: PerfilComponent },
+  { path: 'completar-perfil', component: CompletarPerfilComponent },
 ];

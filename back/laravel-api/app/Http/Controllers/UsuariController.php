@@ -6,6 +6,7 @@ use App\Models\Usuari;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
 
 class UsuariController extends Controller
@@ -171,4 +172,31 @@ class UsuariController extends Controller
                 'info' => $infoAdicional,
             ], Response::HTTP_OK]);
     }
-}
+    public function fullfillUserProfile(Request $request)
+    {
+        $user = $request->user();
+
+        $dadesValidades = $request->validate([
+            'email_pares' => 'nullable|email',
+            'data_naixement' => 'required|date',
+            'photo' => 'nullable|file'
+        ]);
+        
+        if($request->hasFile('photo'))
+            {
+                $path = str_replace("/storage/public","",$user->photo);
+                Storage::disk('public')->put($path, $request->file('photo'));
+            }        
+
+        $user->update([
+            'data_naixament' => $request->data_naixament,
+            'email_pares' => $request->email_pares
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'data' => $user->fresh(),
+            'message' => 'Perfil completat correctament'
+        ]);
+    }
+}  
