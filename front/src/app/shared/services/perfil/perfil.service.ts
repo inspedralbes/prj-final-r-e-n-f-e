@@ -29,9 +29,8 @@ export class PerfilService {
   error = signal<string | null>(null);
 
   async getPerfil(id: string | null): Promise<expectedAnswer | null> {
-    if (id === null) {
-      return null;
-    }
+    if (id === null) return null;
+    
     this.isLoading.set(true);
     this.error.set(null);
 
@@ -46,5 +45,27 @@ export class PerfilService {
     } finally {
       this.isLoading.set(false);
     }
+  }
+
+  async updatePerfil(userId: number | string, userData: Partial<Usuari>){
+    if (!userId) return null;
+
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    try {
+      const resp = await this.apiManager.put<{success: boolean}>(`/usuaris/${userId}`, userData);
+      if (resp.success) {
+        this.isLoading.set(false);
+        return true;
+      }
+    } catch (err) {
+      this.error.set("No s'ha pogut actualitzar el perfil");
+      console.error(err);
+      this.isLoading.set(false);
+      return false;
+    }
+
+    return null;
   }
 }
