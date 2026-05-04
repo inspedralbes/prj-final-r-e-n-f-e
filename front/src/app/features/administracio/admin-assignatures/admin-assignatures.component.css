@@ -1,6 +1,18 @@
 @import '../admin-usuaris/admin-usuaris.component.css';
 
+/* Animació d'entrada quan es navega a aquesta pàgina */
+:host {
+  display: block;
+  animation: pageEnter 0.35s ease-out;
+}
+
+/* Marge superior per la navbar flotant */
+.contingut {
+  padding-top: 84px;
+  margin-left: 0;
+}
+
 .p-role {
-  background: #edf2f7; 
-  color: #4a5568; 
+  background: #edf2f7;
+  color: #4a5568;
 }

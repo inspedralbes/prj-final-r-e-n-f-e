@@ -115,12 +115,15 @@
   width: 18px;
   height: 18px;
   object-fit: contain;
-  opacity: 0.65;
-  transition: opacity 0.2s ease;
+  /* Icones en negre: elimina tots els colors i deixa negre pur */
+  filter: brightness(0) opacity(0.75);
+  transition: filter 0.2s ease, opacity 0.2s ease;
 }
 
+/* En hover i actiu: to violeta (--primary-color: #6366f1) */
 .element-navegacio:hover .caixa-icona img,
 .element-navegacio.actiu .caixa-icona img {
+  filter: brightness(0) saturate(100%) invert(44%) sepia(69%) saturate(600%) hue-rotate(215deg) brightness(95%);
   opacity: 1;
 }
 

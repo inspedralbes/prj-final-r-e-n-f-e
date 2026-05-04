@@ -1,4 +1,11 @@
+/* Animació d'entrada quan es navega a aquesta pàgina */
+:host {
+  display: block;
+  animation: pageEnter 0.35s ease-out;
+}
+
 /* Layout principal: navbar a dalt, contingut a sota */
+
 .pagina-admin {
   display: flex;
   flex-direction: column;
@@ -42,4 +49,18 @@
 .contenidor-canvas {
   position: relative;
   height: 320px;
-}
+}
+
+/* Fila que posa els gràfics un al costat de l'altre */
+.fila-grafics {
+  display: flex;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* Dins de la fila, cada targeta ocupa el mateix espai */
+.fila-grafics .targeta-grafic {
+  flex: 1;
+  min-width: 0;    /* Necessari per evitar desbordament en flex */
+  max-width: none; /* Cancel·la qualsevol max-width individual */
+}

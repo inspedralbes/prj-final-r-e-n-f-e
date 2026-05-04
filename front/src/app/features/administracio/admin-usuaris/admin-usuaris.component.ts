@@ -9,7 +9,8 @@ import { Usuari } from '../../../shared/models/usuaris.model';
     selector: 'app-admin-usuaris',
     imports: [CommonModule, FormsModule, SidebarAdminComponent],
     templateUrl: './admin-usuaris.component.html',
-    styleUrl: './admin-usuaris.component.css'
+    styleUrl: './admin-usuaris.component.css',
+    styles: [`:host { display: block; animation: pageEnter 0.35s ease-out; }`]
 })
 export class AdminUsuarisComponent implements OnInit {
   private usuarisManager = inject(UsuarisManagerService);

@@ -133,10 +133,22 @@ body::after {
     to { opacity: 1; }
 }
 
+/* Animació d'entrada de pàgina: fade + lleuger moviment cap amunt */
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes spin-morph {
     to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .relative-container {
     position: relative !important;
-}
+}

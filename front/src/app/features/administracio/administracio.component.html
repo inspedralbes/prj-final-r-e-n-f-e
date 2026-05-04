@@ -4,24 +4,30 @@
   <div class="contingut-admin">
     <h1 class="titol-dashboard">Dashboard d'Administració</h1>
 
-    <!-- TARGETA DEL GRÀFIC DE BARRES -->
-    <!-- Embolcallem el canvas en una targeta per poder controlar la mida -->
-    <div class="targeta-grafic">
-      <h2 class="titol-grafic">Assistència mensual</h2>
+    <!-- Fila de gràfics: els dos un al costat de l'altre -->
+    <div class="fila-grafics">
 
-      <!--
-        baseChart  → directiva de ng2-charts que activa el gràfic
-        [data]     → les dades que hem definit al TypeScript (barData)
-        [options]  → les opcions visuals (barOptions)
-        [type]     → el tipus de gràfic: 'bar', 'line', 'pie', 'doughnut'...
-      -->
-      <div class="contenidor-canvas">
-        <canvas baseChart
-          [data]="barData"
-          [options]="barOptions"
-          [type]="'bar'">
-        </canvas>
+      <!-- GRÀFIC 1: Usuaris per rol -->
+      <div class="targeta-grafic">
+        <h2 class="titol-grafic">Usuaris per Rol</h2>
+        <div class="contenidor-canvas">
+          <canvas baseChart [data]="barData()" [options]="barOptions" [type]="'bar'"></canvas>
+        </div>
       </div>
+
+      <!-- GRÀFIC 2: Inscrits per assignatura -->
+      <div class="targeta-grafic">
+        <h2 class="titol-grafic">Inscrits per Assignatura</h2>
+        <div class="contenidor-canvas">
+          <canvas
+            baseChart
+            [data]="barDataAssignatures()"
+            [options]="barOptionsAssignatures"
+            [type]="'line'"
+          ></canvas>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>

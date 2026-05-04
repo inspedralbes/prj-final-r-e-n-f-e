@@ -9,7 +9,8 @@
 .contingut {
   flex-grow: 1;
   padding: 30px;
-  margin-left: 250px; /* Assumint la mida del sidebar */
+  padding-top: 84px; /* 84px a dalt = 68px navbar flotant + 16px marge */
+  margin-left: 0;
   overflow-y: auto;
 }
 
