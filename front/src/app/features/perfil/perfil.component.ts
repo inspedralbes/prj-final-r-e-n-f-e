@@ -65,6 +65,15 @@ export class PerfilComponent implements OnInit {
 
   toggleMode() {
     if (this.mode() === 'read') {
+      const u = this.user();
+      if (u) {
+        this.editedData.set({
+          nom: u.nom,
+          cognom: u.cognom,
+          email_pares: u.email_pares ?? undefined,
+          data_naixement: u.data_naixement ?? undefined,
+        });
+      }
       this.mode.set('edit');
     } else {
       this.mode.set('read');

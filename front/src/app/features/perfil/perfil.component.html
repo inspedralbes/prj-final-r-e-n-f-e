@@ -105,15 +105,17 @@
               <label for="cognom">Cognom</label>
               <input type="text" id="cognom" [(ngModel)]="editedData()['cognom']" name="cognom" />
             </div>
-            <div class="form-group">
-              <label for="email_pares">Email pares/representants</label>
-              <input
-                type="email"
-                id="email_pares"
-                [(ngModel)]="editedData()['email_pares']"
-                name="email_pares"
-              />
-            </div>
+            @if (!isProfeOrAdmin) {
+              <div class="form-group">
+                <label for="email_pares">Email pares/representants</label>
+                <input
+                  type="email"
+                  id="email_pares"
+                  [(ngModel)]="editedData()['email_pares']"
+                  name="email_pares"
+                />
+              </div>
+            }
             <div class="form-group">
               <label for="data_naixement">Data de naixement</label>
               <input

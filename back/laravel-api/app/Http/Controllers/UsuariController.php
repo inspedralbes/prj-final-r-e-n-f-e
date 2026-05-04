@@ -84,11 +84,12 @@ class UsuariController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $dadesValidades = $peticio->validate([
+$dadesValidades = $peticio->validate([
             'nom' => 'sometimes|required|string|max:255',
             'cognom' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:usuaris,email,' . $id,
             'email_pares' => 'nullable|email',
+            'data_naixement' => 'nullable|date',
             'rol' => 'sometimes|required|string|in:admin,professor,alumne,pare',
             'password' => 'sometimes|required|string|min:8',
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id,' . $id,
@@ -189,7 +190,7 @@ class UsuariController extends Controller
             }        
 
         $user->update([
-            'data_naixament' => $request->data_naixament,
+            'data_naixement' => $request->data_naixement,
             'email_pares' => $request->email_pares
         ]);
 
