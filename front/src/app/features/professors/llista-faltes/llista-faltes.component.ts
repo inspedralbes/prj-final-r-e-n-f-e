@@ -62,7 +62,7 @@ export class LlistaFaltesComponent implements OnInit {
     for (let i = 0; i < totesLesFaltes.length; i++) {
       const assis = totesLesFaltes[i];
 
-      // 1. Obtenim el nom de l'alumne (Nom + Cognom)
+      // 1. Obtenim el nom de l'alumne
       // Si la informació d'inscripció o alumne no existeix, posem un valor per defecte.
       let nomAlumne = 'Alumne Desconegut';
       if (assis.inscripcio && assis.inscripcio.alumne) {
@@ -86,15 +86,15 @@ export class LlistaFaltesComponent implements OnInit {
         diccionariAlumnesAssignatures[clauUnica] = {
           alumne: nomAlumne,
           assignatura: nomAssignatura,
-          faltes: 0 // Comencem el comptador a zero
+          faltes: 0 
         };
       }
 
-      // 5. Incrementem el comptador de faltes per a aquest Alumne i Assignatura concrets.
+      // 5. Incrementem les faltes de l'alumne a l'assignatura
       diccionariAlumnesAssignatures[clauUnica].faltes++;
     }
 
-    // Passem el diccionari a una llista (array) ordenadeta per l'HTML
+    // Convertim el diccionari a un array ordenat per a l'HTML
     const rankingArray = [];
     for (const clau in diccionariAlumnesAssignatures) {
       rankingArray.push({

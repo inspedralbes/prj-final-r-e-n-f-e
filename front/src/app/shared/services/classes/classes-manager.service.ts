@@ -66,7 +66,7 @@ export class ClassesManagerService {
   async crearClasse(nom: string, curs_id: number) {
     try {
       const resp = await this.apiManager.post<any>('/classes', { nom, curs_id });
-      // El backend retorna { success: true, data: Classe, message: ... }
+      // El backend retorna success, data (Classe) i message
       const novaClasse = resp.data || resp;
 
       const llistaActual = this.classes();

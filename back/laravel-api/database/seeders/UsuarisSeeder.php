@@ -72,7 +72,7 @@ class UsuarisSeeder extends Seeder
             ]
         ]);
 
-        // Sincronizar secuencia en PostgreSQL automáticamente después del Seed
+        // Sincronitza la seqüència en PostgreSQL després del Seed
         if (DB::connection()->getDriverName() === 'pgsql') {
             DB::statement("SELECT setval(pg_get_serial_sequence('usuaris', 'id'), coalesce(max(id),0) + 1, false) FROM usuaris;");
         }

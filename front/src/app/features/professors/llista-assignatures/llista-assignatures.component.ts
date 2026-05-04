@@ -57,7 +57,7 @@ export class LlistaAssignaturesComponent implements OnInit {
 
     const requestData: any = { nom, exempcio };
 
-    // Si hi ha dates, creem el format JSON que espera el seeder/base de dades
+    // Formatem les dates a JSON per a la BBDD
     if (inici && fi) {
       requestData.interval = JSON.stringify([{ data_ini: inici, data_fi: fi }]);
     }
@@ -75,7 +75,7 @@ export class LlistaAssignaturesComponent implements OnInit {
       });
   }
 
-  // Converteix el format JSON de la base de dades a un text llegible (DD/MM/YYYY)
+  // Converteix el JSON a format llegible (DD/MM/YYYY)
   formatarInterval(intervalRaw: any): string {
     if (!intervalRaw) return 'No definit';
 

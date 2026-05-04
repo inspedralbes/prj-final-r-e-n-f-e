@@ -132,7 +132,7 @@ class HorariController extends Controller
             'alumnes_ids' => 'present|array', // IDs dels alumnes seleccionats per aquesta hora (pot ser buit)
         ]);
 
-        // 1. Busquem si ja existeix l'horari per aquesta classe i hora, o el creem
+        // 1. Busquem si l'horari existeix, o el creem
         $horari = Horari::where('id_classe', $dadesValidades['id_classe'])
             ->where('codi_hora', $dadesValidades['codi_hora'])
             ->first();
@@ -258,7 +258,7 @@ class HorariController extends Controller
             }
         }
 
-        // 4. Formatejo el resultat final amb 12 espais buits d'entrada (per cobrir matí i tarda)
+        // 4. Formatem amb 12 espais buits (matí i tarda)
         $resultat = [];
         foreach ($diesOrdre as $dia) {
             $entrades = $mapa[$dia['lletra']];
@@ -328,7 +328,7 @@ class HorariController extends Controller
            return response()->json(['success' => true, 'data' => null]);
         }
 
-        // Amb això creem el format que té la BBDD, ex: "L3", "X5"
+        // Creem el format de BBDD, ex: "L3", "X5"
         $codiHoraActual = $lletraDia . $franja;
 
         // 4. Busco quin horari tinc en aquesta hora i dia concrets
@@ -354,7 +354,7 @@ class HorariController extends Controller
                 ->first();
         }
 
-        // 5. Preparo la resposta perquè el frontend la pugui llegir ben organitzada
+        // 5. Preparem la resposta per al frontend
         if ($horari) {
              return response()->json(['success' => true, 'data' => [
                  'nom' => $horari->nom_assig,

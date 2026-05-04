@@ -82,7 +82,7 @@ export class AdminAssignaturesComponent implements OnInit {
          this.assignaturaActual.id_classe_projecte = 1; // Valor segur per defecte
       }
       
-      // Construir el JSON amb les dates
+      // Construeix el JSON amb les dates
       if (this.dataInici || this.dataFi) {
          this.assignaturaActual.interval = JSON.stringify({ inici: this.dataInici, fi: this.dataFi });
       } else {

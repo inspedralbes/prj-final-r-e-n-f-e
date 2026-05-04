@@ -35,9 +35,7 @@ export class HorariAlumnesComponent implements OnInit {
   horarisDelaClasseSegur = signal<Horari[]>([]);
 
   async ngOnInit() {
-    // Phase 2: Només demanem el que estrictament necessitem!
-    
-    // 1. Obtenim la classe on el professor actua com a tutor
+    // 1. Obtenim la classe on és tutor
     const usuariLoguejat = this.serveiAuth.usuarioInfo;
     if (usuariLoguejat && usuariLoguejat.id) {
         const classe = await this.serveiClasses.obtenirClasseTutor(usuariLoguejat.id);
@@ -58,13 +56,13 @@ export class HorariAlumnesComponent implements OnInit {
         }
     }
     
-    // Si hem d'obrir modals de les assignatures o aules, encara hem de carregar tot el llistat 
+    // Carreguem llistats per als modals d'assignatures o aules
     // d'Assignatures i Aules disponibles al centre per posar-les al <select> del HTML
     this.serveiAssignatures.carregarAssignatures();
     this.serveiAules.carregarAules();
   }
 
-  // Compatibilitat amb el HTML existent (que espera un computed d'aquestes variables)
+  // Compatibilitat amb l'HTML actual
   alumnesDelaClasse = computed(() => this.alumnesDelaClasseSegur());
   professorsDisponibles = computed(() => this.professorsDisponiblesSegur());
   horariDelaClasse = computed(() => this.horarisDelaClasseSegur());
@@ -179,12 +177,12 @@ export class HorariAlumnesComponent implements OnInit {
   idProfeSeleccionat = signal<number | null>(null);
   alumnesSeleccionatsIds = signal<number[]>([]);
 
-  // Funció per obrir el modal de configuració en clicar una cel·la buida o existent
+  // Obre el modal de configuració al clicar una cel·la
   obrirModalEdicio(diaIndex: number, horaLlegible: string) {
     const lletres = ['L', 'M', 'X', 'J', 'V'];
     const lletra = lletres[diaIndex];
 
-    // Calculem el número d'hora segons el text de la fila
+    // Calculem l'hora segons la fila
     let numHora = 1;
     if (horaLlegible === '09:00') numHora = 2;
     if (horaLlegible === '10:00') numHora = 3;
@@ -250,7 +248,7 @@ export class HorariAlumnesComponent implements OnInit {
 
     const novaLlista: number[] = [];
     if (trobat) {
-      // Si ja hi era, el treiem (copiant tots menys ell)
+      // Si ja hi era, el llevem de la llista
       for (let i = 0; i < llista.length; i++) {
         if (llista[i] !== id) {
           novaLlista.push(llista[i]);

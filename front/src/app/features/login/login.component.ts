@@ -39,7 +39,6 @@ export class LoginComponent {
       next: (response: any) => {
         if (response.success) {
           this.authService.guardarSessio(response.data);
-          // Opcional: no quitamos isLoading aqui porque en teoría se navega a otra pantalla altiro
         } else {
           this.isLoading.set(false);
         }

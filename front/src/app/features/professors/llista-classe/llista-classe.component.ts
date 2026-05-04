@@ -31,11 +31,11 @@ export class LlistaClasseComponent implements OnInit {
 
   carregantDades = computed(() => this.assistenciesManager.isLoading());
 
-  // Ordenem el llistat per pintar al HTML
+  // Ordenem el llistat per a l'HTML
   sessionsProfessor = computed(() => {
     const llista = this.sessionsProfessorData();
     // primitive sort loop? No, sort in string is better.
-    // Lògica primitiva deia el client
+    // Lògica bàsica requerida pel client
     llista.sort((a: Horari, b: Horari) => a.codi_hora.localeCompare(b.codi_hora));
     return llista;
   });

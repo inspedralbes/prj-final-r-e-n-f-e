@@ -22,7 +22,7 @@ export class ProfessorsComponent implements OnInit {
 
   // Dades de la classe actual connectada a la Base de Dades
   classeActual = computed(() => {
-    // Escoltem la resposta que ens ha deixat el Backend a classeActualApi
+    // Escoltem la resposta del Backend a classeActualApi
     // (Aquesta resposta s'aconsegueix quan cridem a getClasseActual() a l'ngOnInit)
     const classeApi = this.horarisManager.classeActualApi();
 
@@ -38,7 +38,7 @@ export class ProfessorsComponent implements OnInit {
       };
     }
 
-    // Si el Laravel HA TROBAT classe a l'hora actual, l'ensenyem tal qual
+    // Si Laravel troba classe a l'hora actual, la mostrem
     // (el Laravel ens envia l'objecte amb nom, estat, horaInici, horaFi i aula)
     return classeApi;
   });
@@ -155,7 +155,7 @@ export class ProfessorsComponent implements OnInit {
     this.franjaHoraria.update((valor) => (valor === 'AM' ? 'PM' : 'AM'));
   }
 
-  // Implementación del método ngOnInit, esto pide a Laravel todas las asignaturas cuando el profe entra a su pantalla
+  // Demanem a Laravel totes les assignatures en entrar
   ngOnInit() {
     this.horarisManager.getHorari();
     this.horarisManager.getClasseActual();

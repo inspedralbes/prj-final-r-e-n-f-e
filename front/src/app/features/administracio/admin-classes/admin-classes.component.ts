@@ -51,7 +51,7 @@ export class AdminClassesComponent implements OnInit {
     this.usuarisManager.carregarUsuaris();
   }
 
-  // Busca iterativament el Nom associat a una ID per humanitzar les cel·les de la taula
+  // Cerca el Nom per ID per mostrar-lo a la taula
   obtenirNomCurs(id_curs: number): string {
     let curs = null;
     let todosCursos = this.cursos();
@@ -121,7 +121,7 @@ export class AdminClassesComponent implements OnInit {
     }
   }
 
-  // Prepara l'estat iterant explícitament els valors i obre el Modal
+  // Prepara l'estat iterant valors i obre el Modal
   obrirModalAlumnes(classe: Classe) {
     this.classeSeleccionada = classe;
     let alumnesTrobats = [];
