@@ -26,7 +26,7 @@ Route::prefix('v1')->group(function (): void {
     Route::patch('/fullfill-user-profile', [UsuariController::class, 'fullfillUserProfile'])->middleware(('auth:sanctum'));
 
     // Grup protegit per policy de perfil completo
-    Route::middleware('can:canPerformAction,App\\Models\\Usuari')->group(function () {
+    Route::middleware(['auth:sanctum', 'can:canPerformAction,App\\Models\\Usuari'])->group(function () {
         // Rutes d'Usuaris
         Route::get('usuaris/rol/{rol}', [UsuariController::class, 'usuarisPerRol']);
         Route::apiResource('usuaris', UsuariController::class);
