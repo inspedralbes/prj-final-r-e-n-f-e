@@ -9,6 +9,8 @@ use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeMessage;
 
 class AuthController extends Controller
 {
@@ -75,10 +77,9 @@ class AuthController extends Controller
                 $user_rol = 'Profe';
             }
 
-            // Verificar si el usuari ja existeix a la base de dades
+            // Verificar si l'usuari ja existeix a la base de dades
             $user = Usuari::where('email', $user_email)->first();
-
-            // Si el usuario NO existeix
+            // Si l'usuari NO existeix
             if (!$user) {
                 // Descarreguem la foto de perfil
                 $photoPath = null;
@@ -95,10 +96,10 @@ class AuthController extends Controller
                             Storage::disk('public')->makeDirectory('photos/' . 'profes');
                             $filename = 'photos/profes/' . $user_email . '.jpg';
                         }
-                        
+
                         // Ahora guardar l'arxiu a la carpeta pública
                         $filePutResult = Storage::disk('public')->put($filename, $contents);
-                        
+
                         if ($filePutResult) {
                             $photoPath = '/storage/' . $filename;
                         } else {
@@ -118,20 +119,29 @@ class AuthController extends Controller
                     'token' => $googleUser->token,
                     'photo' => $photoPath
                 ]);
-            }
-            // Si el usuari YA existe, no modificar res - només autenticar
 
+                // Enviar Email de confirmació al usuari
+                Mail::to($user_email)->queue(new WelcomeMessage($googleUser->getName(), $user_rol));
+            }
+
+            // Si el usuari JA existeix, no modificar res - només autenticar
+            
             // Generem el token de Sanctum per l'usuari
             $token = $user->createToken('google-auth')->plainTextToken;
 
             return response()->json([
                 'success' => true,
                 'data' => [
-                    'user' => $user,
+                    'user' => [
+                        'id' => $user->id,
+                        'nom' => $user->nom,
+                        'email' => $user->email,
+                        'rol' => $user->rol,
+                        'isProfileComplited' => $user->isProfileCompleted()
+                    ],
                     'token' => $token,
-                    'rol' => $user_rol
                 ],
-                'message' => 'Autenticació correcta'
+                'message' => 'Autenticació correcta',
             ], Response::HTTP_OK);
 
         } catch (\Exception $e) {
@@ -144,7 +154,6 @@ class AuthController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
     public function loginTemporal(Request $request)
     {
         try {
@@ -169,7 +178,8 @@ class AuthController extends Controller
                 'data' => [
                     'user' => $user,
                     'token' => $token,
-                    'rol' => $user->rol
+                    'rol' => $user->rol,
+                    'isProfileComplited' => $user->isProfileCompleted()
                 ],
                 'message' => 'Login temporal correcte'
             ], Response::HTTP_OK);

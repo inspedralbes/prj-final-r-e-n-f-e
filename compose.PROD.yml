@@ -1,7 +1,8 @@
 # Generar certificats
-# docker compose -f compose.PROD.yml run --rm --entrypoint prj-final-r-e-n-f-e-certbot-1 certbot certonly --webroot --webroot-path /var/www/certbot -d renfe.daw.inspedralbes.cat --email a23cliferadn@inspedralbes.cat --agree-tos --no-eff-email
+# docker compose -f compose.PROD.yml run --rm --entrypoint prj-final-r-e-n-f-e-certbot-1 certbot certonly --webroot --webroot-path /var/www/certbot -d tenfe.cat --email a23cliferadn@inspedralbes.cat --agree-tos --no-eff-email
 services:
-  nginx:
+  pfg1-nginx:
+    container_name: pfg1-nginx
     build:
       context: .
       dockerfile: nginx.Dockerfile
@@ -12,7 +13,9 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
-      - ./back/laravel-api:/app
+      # - ./back/laravel-api:/app
+      - ./back/laravel-api/public:/app/public
+      - ./back/laravel-api/storage:/app/storage
     depends_on:
       pfg1-back:
         condition: service_started
@@ -27,7 +30,7 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     # Loop para comprobar renovación de certificados cada 12h
-    entrypoint: "/bin/sh -c 'trap exit TERM; certbot certonly --webroot --webroot-path /var/www/certbot -d renfe.daw.inspedralbes.cat --email a23cliferadn@inspedralbes.cat --agree-tos --no-eff-email --expand 2>/dev/null || true; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; certbot certonly --webroot --webroot-path /var/www/certbot -d tenfe.cat --email a23cliferadn@inspedralbes.cat --agree-tos --no-eff-email --expand 2>/dev/null || true; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
   # Backend Laravel
   pfg1-back:
@@ -37,13 +40,35 @@ services:
       dockerfile: ./back/laravel-api/prod.Dockerfile
     ports:
       - 9000:9000
-    # volumes:
-    #   - ./back/laravel-api:/app
+    volumes:
+      - ./back/laravel-api:/app
+      - /app/vendor
+      - ./back/laravel-api/storage:/app/storage
+      - ./back/laravel-api/bootstrap/cache:/app/bootstrap/cache
     depends_on:
       - pfg1-postgres
-    command: sh -c "php artisan key:generate && php artisan storage:link || true && php-fpm"
+    command: sh -c "chown -R www-data:www-data /app/storage /app/bootstrap/cache && php artisan migrate && php artisan storage:link || true && php-fpm"
     networks:
       - general
+
+  # Servei de cua
+  pfg1-worker:
+    container_name: pfg1-worker
+    build:
+      context: .
+      dockerfile: ./back/laravel-api/prod.Dockerfile
+    volumes:
+      - ./back/laravel-api:/app
+      - /app/vendor
+      - ./back/laravel-api/storage:/app/storage
+      - ./back/laravel-api/bootstrap/cache:/app/bootstrap/cache
+    depends_on:
+      - pfg1-postgres
+      - pfg1-back
+    command: sh -c "chown -R www-data:www-data /app/storage /app/bootstrap/cache && php artisan queue:work --verbose --tries=3"
+    networks:
+      - general
+    restart: unless-stopped
 
   # Backend Sensor nodejs
   pfg1-back-node:
@@ -51,7 +76,7 @@ services:
     build:
       dockerfile: ./back/principal-node/prod.Dockerfile
       context: .
-    command: sh -c "cp .env.PROD .env && npm install && node index.js"
+    command: sh -c "npm install && node index.js"
     volumes:
       - ./back/principal-node:/usr/src/app
     ports:
@@ -63,64 +88,64 @@ services:
       - general
 
   # Backend Sensor nodejs
-  pfg1-sensor:
-    container_name: pfg1-sensor
-    image: node:22-bookworm-slim
-    command: sh -c "cp .env.PROD .env && npm install && node index.js"
-    volumes:
-      - ./back/sensor:/usr/src/app
-    ports:
-      - "3001:3001"
-    working_dir: /usr/src/app
-    depends_on:
-      - pfg1-rabbitmq
-    networks:
-      - general
+  # pfg1-sensor:
+  #   container_name: pfg1-sensor
+  #   image: node:22-bookworm-slim
+  #   command: sh -c "cp .env.PROD .env && npm install && node index.js"
+  #   volumes:
+  #     - ./back/sensor:/usr/src/app
+  #   ports:
+  #     - "3001:3001"
+  #   working_dir: /usr/src/app
+  #   depends_on:
+  #     - pfg1-rabbitmq
+  #   networks:
+  #     - general
 
   # Backend DB insert nodejs
-  pfg1-dbinsert:
-    container_name: pfg1-dbinsert
-    image: node:22-bookworm-slim
-    command: sh -c "cp .env.PROD .env && npm install && node index.js"
-    volumes:
-      - ./back/dbinsert:/usr/src/app
-    working_dir: /usr/src/app
-    depends_on:
-      - pfg1-mongodb
-      - pfg1-sensor
-    networks:
-      - general
+  # pfg1-dbinsert:
+  #   container_name: pfg1-dbinsert
+  #   image: node:22-bookworm-slim
+  #   command: sh -c "cp .env.PROD .env && npm install && node index.js"
+  #   volumes:
+  #     - ./back/dbinsert:/usr/src/app
+  #   working_dir: /usr/src/app
+  #   depends_on:
+  #     - pfg1-mongodb
+  #     - pfg1-sensor
+  #   networks:
+  #     - general
 
-  pfg1-mongodb:
-    image: mongo:8.2
-    restart: always
-    # ports:
-    #   - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
-    volumes:
-      - mongo-bd:/data/db
-    networks:
-      - general
+  # pfg1-mongodb:
+  #   image: mongo:8.2
+  #   restart: always
+  #   # ports:
+  #   #   - 27017:27017
+  #   environment:
+  #     MONGO_INITDB_ROOT_USERNAME: root
+  #     MONGO_INITDB_ROOT_PASSWORD: ${MONGO_PASSWORD}
+  #   volumes:
+  #     - mongo-bd:/data/db
+  #   networks:
+  #     - general
 
-  pfg1-mongo-express:
-    image: mongo-express:latest
-    container_name: pfg1-mongo-express
-    restart: on-failure
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
-      ME_CONFIG_MONGODB_URL: mongodb://root:${MONGO_PASSWORD}@pfg1-mongodb:27017/?authSource=admin
-      ME_CONFIG_BASICAUTH: false
-      ME_CONFIG_MONGODB_AUTH_DATABASE: admin
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: true
-    depends_on:
-      - pfg1-mongodb
-    networks:
-      - general
+  # pfg1-mongo-express:
+  #   image: mongo-express:latest
+  #   container_name: pfg1-mongo-express
+  #   restart: on-failure
+  #   ports:
+  #     - 8081:8081
+  #   environment:
+  #     ME_CONFIG_MONGODB_ADMINUSERNAME: root
+  #     ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGO_PASSWORD}
+  #     ME_CONFIG_MONGODB_URL: mongodb://root:${MONGO_PASSWORD}@pfg1-mongodb:27017/?authSource=admin
+  #     ME_CONFIG_BASICAUTH: false
+  #     ME_CONFIG_MONGODB_AUTH_DATABASE: admin
+  #     ME_CONFIG_MONGODB_ENABLE_ADMIN: true
+  #   depends_on:
+  #     - pfg1-mongodb
+  #   networks:
+  #     - general
 
   pfg1-postgres:
     image: postgres:16
@@ -160,22 +185,22 @@ services:
     networks:
       - general
 
-  pfg1-rabbitmq:
-    image: rabbitmq:4.0-management-alpine
-    container_name: pfg1-rabbitmq
-    ports:
-      - 5672:5672
-      - 15672:15672
-    volumes:
-      - rabbitmq_data:/var/lib/rabbitmq
-    networks:
-      - general
+  # pfg1-rabbitmq:
+  #   image: rabbitmq:4.0-management-alpine
+  #   container_name: pfg1-rabbitmq
+  #   ports:
+  #     - 5672:5672
+  #     - 15672:15672
+  #   volumes:
+  #     - rabbitmq_data:/var/lib/rabbitmq
+  #   networks:
+  #     - general
 
 volumes:
-  mongo-bd:
+  # mongo-bd:
   postgres-bd:
   portainer_data:
-  rabbitmq_data:
+  # rabbitmq_data:
 
 networks:
   general:

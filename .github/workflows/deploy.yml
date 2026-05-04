@@ -22,31 +22,32 @@ jobs:
 
       - name: Add to Known Hosts
         run: |
-          echo "Connecting to server ${{ secrets.IP_SERVER }}..."
+          echo "Connecting to server ${{ secrets.SERVER_HOST }}..."
           mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.IP_SERVER }} >> ~/.ssh/known_hosts 2>/dev/null
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
           chmod 600 ~/.ssh/known_hosts
 
       - name: Update, Configure and Deploy
         run: |
-          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.USER_SERVER }}@${{ secrets.IP_SERVER }} bash -s << 'EOF'
+          ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} bash -s << 'EOF'
             set -euo pipefail
 
+            cd /
             # Anar a la carpeta del projecte (o clonar si no existeix)
-            if [ ! -d "/prj-final-r-e-n-f-e/.git" ]; then
+            if [ ! -d "prj-final-r-e-n-f-e/.git" ]; then
               echo "Projecte no trobat, clonant repositori..."
               git clone --branch main https://github.com/inspedralbes/prj-final-r-e-n-f-e.git
             fi
-            cd /prj-final-r-e-n-f-e
+            cd prj-final-r-e-n-f-e
 
             # Baixar els últims canvis del codi
             echo "Baixant canvis de Git..."
             git pull origin main
 
-            # Crear .env laravel-api
-            echo "Creant .env laravel-api..."
+            # Crear .env /
+            echo "Crear .env /..."
             echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" > .env
-            echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+            echo "POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> .env
 
             # Crear .env.PROD FRONT
@@ -56,38 +57,43 @@ jobs:
             cd ..
 
             # Crear .env.PROD BACK laravel-api
-            echo "Creant .env.PROD BACK laravel-api..."
             cd ./back/laravel-api
             echo "Copiant .env.PROD de Back laravel-api..."
             cp .env.PROD .env
+            ls -l /prj-final-r-e-n-f-e/back/laravel-api/.env
+            echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
             echo "DB_CONNECTION=pgsql" >> .env
             echo "DB_HOST=pfg1-postgres" >> .env
             echo "DB_PORT=5432" >> .env
             echo "DB_DATABASE=prf-renfe" >> .env
             echo "DB_USERNAME=postgres" >> .env
-            echo "DB_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
             echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
             echo "GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" >> .env
+            echo "" >> .env
+            echo "MAIL_MAILER=smtp" >> .env
+            echo "MAIL_HOST=smtp.tenfe.cat" >> .env
+            echo "MAIL_PORT=587" >> .env
+            echo "MAIL_USERNAME=info@tenfe.cat" >> .env
+            echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
+            echo "MAIL_ENCRYPTION=tls" >> .env
+            echo "MAIL_FROM_ADDRESS=info@tenfe.cat" >> .env
+            echo 'MAIL_FROM_NAME=${APP_NAME}' >> .env
             cd ../..
 
             # Crear .env BACK Principal-node
             echo "Creant .env BACK Principal-node..."
             cd ./back/principal-node
-            # NULL
+            cp .env.PROD .env
             cd ../..
 
-            echo "Creant .env BACK Dbinsert..."
-            cd ./back/dbinsert
-            echo "Copiant .env.PROD de Back Dbinsert..."
-            #Per Ara res més
-
-            # Crear .env de BACK Sensor
-            echo "Creant .env BACK Sensor..."
-            cd ./back/sensor
-            echo "Copiant .env.PROD de Back Sensor..."
-            #Per Ara res més
-            cd ../..
+            # Crear directorios de Laravel que no existen en git (storage y cache)
+            echo "Creando directorios de Laravel..."
+            mkdir -p back/laravel-api/storage/framework/{cache,sessions,views}
+            mkdir -p back/laravel-api/storage/logs
+            mkdir -p back/laravel-api/bootstrap/cache
+            chmod -R 775 back/laravel-api/storage back/laravel-api/bootstrap/cache
 
             # Configuració inicial (abans de validar certificats)
             cp nginx-init.conf nginx.conf
@@ -102,7 +108,7 @@ jobs:
             docker compose -f compose.PROD.yml logs certbot
 
             # Comprovar amb ls si existeixen fitxers de certificat i aplicar configuració final
-            if ls certbot/conf/live/renfe.daw.inspedralbes.cat/fullchain.pem certbot/conf/live/renfe.daw.inspedralbes.cat/privkey.pem >/dev/null 2>&1; then
+            if ls certbot/conf/live/tenfe.cat/fullchain.pem certbot/conf/live/tenfe.cat/privkey.pem >/dev/null 2>&1; then
               cp nginx-prod.conf nginx.conf
               echo "✓ Certificats SSL trobats - canviant a configuració de PROD"
               echo "Reiniciant tots els serveis per aplicar la nova configuració..."
