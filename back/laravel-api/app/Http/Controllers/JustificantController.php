@@ -6,6 +6,7 @@ use App\Models\Justificant;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class JustificantController extends Controller
 {
@@ -202,5 +203,41 @@ class JustificantController extends Controller
             'success' => true,
             'message' => 'Justificant eliminat correctament'
         ], Response::HTTP_OK);
+    }
+
+    public function justificacioPerTutoria(Request $request) {
+        $user = $request->user();
+
+        if ($user->rol !== 'Professor' && $user->id_classe == null){
+            return response()->json([
+                'success' => false,
+                'message' => 'No tens una classe assignada com a tutor'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        $user_tutor_class = $user->id_classe;
+        $alumnes = DB::table('usuaris')->where('id_classe', $user_tutor_class)->where('rol', 'Alumne')->get(['id', 'email']);
+        $llistaJustificants = [];
+
+        foreach($alumnes as $alumne) {
+            $justificants = DB::table('justificant')->where('id_alum', $alumne->id)->get(['id', 'fecha_inici', 'fecha_fi', 'comentari', 'document', 'acceptada']);
+            if ($justificants) {
+                $llistaJustificants[] = (object) [
+                    'email_alumne' => $alumne->email,
+                    'justificants' => $justificants
+                ];
+            } 
+        }
+
+        if (count($llistaJustificants) > 0) {
+            return response()->json([
+                'success' => true,
+                'data' => $llistaJustificants
+            ], Response::HTTP_OK);
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'Ha hagut un error'
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 }
