@@ -123,6 +123,10 @@
   font-size: 14px;
 }
 
+.avatar-placeholder ng-icon {
+  font-size: 20px;
+}
+
 .user-name {
   font-weight: 600;
   color: #2d3748;
@@ -166,6 +170,10 @@
   transition: all 0.2s ease;
 }
 
+.btn-icon ng-icon {
+  font-size: 18px;
+}
+
 .btn-icon.edit:hover { background: #ebf4ff; }
 .btn-icon.delete:hover { background: #fff5f5; }
 
@@ -181,6 +189,10 @@
   display: flex;
   align-items: center;
   gap: 8px;
+}
+
+.btn-primary ng-icon {
+  font-size: 18px;
 }
 
 .btn-primary:hover:not(:disabled) {

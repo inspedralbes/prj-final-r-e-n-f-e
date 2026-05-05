@@ -7,7 +7,7 @@
         <p class="subtitle">Administra les dates d'inici i fi dels trimestres acadèmics.</p>
       </div>
       <button class="btn-primary" (click)="obrirModal()">
-        <i class="fi fi-rr-plus"></i> Nou Període
+        <ng-icon name="heroPlus"></ng-icon> Nou Període
       </button>
     </div>
 
@@ -37,7 +37,9 @@
                 </td>
                 <td>
                   <div class="user-info">
-                    <div class="avatar-placeholder"></div>
+                    <div class="avatar-placeholder">
+                      <ng-icon name="heroCalendar"></ng-icon>
+                    </div>
                     <div class="name-details">
                       <span class="user-name">{{ periode.nom }}</span>
                     </div>
@@ -58,14 +60,14 @@
                     (click)="obrirModal(periode)"
                     title="Editar Període"
                   >
-                    <i class="fi fi-rr-edit"></i>
+                    <ng-icon name="heroPencilSquare"></ng-icon>
                   </button>
                   <button
                     class="btn-icon delete"
                     (click)="esborrarPeriode(periode.id)"
                     title="Eliminar Període"
                   >
-                    <i class="fi fi-rr-trash"></i>
+                    <ng-icon name="heroTrash"></ng-icon>
                   </button>
                   @if (!periode.actiu) {
                     <button
@@ -73,7 +75,7 @@
                       (click)="establirActiu(periode.id)"
                       title="Establir com a període actual"
                     >
-                      <i class="fi fi-rr-star"></i>
+                      <ng-icon name="heroStar"></ng-icon>
                     </button>
                   }
                 </td>

@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarAdminComponent } from '../../../shared/components/sidebaradmin/sidebar.component';
 import { PeriodesManagerService, Periode } from '../../../shared/services/periodes/periodes-manager.service';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroPencilSquare, heroTrash, heroStar, heroPlus, heroCalendar } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-admin-periodes',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarAdminComponent],
+  imports: [CommonModule, FormsModule, SidebarAdminComponent, NgIconComponent],
+  providers: [provideIcons({ heroPencilSquare, heroTrash, heroStar, heroPlus, heroCalendar })],
   templateUrl: './admin-periodes.component.html',
   styleUrls: ['./admin-periodes.component.css']
 })

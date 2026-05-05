@@ -6,10 +6,13 @@ import { AssignaturesManagerService } from '../../../shared/services/assignature
 import { InscritsManagerService } from '../../../shared/services/inscrits/inscrits-manager.service';
 import { UsuarisManagerService } from '../../../shared/services/usuaris/usuaris-manager.service';
 import { Assignatura } from '../../../shared/models/assignatura.model';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroPencilSquare, heroTrash, heroPlus, heroEye, heroBookOpen, heroUser } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-admin-assignatures',
-  imports: [CommonModule, FormsModule, SidebarAdminComponent],
+  imports: [CommonModule, FormsModule, SidebarAdminComponent, NgIconComponent],
+  providers: [provideIcons({ heroPencilSquare, heroTrash, heroPlus, heroEye, heroBookOpen, heroUser })],
   templateUrl: './admin-assignatures.component.html',
   styleUrl: './admin-assignatures.component.css'
 })

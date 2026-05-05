@@ -8,7 +8,7 @@
         <p class="subtitle">Administra i gestiona els usuaris de l'aplicació.</p>
       </div>
       <button class="btn-primary" (click)="obrirModal()">
-        <i class="fi fi-rr-plus"></i> Nou Usuari
+        <ng-icon name="heroPlus"></ng-icon> Nou Usuari
       </button>
     </div>
 
@@ -35,7 +35,9 @@
                 <td><span class="badge-id">#{{ usuari.id }}</span></td>
                 <td>
                   <div class="user-info">
-                    <div class="avatar-placeholder">{{ usuari.nom.charAt(0) }}</div>
+                    <div class="avatar-placeholder">
+                      <ng-icon name="heroUser"></ng-icon>
+                    </div>
                     <div class="name-details">
                       <span class="user-name">{{ usuari.nom }} {{ usuari.cognom }}</span>
                     </div>
@@ -49,10 +51,10 @@
                 </td>
                 <td class="actions">
                   <button class="btn-icon edit" (click)="obrirModal(usuari)" title="Editar">
-                    <i class="fi fi-rr-edit"></i>
+                    <ng-icon name="heroPencilSquare"></ng-icon>
                   </button>
                   <button class="btn-icon delete" (click)="esborrarUsuari(usuari.id)" title="Eliminar">
-                    <i class="fi fi-rr-trash"></i>
+                    <ng-icon name="heroTrash"></ng-icon>
                   </button>
                 </td>
               </tr>

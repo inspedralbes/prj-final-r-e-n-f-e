@@ -6,10 +6,13 @@ import { ClassesManagerService } from '../../../shared/services/classes/classes-
 import { CursosManagerService } from '../../../shared/services/cursos/cursos-manager.service';
 import { UsuarisManagerService } from '../../../shared/services/usuaris/usuaris-manager.service';
 import { Classe } from '../../../shared/models/classe.model';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroPencilSquare, heroTrash, heroPlus, heroEye, heroAcademicCap, heroUser } from '@ng-icons/heroicons/outline';
 
 @Component({
     selector: 'app-admin-classes',
-    imports: [CommonModule, FormsModule, SidebarAdminComponent],
+    imports: [CommonModule, FormsModule, SidebarAdminComponent, NgIconComponent],
+    providers: [provideIcons({ heroPencilSquare, heroTrash, heroPlus, heroEye, heroAcademicCap, heroUser })],
     templateUrl: './admin-classes.component.html',
     styleUrl: './admin-classes.component.css'
 })

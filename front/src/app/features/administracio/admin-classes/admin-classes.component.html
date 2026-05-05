@@ -8,7 +8,7 @@
         <p class="subtitle">Administra i gestiona les classes i els seus tutors.</p>
       </div>
       <button class="btn-primary" (click)="obrirModal()">
-        <i class="fi fi-rr-plus"></i> Nova Classe
+        <ng-icon name="heroPlus"></ng-icon> Nova Classe
       </button>
     </div>
 
@@ -35,7 +35,9 @@
                 <td><span class="badge-id">#{{ classe.id }}</span></td>
                 <td>
                   <div class="user-info">
-                    <div class="avatar-placeholder">{{ classe.nom.charAt(0) }}</div>
+                    <div class="avatar-placeholder">
+                      <ng-icon name="heroAcademicCap"></ng-icon>
+                    </div>
                     <div class="name-details">
                       <span class="user-name">{{ classe.nom }}</span>
                     </div>
@@ -45,13 +47,13 @@
                 <td class="user-email">{{ obtenirNomTutor(classe.id_tutor) }}</td>
                 <td class="actions">
                   <button class="btn-icon view" (click)="obrirModalAlumnes(classe)" title="Veure Alumnes d'aquesta classe">
-                    <i class="fi fi-rr-eye"></i>
+                    <ng-icon name="heroEye"></ng-icon>
                   </button>
                   <button class="btn-icon edit" (click)="obrirModal(classe)" title="Editar">
-                    <i class="fi fi-rr-edit"></i>
+                    <ng-icon name="heroPencilSquare"></ng-icon>
                   </button>
                   <button class="btn-icon delete" (click)="esborrarClasse(classe.id)" title="Eliminar">
-                    <i class="fi fi-rr-trash"></i>
+                    <ng-icon name="heroTrash"></ng-icon>
                   </button>
                 </td>
               </tr>
@@ -137,7 +139,9 @@
         <ul class="inscrits-list">
             @for (alumne of alumnesClasseLlista; track alumne.id) {
                <li>
-                   <div class="avatar-placeholder" style="width:28px; height:28px; font-size:12px;">{{ alumne.nom.charAt(0) }}</div>
+                   <div class="avatar-placeholder" style="width:28px; height:28px; font-size:12px;">
+                     <ng-icon name="heroUser"></ng-icon>
+                   </div>
                    <div style="display:flex; flex-direction:column;">
                        <span style="font-weight:600; color:#2d3748;">{{ alumne.nom }} {{ alumne.cognom }}</span>
                        <span style="font-size:12px; color:#718096;">ID: #{{ alumne.id }} | {{ alumne.email }}</span>

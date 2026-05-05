@@ -4,10 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { SidebarAdminComponent } from '../../../shared/components/sidebaradmin/sidebar.component';
 import { UsuarisManagerService } from '../../../shared/services/usuaris/usuaris-manager.service';
 import { Usuari } from '../../../shared/models/usuaris.model';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroPencilSquare, heroTrash, heroPlus, heroUser } from '@ng-icons/heroicons/outline';
 
 @Component({
     selector: 'app-admin-usuaris',
-    imports: [CommonModule, FormsModule, SidebarAdminComponent],
+    imports: [CommonModule, FormsModule, SidebarAdminComponent, NgIconComponent],
+    providers: [provideIcons({ heroPencilSquare, heroTrash, heroPlus, heroUser })],
     templateUrl: './admin-usuaris.component.html',
     styleUrl: './admin-usuaris.component.css',
     styles: [`:host { display: block; animation: pageEnter 0.35s ease-out; }`]

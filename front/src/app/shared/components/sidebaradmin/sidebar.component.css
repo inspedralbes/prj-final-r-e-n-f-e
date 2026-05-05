@@ -111,20 +111,19 @@
   justify-content: center;
 }
 
-.caixa-icona img {
-  width: 18px;
-  height: 18px;
-  object-fit: contain;
-  /* Icones en negre: elimina tots els colors i deixa negre pur */
-  filter: brightness(0) opacity(0.75);
-  transition: filter 0.2s ease, opacity 0.2s ease;
+.caixa-icona ng-icon {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.7);
+  transition: color 0.2s ease;
 }
 
 /* En hover i actiu: to violeta (--primary-color: #6366f1) */
-.element-navegacio:hover .caixa-icona img,
-.element-navegacio.actiu .caixa-icona img {
-  filter: brightness(0) saturate(100%) invert(44%) sepia(69%) saturate(600%) hue-rotate(215deg) brightness(95%);
-  opacity: 1;
+.element-navegacio:hover .caixa-icona ng-icon,
+.element-navegacio.actiu .caixa-icona ng-icon {
+  color: var(--primary-color);
 }
 
 /* Separador visual entre links i perfil */
@@ -150,9 +149,8 @@
   transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
-.caixa-icona.perfil img {
-  width: 18px;
-  height: 18px;
+.caixa-icona.perfil ng-icon {
+  font-size: 20px;
 }
 
 .caixa-icona.perfil:hover {
