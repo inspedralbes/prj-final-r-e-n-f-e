@@ -22,6 +22,9 @@ export class LlistaAssignaturesComponent implements OnInit {
   novaAssignaturaDataInici = signal<string>('');
   novaAssignaturaDataFi = signal<string>('');
   novaAssignaturaExempcio = signal<boolean>(false);
+  novaAssignaturaHores1 = signal<number | null>(null);
+  novaAssignaturaHores2 = signal<number | null>(null);
+  novaAssignaturaHores3 = signal<number | null>(null);
   isSaving = signal<boolean>(false);
 
   ngOnInit(): void {
@@ -54,13 +57,22 @@ export class LlistaAssignaturesComponent implements OnInit {
     const inici = this.novaAssignaturaDataInici();
     const fi = this.novaAssignaturaDataFi();
     const exempcio = this.novaAssignaturaExempcio();
+    const h1 = this.novaAssignaturaHores1();
+    const h2 = this.novaAssignaturaHores2();
+    const h3 = this.novaAssignaturaHores3();
 
     if (!nom) {
       alert("El nom de l'assignatura és obligatori.");
       return;
     }
 
-    const requestData: any = { nom, exempcio };
+    const requestData: any = { 
+      nom, 
+      exempcio,
+      hores_1r_trimestre: h1,
+      hores_2n_trimestre: h2,
+      hores_3r_trimestre: h3
+    };
 
     // Formatem les dates a JSON per a la BBDD
     if (inici && fi) {
@@ -74,6 +86,9 @@ export class LlistaAssignaturesComponent implements OnInit {
         this.novaAssignaturaDataInici.set('');
         this.novaAssignaturaDataFi.set('');
         this.novaAssignaturaExempcio.set(false);
+        this.novaAssignaturaHores1.set(null);
+        this.novaAssignaturaHores2.set(null);
+        this.novaAssignaturaHores3.set(null);
       })
       .catch(err => {
         console.error('Error al crear l\'assignatura', err);

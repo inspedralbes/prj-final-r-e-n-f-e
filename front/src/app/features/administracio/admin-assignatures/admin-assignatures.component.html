@@ -26,6 +26,7 @@
               <th>Nom de l'Assignatura</th>
               <th>ID Classe Proj.</th>
               <th>Exempció</th>
+              <th>Hores</th>
               <th>Accions</th>
             </tr>
           </thead>
@@ -49,6 +50,13 @@
                   <span class="badge-role" [ngClass]="assignatura.exempcio ? 'admin' : 'alumne'">
                     {{ assignatura.exempcio ? 'Sí' : 'No' }}
                   </span>
+                </td>
+                <td>
+                  <div style="display: flex; gap: 5px; font-size: 10px; font-weight: bold;">
+                    <span style="background: #e2e8f0; padding: 2px 5px; border-radius: 4px;">1T: {{ assignatura.hores_1r_trimestre || 0 }}h</span>
+                    <span style="background: #e2e8f0; padding: 2px 5px; border-radius: 4px;">2T: {{ assignatura.hores_2n_trimestre || 0 }}h</span>
+                    <span style="background: #e2e8f0; padding: 2px 5px; border-radius: 4px;">3T: {{ assignatura.hores_3r_trimestre || 0 }}h</span>
+                  </div>
                 </td>
                 <td class="actions">
                   <button class="btn-icon view" (click)="obrirModalAlumnes(assignatura)" title="Veure Alumnes Inscrits">
@@ -99,6 +107,21 @@
             <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 25px;">
               <input type="checkbox" id="exempcio" name="exempcio" [(ngModel)]="assignaturaActual.exempcio" style="width: auto;">
               <label for="exempcio" style="margin-bottom: 0;">Té Exempció?</label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Hores 1r Trimestre</label>
+              <input type="number" name="h1" [(ngModel)]="assignaturaActual.hores_1r_trimestre" placeholder="0">
+            </div>
+            <div class="form-group">
+              <label>Hores 2n Trimestre</label>
+              <input type="number" name="h2" [(ngModel)]="assignaturaActual.hores_2n_trimestre" placeholder="0">
+            </div>
+            <div class="form-group">
+              <label>Hores 3r Trimestre</label>
+              <input type="number" name="h3" [(ngModel)]="assignaturaActual.hores_3r_trimestre" placeholder="0">
             </div>
           </div>
 

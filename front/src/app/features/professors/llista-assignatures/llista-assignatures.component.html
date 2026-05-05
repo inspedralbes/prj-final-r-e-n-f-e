@@ -48,6 +48,25 @@
                             </div>
                         </div>
 
+                        <!-- Hores per Trimestre -->
+                        <div class="input-grup hores-trimestre-contenidor">
+                            <label>Hores totals per Trimestre</label>
+                            <div class="grup-hores">
+                                <div class="sub-input">
+                                    <small>1r Trim.</small>
+                                    <input type="number" [(ngModel)]="novaAssignaturaHores1" placeholder="0" class="input-modern">
+                                </div>
+                                <div class="sub-input">
+                                    <small>2n Trim.</small>
+                                    <input type="number" [(ngModel)]="novaAssignaturaHores2" placeholder="0" class="input-modern">
+                                </div>
+                                <div class="sub-input">
+                                    <small>3r Trim.</small>
+                                    <input type="number" [(ngModel)]="novaAssignaturaHores3" placeholder="0" class="input-modern">
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Opcions i Botó -->
                         <div class="accions-formulari">
                             <label class="checkbox-container">
@@ -70,6 +89,7 @@
                             <tr>
                                 <th>Identificador / Nom</th>
                                 <th>Període Projecte</th>
+                                <th>Distribució Hores</th>
                                 <th>Estat Exempció</th>
                                 <th style="text-align: right;">Gestió</th>
                             </tr>
@@ -89,6 +109,13 @@
                                     <span class="info-badge">
                                         {{ formatarInterval(assignatura.interval) }}
                                     </span>
+                                </td>
+                                <td>
+                                    <div class="hores-distribucio">
+                                        <span class="badge-hora">1T: <b>{{ assignatura.hores_1r_trimestre || 0 }}h</b></span>
+                                        <span class="badge-hora">2T: <b>{{ assignatura.hores_2n_trimestre || 0 }}h</b></span>
+                                        <span class="badge-hora">3T: <b>{{ assignatura.hores_3r_trimestre || 0 }}h</b></span>
+                                    </div>
                                 </td>
                                 <td>
                                     <span class="info-badge" [class.exempcio-si]="assignatura.exempcio">
