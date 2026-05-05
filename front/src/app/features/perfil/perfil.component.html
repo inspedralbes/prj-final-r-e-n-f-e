@@ -1,5 +1,9 @@
 @let u = user();
-<app-sidebar></app-sidebar>
+@if (isProfeOrAdmin) {
+  <app-sidebar></app-sidebar>
+} @else {
+  <alumne-sidebar></alumne-sidebar>
+}
 @if (isLoading()) {
   <div class="loading">
     <p>Carregant perfil...</p>
@@ -130,7 +134,9 @@
             <button type="button" class="btn-save" [disabled]="isSaving()" (click)="onSubmit()">
               {{ isSaving() ? 'Guardant...' : 'Guardar' }}
             </button>
-            <button type="button" class="btn-cancel" [disabled]="isSaving()" (click)="toggleMode()">Cancel·lar</button>
+            <button type="button" class="btn-cancel" [disabled]="isSaving()" (click)="toggleMode()">
+              Cancel·lar
+            </button>
           </div>
         </section>
       </div>

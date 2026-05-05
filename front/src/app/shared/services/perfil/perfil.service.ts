@@ -1,6 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ApiManagerService } from '../api/api-manager.service';
 import { Usuari } from '../../models/usuaris.model';
+import { environment } from '../../../../environments/environment';
 
 interface expectedAnswer {
   success: boolean;
@@ -28,6 +29,11 @@ export class PerfilService {
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
 
+  private transformPhotoUrl(photo: string | null): string | null {
+    if (!photo) return null;
+    return `${environment.generalBackendUrl}${photo}`;
+  }
+
   async getPerfil(id: string | null): Promise<expectedAnswer | null> {
     if (id === null) return null;
     
@@ -36,6 +42,9 @@ export class PerfilService {
 
     try {
       const resp = await this.apiManager.get<expectedAnswer>(`/perfil/${id}`);
+      if (resp.data.user.photo) {
+        resp.data.user.photo = this.transformPhotoUrl(resp.data.user.photo);
+      }
       this.perfilData.set(resp.data);
       return resp;
     } catch (err) {

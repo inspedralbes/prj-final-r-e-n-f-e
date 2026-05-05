@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { PerfilService, InfoAdicional } from '../../shared/services/perfil/perfil.service';
 import { Usuari } from '../../shared/models/usuaris.model';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
+import { AlumnesComponent } from '../alumnes/alumnes.component';
+import { SidebarAlumneComponent } from '../../shared/components/sidebar/alumnes/sidebarAlumne.component';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent],
+  imports: [CommonModule, FormsModule, SidebarComponent, SidebarAlumneComponent],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css',
 })
