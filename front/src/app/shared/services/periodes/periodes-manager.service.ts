@@ -21,7 +21,7 @@ export class PeriodesManagerService {
 
   // Signals per guardar l'estat i si està carregant
   public periodes = signal<Periode[]>([]);
-  public isLoading = signal<boolean>(false);
+  public isLoading = signal<boolean>(true);
   public error = signal<string | null>(null);
 
   async carregarPeriodes() {

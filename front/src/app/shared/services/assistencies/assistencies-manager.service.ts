@@ -10,7 +10,7 @@ export class AssistenciesManagerService {
   private apiManager = inject(ApiManagerService);
 
   assistencies = signal<Assistencia[]>([]);
-  isLoading = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
 
   /**

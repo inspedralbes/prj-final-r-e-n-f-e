@@ -1,11 +1,15 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroDocumentText, heroUser } from '@ng-icons/heroicons/outline';
 import { AssistenciesManagerService } from '../../../shared/services/assistencies/assistencies-manager.service';
 
 @Component({
   selector: 'app-llista-faltes',
-  imports: [CommonModule, SidebarComponent],
+  standalone: true,
+  imports: [CommonModule, SidebarComponent, NgIconComponent],
+  providers: [provideIcons({ heroDocumentText, heroUser })],
   templateUrl: './llista-faltes.component.html',
   styleUrl: './llista-faltes.component.css',
 })

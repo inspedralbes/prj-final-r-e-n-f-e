@@ -10,7 +10,7 @@ export class HorarisManagerService {
 
   horaris = signal<Horari[]>([]);
   horarisAssignaturaNet = signal<DiaCalendari[]>([]);
-  isLoading = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
   classeActualApi = signal<any>(null);
 

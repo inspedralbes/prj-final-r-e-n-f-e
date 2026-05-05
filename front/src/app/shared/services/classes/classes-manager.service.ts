@@ -9,7 +9,7 @@ export class ClassesManagerService {
   private apiManager = inject(ApiManagerService);
 
   classes = signal<Classe[]>([]);
-  isLoading = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
 
   /**
@@ -35,12 +35,15 @@ export class ClassesManagerService {
    * Demana a l'API la classe referenciada directament per un ID de tutor.
    */
   async obtenirClasseTutor(idTutor: number) {
+    this.isLoading.set(true);
     try {
       const resp = await this.apiManager.get<any>(`/classes/tutor/${idTutor}`);
       return resp.data; // Retorna l'objecte Classe
     } catch (err) {
       console.error('Error obtenint la classe del tutor:', err);
       return null;
+    } finally {
+      this.isLoading.set(false);
     }
   }
 

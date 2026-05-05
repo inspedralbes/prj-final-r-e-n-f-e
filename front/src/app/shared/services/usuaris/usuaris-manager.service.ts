@@ -9,7 +9,7 @@ export class UsuarisManagerService {
   private apiManager = inject(ApiManagerService);
 
   usuaris = signal<Usuari[]>([]);
-  isLoading = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
 
   /**

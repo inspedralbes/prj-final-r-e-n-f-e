@@ -11,11 +11,14 @@ import { Classe } from '../../../shared/models/classe.model';
 import { UsuarisManagerService } from '../../../shared/services/usuaris/usuaris-manager.service';
 import { Usuari } from '../../../shared/models/usuaris.model';
 import { Horari } from '../../../shared/models/horaris.model';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroPlus, heroUser, heroXMark } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-horari-alumnes',
   standalone: true,
-  imports: [SidebarComponent, CommonModule, FormsModule],
+  imports: [SidebarComponent, CommonModule, FormsModule, NgIconComponent],
+  providers: [provideIcons({ heroPlus, heroUser, heroXMark })],
   templateUrl: './horari-alumnes.component.html',
   styleUrl: './horari-alumnes.component.css',
 })
@@ -33,6 +36,12 @@ export class HorariAlumnesComponent implements OnInit {
   alumnesDelaClasseSegur = signal<Usuari[]>([]);
   professorsDisponiblesSegur = signal<Usuari[]>([]);
   horarisDelaClasseSegur = signal<Horari[]>([]);
+
+  isLoading = computed(() => 
+    this.serveiHoraris.isLoading() || 
+    this.serveiClasses.isLoading() || 
+    this.serveiUsuaris.isLoading()
+  );
 
   async ngOnInit() {
     // 1. Obtenim la classe on és tutor
@@ -176,6 +185,7 @@ export class HorariAlumnesComponent implements OnInit {
   idAulaSeleccionada = signal<number | null>(null);
   idProfeSeleccionat = signal<number | null>(null);
   alumnesSeleccionatsIds = signal<number[]>([]);
+  isSaving = signal<boolean>(false);
 
   // Obre el modal de configuració al clicar una cel·la
   obrirModalEdicio(diaIndex: number, horaLlegible: string) {
@@ -305,6 +315,7 @@ export class HorariAlumnesComponent implements OnInit {
     };
 
     try {
+      this.isSaving.set(true);
       console.log('comienzo');
       await this.serveiHoraris.actualitzarHorariGranular(dadesGranulars);
       console.log('enviao');
@@ -313,6 +324,8 @@ export class HorariAlumnesComponent implements OnInit {
     } catch (error) {
       console.error("Error desar l'horari granular", error);
       alert("S'ha produït un error al desar la configuració.");
+    } finally {
+      this.isSaving.set(false);
     }
   }
 }

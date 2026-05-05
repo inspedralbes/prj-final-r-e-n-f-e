@@ -8,11 +8,14 @@ import { Classe } from '../../../shared/models/classe.model';
 import { Usuari } from '../../../shared/models/usuaris.model';
 
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroUserPlus, heroUserMinus, heroUser } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-gestio-inscrits',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent],
+  imports: [CommonModule, FormsModule, SidebarComponent, NgIconComponent],
+  providers: [provideIcons({ heroUserPlus, heroUserMinus, heroUser })],
   templateUrl: './gestio-inscrits.component.html',
   styleUrl: './gestio-inscrits.component.css',
 })
@@ -21,6 +24,7 @@ export class GestioInscritsComponent implements OnInit {
   public serveiAuth = inject(AuthService);
   public serveiClasses = inject(ClassesManagerService);
   public serveiUsuaris = inject(UsuarisManagerService);
+  isLoading = signal(true);
 
   // Variables per guardar la informació que pintarem
   classeTrobada = signal<Classe | null>(null);
@@ -36,6 +40,7 @@ export class GestioInscritsComponent implements OnInit {
     // 1. Obtenim l'ID del professor loguejat
     const usuari = this.serveiAuth.usuarioInfo;
 
+    this.isLoading.set(true);
     if (usuari && usuari.id) {
       // 2. Preguntem al servei per la classe on és tutor
       const classe = await this.serveiClasses.obtenirClasseTutor(usuari.id);
@@ -57,6 +62,7 @@ export class GestioInscritsComponent implements OnInit {
         this.alumnesDeLaClasse.set(elsMeusAlumnes);
       }
     }
+    this.isLoading.set(false);
   }
 
   async afegirAlumneAClasse(email: string) {

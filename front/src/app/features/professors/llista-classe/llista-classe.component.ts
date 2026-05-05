@@ -7,11 +7,14 @@ import { AssistenciesManagerService } from '../../../shared/services/assistencie
 import { HorarisManagerService } from '../../../shared/services/horaris/horaris-manager.service';
 import { getSimbolAssistencia } from '../../../shared/utils/assistencia-utils';
 import { Horari } from '../../../shared/models/horaris.model';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroUser } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-llista-classe',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, FormsModule],
+  imports: [CommonModule, SidebarComponent, FormsModule, NgIconComponent],
+  providers: [provideIcons({ heroUser })],
   templateUrl: './llista-classe.component.html',
   styleUrl: './llista-classe.component.css',
 })
@@ -29,7 +32,7 @@ export class LlistaClasseComponent implements OnInit {
   alumnesAmbAssistencia = signal<any[]>([]);
   sessioSeleccionadaId = signal<number | null>(null);
 
-  carregantDades = computed(() => this.assistenciesManager.isLoading());
+  carregantDades = computed(() => this.assistenciesManager.isLoading() || this.horarisManager.isLoading());
 
   // Ordenem el llistat per a l'HTML
   sessionsProfessor = computed(() => {

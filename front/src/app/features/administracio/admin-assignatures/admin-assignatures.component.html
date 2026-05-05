@@ -116,8 +116,9 @@
 
           <div class="modal-footer">
             <button type="button" class="btn-secondary" (click)="tancarModal()">Cancel·lar</button>
-            <button type="submit" class="btn-primary" [disabled]="!assignaturaForm.form.valid || isLoading()">
-              {{ isEditing ? 'Actualitzar Assignatura' : 'Guardar Nova Assignatura' }}
+            <button type="submit" class="btn-primary btn-loading-state" [class.loading]="isSaving()" [disabled]="!assignaturaForm.form.valid || isLoading() || isSaving()">
+              <div class="btn-spinner"></div>
+              <span>{{ isEditing ? 'Actualitzar Assignatura' : 'Guardar Nova Assignatura' }}</span>
             </button>
           </div>
         </form>

@@ -23,6 +23,7 @@ export class AdminPeriodesComponent implements OnInit {
   public isModalOpen = false;
   public isEditing = false;
   public periodeActual: Partial<Periode> = {};
+  public isSaving = signal<boolean>(false);
 
   ngOnInit() {
     this.periodesManager.carregarPeriodes();
@@ -56,18 +57,21 @@ export class AdminPeriodesComponent implements OnInit {
   }
 
   guardarPeriode() {
+    this.isSaving.set(true);
     if (this.isEditing && this.periodeActual.id) {
       this.periodesManager.actualitzarPeriode(this.periodeActual.id, this.periodeActual)
         .then(() => {
           this.tancarModal();
         })
-        .catch(err => console.error('Error actualitzant periode:', err));
+        .catch(err => console.error('Error actualitzant periode:', err))
+        .finally(() => this.isSaving.set(false));
     } else {
       this.periodesManager.crearPeriode(this.periodeActual)
         .then(() => {
           this.tancarModal();
         })
-        .catch(err => console.error('Error creant periode:', err));
+        .catch(err => console.error('Error creant periode:', err))
+        .finally(() => this.isSaving.set(false));
     }
   }
 

@@ -3,10 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { AssignaturesManagerService } from '../../../shared/services/assignatures/assignatures-manager.service';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroTrash, heroPlus, heroBookOpen } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-llista-assignatures',
-  imports: [CommonModule, FormsModule, SidebarComponent],
+  standalone: true,
+  imports: [CommonModule, FormsModule, SidebarComponent, NgIconComponent],
+  providers: [provideIcons({ heroTrash, heroPlus, heroBookOpen })],
   templateUrl: './llista-assignatures.component.html',
   styleUrl: './llista-assignatures.component.css',
 })
@@ -18,6 +22,7 @@ export class LlistaAssignaturesComponent implements OnInit {
   novaAssignaturaDataInici = signal<string>('');
   novaAssignaturaDataFi = signal<string>('');
   novaAssignaturaExempcio = signal<boolean>(false);
+  isSaving = signal<boolean>(false);
 
   ngOnInit(): void {
     // Carreguem les dades només entrar a la pantalla
@@ -62,6 +67,7 @@ export class LlistaAssignaturesComponent implements OnInit {
       requestData.interval = JSON.stringify([{ data_ini: inici, data_fi: fi }]);
     }
 
+    this.isSaving.set(true);
     this.assignaturesManager.afegirAssignatura(requestData)
       .then(() => {
         this.novaAssignaturaNom.set('');
@@ -72,6 +78,9 @@ export class LlistaAssignaturesComponent implements OnInit {
       .catch(err => {
         console.error('Error al crear l\'assignatura', err);
         alert('No s\'ha pogut crear l\'assignatura.');
+      })
+      .finally(() => {
+        this.isSaving.set(false);
       });
   }
 

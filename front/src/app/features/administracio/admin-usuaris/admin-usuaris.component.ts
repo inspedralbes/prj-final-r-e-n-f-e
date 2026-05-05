@@ -25,6 +25,7 @@ export class AdminUsuarisComponent implements OnInit {
   public isModalOpen = false;
   public isEditing = false;
   public usuariActual: Partial<Usuari> = {};
+  public isSaving = signal<boolean>(false);
 
   ngOnInit(): void {
     this.usuarisManager.carregarUsuaris();
@@ -48,7 +49,7 @@ export class AdminUsuarisComponent implements OnInit {
   }
 
   async guardarUsuari() {
-    this.isLoading.set(true);
+    this.isSaving.set(true);
     try {
       if (this.isEditing && this.usuariActual.id) {
         await this.usuarisManager.actualitzarUsuari(this.usuariActual.id, this.usuariActual);
@@ -59,7 +60,7 @@ export class AdminUsuarisComponent implements OnInit {
     } catch (error) {
       console.error("Error al guardar l'usuari", error);
     } finally {
-      this.isLoading.set(false);
+      this.isSaving.set(false);
     }
   }
 

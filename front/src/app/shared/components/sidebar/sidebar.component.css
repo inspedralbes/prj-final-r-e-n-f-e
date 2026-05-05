@@ -79,11 +79,14 @@
     backdrop-filter: blur(10px);
 }
 
-.caixa-icona img {
-    width: 38px;
-    /* Proporcionalment més grans */
-    height: 38px;
-    object-fit: contain;
+.caixa-icona ng-icon {
+    font-size: 38px;
+    color: #2d3748;
+    transition: color 0.3s ease;
+}
+
+.element-navegacio.actiu .caixa-icona ng-icon {
+    color: #6366f1;
 }
 
 .caixa-icona.perfil {
@@ -95,8 +98,6 @@
     padding: 2px;
 }
 
-.caixa-icona.perfil img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
+.caixa-icona.perfil ng-icon {
+    font-size: 42px;
 }

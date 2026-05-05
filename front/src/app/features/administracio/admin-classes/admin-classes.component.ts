@@ -41,6 +41,7 @@ export class AdminClassesComponent implements OnInit {
   public isModalOpen = false;
   public isEditing = false;
   public classeActual: Partial<Classe> = {};
+  public isSaving = signal<boolean>(false);
 
   // Gestió de visibilitat pel Sub-Modal Mestre-Detall (Llista d'Alumnes)
   public isAlumnesModalOpen = false;
@@ -96,7 +97,7 @@ export class AdminClassesComponent implements OnInit {
   }
 
   async guardarClasse() {
-    this.isLoading.set(true);
+    this.isSaving.set(true);
     try {
       if (this.isEditing && this.classeActual.id) {
         await this.classesManager.actualitzarClasse(this.classeActual.id, this.classeActual);
@@ -107,7 +108,7 @@ export class AdminClassesComponent implements OnInit {
     } catch (error) {
       console.error("Error al guardar la classe", error);
     } finally {
-      this.isLoading.set(false);
+      this.isSaving.set(false);
     }
   }
 

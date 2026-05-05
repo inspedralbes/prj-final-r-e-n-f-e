@@ -190,10 +190,12 @@
             <button type="button" class="btn-secondary" (click)="tancarModal()">Cancel·lar</button>
             <button
               type="submit"
-              class="btn-primary"
-              [disabled]="!periodeForm.form.valid || isLoading()"
+              class="btn-primary btn-loading-state"
+              [class.loading]="isSaving()"
+              [disabled]="!periodeForm.form.valid || isLoading() || isSaving()"
             >
-              Desar Canvis
+              <div class="btn-spinner"></div>
+              <span>Desar Canvis</span>
             </button>
           </div>
         </form>

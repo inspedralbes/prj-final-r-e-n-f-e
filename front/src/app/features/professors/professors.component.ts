@@ -5,10 +5,14 @@ import { AssignaturesManagerService } from '../../shared/services/assignatures/a
 import { HorarisManagerService } from '../../shared/services/horaris/horaris-manager.service';
 import { ImparteixManagerService } from '../../shared/services/imparteix/imparteix-manager.service';
 import { AuthService } from '../../services/auth.service';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroArrowRight, heroArrowsUpDown } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-professors',
-  imports: [CommonModule, SidebarComponent],
+  standalone: true,
+  imports: [CommonModule, SidebarComponent, NgIconComponent],
+  providers: [provideIcons({ heroArrowRight, heroArrowsUpDown })],
   templateUrl: './professors.component.html',
   styleUrl: './professors.component.css',
 })

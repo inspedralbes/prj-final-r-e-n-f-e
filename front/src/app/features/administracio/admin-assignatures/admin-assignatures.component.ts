@@ -30,6 +30,7 @@ export class AdminAssignaturesComponent implements OnInit {
   public assignaturaActual: Partial<Assignatura> = {};
   public dataInici: string = '';
   public dataFi: string = '';
+  public isSaving = signal<boolean>(false);
 
   // Estat del Modal d'Alumnes Inscrits
   public isAlumnesModalOpen = false;
@@ -78,7 +79,7 @@ export class AdminAssignaturesComponent implements OnInit {
   }
 
   async guardarAssignatura() {
-    this.isLoading.set(true);
+    this.isSaving.set(true);
     try {
       // Ajustos per defecte si es deixen en blanc
       if (!this.assignaturaActual.id_classe_projecte) {
@@ -101,7 +102,7 @@ export class AdminAssignaturesComponent implements OnInit {
     } catch (error) {
       console.error("Error al guardar l'assignatura", error);
     } finally {
-      this.isLoading.set(false);
+      this.isSaving.set(false);
     }
   }
 
