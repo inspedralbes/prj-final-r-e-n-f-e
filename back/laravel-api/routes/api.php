@@ -12,6 +12,7 @@ use App\Http\Controllers\AssistenciaController;
 use App\Http\Controllers\JustificantController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartaFaltesController;
+use App\Http\Controllers\PeriodeController;
 
 Route::prefix('v1')->group(function (): void {
 
@@ -33,6 +34,10 @@ Route::prefix('v1')->group(function (): void {
 
         // Rutes de Cursos
         Route::apiResource('cursos', \App\Http\Controllers\CursController::class)->only(['index']);
+
+        // Rutes de Periodes
+        Route::apiResource('periodes', PeriodeController::class);
+        Route::post('periodes/{id}/actiu', [PeriodeController::class, 'setActiu']);
 
         // Rutes de Classes
         Route::get('classes/tutor/{idTutor}', [ClasseController::class, 'obtenirClasseTutor']);

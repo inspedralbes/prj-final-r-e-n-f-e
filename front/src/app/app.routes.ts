@@ -13,6 +13,7 @@ import { HorariAlumnesComponent } from './features/professors/horari-alumnes/hor
 import { AdminAssignaturesComponent } from './features/administracio/admin-assignatures/admin-assignatures.component';
 import { AdminClassesComponent } from './features/administracio/admin-classes/admin-classes.component';
 import { AdminUsuarisComponent } from './features/administracio/admin-usuaris/admin-usuaris.component';
+import { AdminPeriodesComponent } from './features/administracio/admin-periodes/admin-periodes.component';
 import { CompletarPerfilComponent } from './features/completar-perfil/completar-perfil.component';
 
 export const routes: Routes = [
@@ -29,6 +30,7 @@ export const routes: Routes = [
   { path: 'admin-assignatures', component: AdminAssignaturesComponent },
   { path: 'admin-classes', component: AdminClassesComponent },
   { path: 'admin-usuaris', component: AdminUsuarisComponent },
+  { path: 'admin-periodes', component: AdminPeriodesComponent },
   { path: 'auth/callback', component: AuthCallbackComponent },
   { path: 'completar-perfil', component: CompletarPerfilComponent },
 ];
