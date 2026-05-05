@@ -1,6 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ApiManagerService } from '../api/api-manager.service';
-import { Justificant } from '../../models/justificants.model';
+import { Justificant, JustificantNet } from '../../models/justificants.model';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +9,7 @@ export class JustificantsManagerService {
   private apiManager = inject(ApiManagerService);
 
   justificants = signal<Justificant[]>([]);
+  justificantsTutoria = signal<JustificantNet[]>([]);
   isLoading = signal<boolean>(false);
   error = signal<string | null>(null);
 
@@ -105,6 +106,21 @@ export class JustificantsManagerService {
     } catch (err) {
       console.error(`Error esborrant justificant ${id}:`, err);
       throw err;
+    }
+  }
+
+  async carregarJustificantsTutoria() {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    try {
+      const data = await this.apiManager.get<JustificantNet[]>(`/justificants/tutoria/pendents`);
+      this.justificantsTutoria.set(data);
+    } catch (err) {
+      this.error.set("S'ha produït un error al recuperar els justificants");
+      throw err;
+    } finally {
+      this.isLoading.set(false);
     }
   }
 }

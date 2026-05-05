@@ -9,3 +9,8 @@ export interface Justificant {
   created_at: string;
   updated_at: string;
 }
+
+export interface JustificantNet {
+  email_alumne: string;
+  justificants: Partial<Justificant[]>;
+}
