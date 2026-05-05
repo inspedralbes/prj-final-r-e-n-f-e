@@ -123,8 +123,6 @@ class AuthController extends Controller
                 // Enviar Email de confirmació al usuari
                 Mail::to($user_email)->queue(new WelcomeMessage($googleUser->getName(), $user_rol));
             }
-
-            // Si el usuari JA existeix, no modificar res - només autenticar
             
             // Generem el token de Sanctum per l'usuari
             $token = $user->createToken('google-auth')->plainTextToken;

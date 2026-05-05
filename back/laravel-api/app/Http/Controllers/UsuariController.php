@@ -180,13 +180,27 @@ $dadesValidades = $peticio->validate([
         $dadesValidades = $request->validate([
             'email_pares' => 'nullable|email',
             'data_naixement' => 'required|date',
-            'photo' => 'nullable|file'
+            'photo' => 'nullable|file',
         ]);
         
         if($request->hasFile('photo'))
-            {
-                $path = str_replace("/storage/public","",$user->photo);
-                Storage::disk('public')->put($path, $request->file('photo'));
+            {                
+                $newFile = $request->file('photo');
+                $user_rol = $user->rol;
+                $user_email = $user->email;
+
+                if($user_rol === 'Alumne'){
+                            Storage::disk('public')->makeDirectory('photos/' . 'alumnes');
+                            $filename = 'photos/alumnes/' . $user_email . '.jpg';
+                        }
+
+                        else if($user_rol === 'Profe' || $user_rol === 'Admin') {
+                            Storage::disk('public')->makeDirectory('photos/' . 'profes');
+                            $filename = 'photos/profes/' . $user_email . '.jpg';
+                        }
+
+                        // Ahora guardar l'arxiu a la carpeta pública
+                        Storage::disk('public')->put($filename, file_get_contents($newFile));
             }        
 
         $user->update([
