@@ -9,7 +9,7 @@
 - [x] 2.1 Modify `assistenciaPerAlumne` method in `AssistenciaController` to include detailed absence/late records in the response.
 - [x] 2.2 Implement status calculation logic (Justified/Pending/Not Justified) within the loop for detailed records.
 - [x] 2.3 Implement `GET /v1/justificants/alumne/{alumneId}` in `JustificantController` to return all justifications for a student.
-- [ ] 2.4 Verify that the existing summary dashboard still works correctly with the augmented response.
+- [x] 2.4 Verify that the existing summary dashboard still works correctly with the augmented response.
 
 ## 3. Frontend Service Updates
 
@@ -26,6 +26,6 @@
 
 ## 5. Verification
 
-- [ ] 5.1 Verify the end-to-end flow: Uploading a justification should immediately update the absence status in the UI to "Pendent d'acceptació".
-- [ ] 5.2 Ensure the "Justificada" status is correctly reflected after a justification is accepted in the database.
-- [ ] 5.3 Validate that file uploads are correctly stored on the server.
+- [x] 5.1 Verify the end-to-end flow: Uploading a justification should immediately update the absence status in the UI to "Pendent d'acceptació".
+- [x] 5.2 Ensure the "Justificada" status is correctly reflected after a justification is accepted in the database.
+- [x] 5.3 Validate that file uploads are correctly stored on the server.
