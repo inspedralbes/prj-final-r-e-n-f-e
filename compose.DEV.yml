@@ -1,4 +1,4 @@
-## docker compose -f compose.DEV.yml up --build
+## docker compose -f compose.DEV.yml up --buildl
 
 ## docker compose exec pfg1-back php artisan migrate:fresh --seed
 

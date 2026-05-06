@@ -16,6 +16,9 @@ class Assignatura extends Model
         'id_classe_projecte',
         'interval',
         'exempcio',
+        'hores_1r_trimestre',
+        'hores_2n_trimestre',
+        'hores_3r_trimestre',
     ];
 
     public function imparteix()

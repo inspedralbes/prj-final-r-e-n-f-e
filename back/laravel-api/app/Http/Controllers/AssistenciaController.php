@@ -25,6 +25,29 @@ class AssistenciaController extends Controller
         ], Response::HTTP_OK);
     }
 
+    /**
+     * Fase 2: Mètode segur per descarregar NOMÉS les assistències d'una setmana d'un horari concret.
+     */
+    public function assistenciaSetmanalHorari(Request $peticio, $idHorari)
+    {
+        $dataIni = $peticio->query('data_ini');
+        $dataFi = $peticio->query('data_fi');
+
+        // Buscar inscripcions per a aquest horari
+        $inscrits = Inscrit::where('id_horari', $idHorari)
+            ->with(['alumne', 'assistencies' => function ($query) use ($dataIni, $dataFi) {
+                if ($dataIni && $dataFi) {
+                    $query->whereBetween('data', [$dataIni, $dataFi]);
+                }
+            }])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $inscrits
+        ], Response::HTTP_OK);
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
