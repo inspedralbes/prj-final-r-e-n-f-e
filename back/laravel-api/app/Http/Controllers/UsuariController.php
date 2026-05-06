@@ -138,15 +138,15 @@ class UsuariController extends Controller
             'data_naixement' => 'required|date',
             'photo' => 'nullable|file'
         ]);
-        
+
         if($request->hasFile('photo'))
             {
                 $path = str_replace("/storage/public","",$user->photo);
                 Storage::disk('public')->put($path, $request->file('photo'));
-            }        
+            }
 
         $user->update([
-            'data_naixament' => $request->data_naixament,
+            'data_naixement' => $request->data_naixement,
             'email_pares' => $request->email_pares
         ]);
 
@@ -156,4 +156,4 @@ class UsuariController extends Controller
             'message' => 'Perfil completat correctament'
         ]);
     }
-}  
+}

@@ -1,22 +1,23 @@
 ﻿# Estructura de la Base de Datos (estado real según migraciones)
+
 ## Tablas
 
 ### `usuaris`
 
-| Columna         | Tipo                       | Notas                   |
-| --------------- | -------------------------- | ----------------------- |
-| id              | bigint PK                  | autoincrement           |
-| nom             | string                     |                         |
-| cognom          | string                     | nullable                |
-| rol             | enum(Admin, Profe, Alumne) | default: Alumne         |
-| email           | string                     | unique                  |
-| email_pares     | string                     | nullable                |
-| password        | string                     | nullable                |
-| token           | string                     | nullable                |
-| nfc_id          | string                     | nullable                |
-| horari_guardies | string                     | nullable                |
-| google_id       | string                     | nullable                |
-| id_classe       | FK → classes               | nullable, nullOnDelete  |
+| Columna         | Tipo                       | Notas                  |
+| --------------- | -------------------------- | ---------------------- |
+| id              | bigint PK                  | autoincrement          |
+| nom             | string                     |                        |
+| cognom          | string                     | nullable               |
+| rol             | enum(Admin, Profe, Alumne) | default: Alumne        |
+| email           | string                     | unique                 |
+| email_pares     | string                     | nullable               |
+| password        | string                     | nullable               |
+| token           | string                     | nullable               |
+| nfc_id          | string                     | nullable               |
+| horari_guardies | string                     | nullable               |
+| google_id       | string                     | nullable               |
+| id_classe       | FK → classes               | nullable, nullOnDelete |
 
 ---
 
@@ -36,13 +37,13 @@
 
 ### `assignatures`
 
-| Columna              | Tipo         | Notas                  |
-| -------------------- | ------------ | ---------------------- |
-| id                   | bigint PK    | autoincrement          |
-| nom                  | string       |                        |
-| id_classe_projecte   | FK → classes | nullable, nullOnDelete |
-| interval             | string       | nullable               |
-| exempcio             | boolean      | default: false         |
+| Columna            | Tipo         | Notas                  |
+| ------------------ | ------------ | ---------------------- |
+| id                 | bigint PK    | autoincrement          |
+| nom                | string       |                        |
+| id_classe_projecte | FK → classes | nullable, nullOnDelete |
+| interval           | string       | nullable               |
+| exempcio           | boolean      | default: false         |
 
 ---
 
@@ -114,15 +115,15 @@
 
 ### `justificants`
 
-| Columna            | Tipo              | Notas           |
-| ------------------ | ----------------- | --------------- |
-| id                 | bigint PK         | autoincrement   |
-| id_alum            | FK → usuaris      | cascadeOnDelete |
-| id_assistencia_ini | FK → assistencies | nullable        |
-| id_assistencia_fi  | FK → assistencies | nullable        |
-| comentari          | text              | nullable        |
-| document           | string            | nullable        |
-| acceptada          | boolean           | default: false  |
+| Columna            | Tipo              | Notas                           |
+| ------------------ | ----------------- | ------------------------------- |
+| id                 | bigint PK         | autoincrement                   |
+| id_alum            | FK → usuaris      | cascadeOnDelete                 |
+| fecha_inici        | date              |                                 |
+| fecha_fi           | date              |                                 |
+| comentari          | text              | nullable                        |
+| document           | string            | nullable                        |
+| estat              | enum              | Pendent / Acceptada / Rebutjada |
 
 ---
 
@@ -150,14 +151,14 @@
 
 ### `sessions`
 
-| Columna       | Tipo       | Notas              |
-| ------------- | ---------- | ------------------ |
-| id            | string PK  |                    |
-| user_id       | foreignId  | nullable, indexed  |
-| ip_address    | string(45) | nullable           |
-| user_agent    | text       | nullable           |
-| payload       | longText   |                    |
-| last_activity | integer    | indexed            |
+| Columna       | Tipo       | Notas             |
+| ------------- | ---------- | ----------------- |
+| id            | string PK  |                   |
+| user_id       | foreignId  | nullable, indexed |
+| ip_address    | string(45) | nullable          |
+| user_agent    | text       | nullable          |
+| payload       | longText   |                   |
+| last_activity | integer    | indexed           |
 
 ---
 

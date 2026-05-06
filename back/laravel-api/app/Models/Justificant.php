@@ -17,11 +17,7 @@ class Justificant extends Model
         'fecha_fi',
         'comentari',
         'document',
-        'acceptada',
-    ];
-
-    protected $casts = [
-        'acceptada' => 'boolean',
+        'estat',
     ];
 
     public function alumne()

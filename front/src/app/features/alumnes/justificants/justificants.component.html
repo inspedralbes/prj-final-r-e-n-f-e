@@ -1,0 +1,90 @@
+<alumne-sidebar></alumne-sidebar>
+<div class="disseny-principal">
+  <div class="contingut">
+    <div class="graella-tauler">
+      <!-- Targeta de capçalera -->
+      <div class="targeta-classe-actual">
+        <div class="contingut-targeta">
+          <h1>Gestió de Justificants</h1>
+          <p>Consulta l'estat dels teus justificants o envia'n un de nou.</p>
+          <div class="accions">
+            <button class="boto-accio boto-justificant" (click)="openJustificacioModal()">
+              Nou Justificant
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Llistat de justificants -->
+      <div class="contenidor-faltes">
+        <div class="capçalera-faltes">
+          <h2>Historial de Justificants</h2>
+        </div>
+
+        @if (isLoading()) {
+          <div class="carregant-contenidor">
+            <p>Carregant els teus justificants...</p>
+          </div>
+        } @else {
+          <div class="taula-detall">
+            <div class="fila-detall capçalera-taula">
+              <div class="col-data">Data Enviament</div>
+              <div class="col-rang">Període</div>
+              <div class="col-comentari">Comentari</div>
+              <div class="col-estat">Estat</div>
+            </div>
+
+            @for (j of justificants(); track j.id) {
+              <div class="fila-detall" [class]="'estat-' + j.estat.toLowerCase()">
+                <div class="col-data">{{ j.created_at | date: 'dd/MM/yyyy' }}</div>
+                <div class="col-rang">
+                  {{ j.fecha_inici | date: 'dd/MM/yyyy' }} - {{ j.fecha_fi | date: 'dd/MM/yyyy' }}
+                </div>
+                <div class="col-comentari">{{ j.comentari || 'Sense comentari' }}</div>
+                <div class="col-estat">
+                  <span class="badge-estat">{{ j.estat }}</span>
+                </div>
+              </div>
+            } @empty {
+              <div class="sense-dades">No has enviat cap justificant encara.</div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Justificació -->
+@if (showModal()) {
+  <div class="modal-overlay">
+    <div class="modal-contingut">
+      <div class="modal-capçalera">
+        <h3>Nou Justificant</h3>
+        <button class="boto-tancar" (click)="closeModal()">&times;</button>
+      </div>
+      <form (submit)="enviarJustificant($event)">
+        <div class="form-group">
+          <label>Data Inici:</label>
+          <input type="date" name="fecha_inici" required />
+        </div>
+        <div class="form-group">
+          <label>Data Fi:</label>
+          <input type="date" name="fecha_fi" required />
+        </div>
+        <div class="form-group">
+          <label>Comentari:</label>
+          <textarea name="comentari" placeholder="Explica el motiu..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Document (opcional):</label>
+          <input type="file" name="document" (change)="onFileSelected($event)" />
+        </div>
+        <div class="modal-accions">
+          <button type="button" class="boto-cancelar" (click)="closeModal()">Cancelar</button>
+          <button type="submit" class="boto-enviar">Enviar Justificant</button>
+        </div>
+      </form>
+    </div>
+  </div>
+}

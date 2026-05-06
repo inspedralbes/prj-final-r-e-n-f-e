@@ -252,7 +252,7 @@ class AssistenciaController extends Controller
             // Get all assistencies for all inscripcions of this subject
             $assistenciesValue = DB::table('assistencies')
                 ->whereIn('id_inscripcio', $inscripcioIds)
-                ->select('id', 'estat')
+                ->select('id', 'estat', 'data')
                 ->get();
 
             foreach ($assistenciesValue as $valor) {
@@ -270,11 +270,13 @@ class AssistenciaController extends Controller
                             break;
                         }
                         $findJustificacio = DB::table('justificants')
-                            ->where('id_assistencia_ini', $valor->id)
-                            ->select('acceptada')
-                            ->first();
+                            ->where('id_alum', $alumneId)
+                            ->whereDate('fecha_inici', '<=', $valor->data)
+                            ->whereDate('fecha_fi', '>=', $valor->data)
+                            ->where('estat', 'Acceptada')
+                            ->exists();
 
-                        if ($findJustificacio !== null) {
+                        if ($findJustificacio) {
                             $justificades++;
                             $justificades_total++;
                         } else {

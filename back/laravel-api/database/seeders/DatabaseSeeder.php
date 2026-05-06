@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             AssignaturesSeeder::class,  // depende de: classes
             HorarisSeeder::class,    // depende de: assignatures, classes, aules
             JustificantsSeeder::class,
+            TestDataSeeder::class,
         ]);
     }
 }

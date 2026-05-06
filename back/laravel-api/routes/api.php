@@ -26,7 +26,7 @@ Route::prefix('v1')->group(function (): void {
     Route::patch('/fullfill-user-profile', [UsuariController::class, 'fullfillUserProfile'])->middleware(('auth:sanctum'));
 
     // Grup protegit per policy de perfil completo
-    Route::middleware('can:canPerformAction,App\\Models\\Usuari')->group(function () {
+    Route::middleware(['auth:sanctum','can:canPerformAction,App\\Models\\Usuari'])->group(function () {
         // Rutes d'Usuaris
         Route::apiResource('usuaris', UsuariController::class);
 
@@ -64,8 +64,8 @@ Route::prefix('v1')->group(function (): void {
 
         // Rutes de Justificants
         Route::apiResource('justificants', JustificantController::class);
+        Route::get('justificants/alumne/{alumneId}', [JustificantController::class, 'getByAlumne']);
         Route::post('justificants/acceptar/{id}', [JustificantController::class, 'acceptar']);
-
         // Rutes de Carta de Faltes
         Route::post('carta-faltes/generar', [CartaFaltesController::class, 'generar']);
     });
