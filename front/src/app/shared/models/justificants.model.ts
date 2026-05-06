@@ -1,3 +1,5 @@
+import { Usuari } from "./usuaris.model";
+
 export interface Justificant {
   id: number;
   id_alum: number;
@@ -11,6 +13,6 @@ export interface Justificant {
 }
 
 export interface JustificantNet {
-  email_alumne: string;
+  alumne: Partial<Usuari>;
   justificants: Partial<Justificant[]>;
 }

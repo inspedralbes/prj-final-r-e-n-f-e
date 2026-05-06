@@ -208,7 +208,14 @@ class JustificantController extends Controller
     public function justificacioPerTutoria(Request $request) {
         $user = $request->user();
 
-        if ($user->rol !== 'Professor' && $user->id_classe == null){
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hi ha un usuari'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        if ($user->rol !== 'Professor' || $user->id_classe == null){
             return response()->json([
                 'success' => false,
                 'message' => 'No tens una classe assignada com a tutor'
@@ -216,14 +223,18 @@ class JustificantController extends Controller
         }
 
         $user_tutor_class = $user->id_classe;
-        $alumnes = DB::table('usuaris')->where('id_classe', $user_tutor_class)->where('rol', 'Alumne')->get(['id', 'email']);
+        $alumnes = DB::table('usuaris')->where('id_classe', $user_tutor_class)->where('rol', 'Alumne')->get(['id', 'email', 'nom', 'photo']);
         $llistaJustificants = [];
 
         foreach($alumnes as $alumne) {
             $justificants = DB::table('justificant')->where('id_alum', $alumne->id)->get(['id', 'fecha_inici', 'fecha_fi', 'comentari', 'document', 'acceptada']);
-            if ($justificants) {
+            if ($justificants->isNotEmpty()) {
                 $llistaJustificants[] = (object) [
-                    'email_alumne' => $alumne->email,
+                    'alumne' => (object) [
+                        'email' => $alumne->email,
+                        'nom' => $alumne->nom, 
+                        'photo' => $alumne->photo
+                    ],
                     'justificants' => $justificants
                 ];
             } 
@@ -237,7 +248,7 @@ class JustificantController extends Controller
         }
         return response()->json([
             'success' => false,
-            'message' => 'Ha hagut un error'
-        ], Response::HTTP_INTERNAL_SERVER_ERROR);
+            'message' => 'No hi ha resposta'
+        ], Response::HTTP_OK);
     }
 }
