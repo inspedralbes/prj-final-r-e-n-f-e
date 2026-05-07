@@ -16,8 +16,8 @@ El workflow de GitHub Actions es troba a `.github/workflows/deploy` i s'activa a
    - Fa `git pull` per obtenir l'última versió del codi.
 
 3. **Configuració d'arxius d'entorn:**
-   - Copia els arxius `.env.PROD` a `.env` per cada servei necessari (backend, frontend, DBinsert, sensor).
-   - Afegeix variables d'entorn sensibles (usuari i contrasenya de MySQL, URI de MongoDB, etc.) a partir dels secrets de GitHub.
+   - Copia els arxius `.env.PROD` a `.env` per cada servei necessari (backend, frontend).
+   - Afegeix variables d'entorn sensibles (usuari i contrasenya de Postgres, etc.) a partir dels secrets de GitHub.
 
 4. **Configuració inicial (abans de validar certificats):**
    - El sistema copia l'arxiu `nginx-init.conf` com a configuració bàsica per l'nginx (el que s'utilitza per a la validació de certbot).
@@ -111,12 +111,26 @@ cp ./back/principal-node/.env.PROD ./back/principal-node/.env
 
 cp ./front/.env.PROD ./front/.env
 
-cp ./back/services/sensor/.env.PROD ./back/services/sensor/.env
+env
 ```
 
 Edita els arxius `.env` per afegir les variables d'entorn reals (usuaris, contrasenyes, URIs, etc.) segons la teva configuració.
 
 ---
+
+## 5. Configuració inicial de Nginx
+
+Si es la primera vegada que inicies el sistema (o no tens els certificats SSL), copia l'arxiu `nginx-init.conf` com a configuració bàsica per Nginx:
+
+```bash
+cp nginx-init.conf nginx.conf
+```
+
+Si ja tens un certificat valid, pots copiar la configuracio de nginx directament.
+
+```bash
+cp nginx-prod.conf nginx.conf
+```
 
 ## 4. Arrencada dels serveis amb Docker Compose
 
@@ -135,6 +149,20 @@ Comprova que tots els contenidors estan funcionant:
 ```bash
 docker ps
 ```
+
+> [!NOTE]  
+> Si tens la configuració inicial per generar els SSL, el projecte no estara aixecat. Fes la comprobacio dels certficats amb certbot
+>
+> ```bash
+> docker compose -f compose.PROD.yml logs certbot
+> ```
+>
+> Si el certificat es valid, pots copiar la configuracio de nginx i reiniciar els dockers.
+>
+> ```bash
+> cp nginx-prod.conf nginx.conf
+> docker compose -f compose.PROD.yml up -d --build
+> ```
 
 ---
 
