@@ -12,15 +12,25 @@ El workflow de GitHub Actions es troba a `.github/workflows/deploy` i s'activa a
    El workflow utilitza SSH per connectar-se al servidor de producció fent servir les credencials emmagatzemades com a secrets de GitHub.
 
 2. **Actualització del codi:**
-   - Accedeix al directori del projecte al servidor.
+   - Accedeix al directori del projecte al servidor (Si no troba el directori, el workflow el clona automàticament).
    - Fa `git pull` per obtenir l'última versió del codi.
 
 3. **Configuració d'arxius d'entorn:**
    - Copia els arxius `.env.PROD` a `.env` per cada servei necessari (backend, frontend, DBinsert, sensor).
    - Afegeix variables d'entorn sensibles (usuari i contrasenya de MySQL, URI de MongoDB, etc.) a partir dels secrets de GitHub.
 
-4. **Arrencada de Docker:**
+4. **Configuració inicial (abans de validar certificats):**
+   - El sistema copia l'arxiu `nginx-init.conf` com a configuració bàsica per l'nginx (el que s'utilitza per a la validació de certbot).
+
+5. **Arrencada de Docker:**
    - Executa `docker compose -f compose.PROD.yml up -d --build` per construir i aixecar tots els serveis definits.
+
+6. **Validació de certificats SSL:**
+   - Un cop els serveis estan en marxa, el workflow executa `certbot` per obtenir i configurar els certificats SSL per al domini de producció.
+
+| Si el certficat SSL es vàlid                           |                                   Si no hi ha un certificat SSL valid                                    |
+| :----------------------------------------------------- | :------------------------------------------------------------------------------------------------------: |
+| Copia l'arxiu `nginx-init.conf` i reinicia els dockers | El sistema donarà per finalitzat el build, al pròxim build tornarà a comprovar si existeix el certificat |
 
 ### Orquestració amb Docker Compose
 
@@ -28,12 +38,13 @@ El fitxer `compose.PROD.yml` defineix tota la infraestructura de producció. Cad
 
 #### Serveis Principals
 
-- **pfg1-nginx:** Servei
-- **pfg1-worker:**
-- **pfg1-back-node:**
-- **pfg1-postgres:**
-- **pfg1-pgadmin:**
-- **certbot:**
+- **pfg1-nginx:** Servei de Nginx que actua com a proxy invers per al frontend i backend.
+- **pfg1-laravel-api:** Backend de Laravel.
+- **pfg1-worker:** Servei de cues per a Laravel.
+- **pfg1-principal-node:** Backend de Node.js.
+- **pfg1-postgres:** Base de dades PostgreSQL.
+- **pfg1-pgadmin:** Interfície de gestió de Postgres, port 8080.
+- **certbot:** Servei per a la gestió de certificats SSL.
 - **portainer:** Gestor de contenidors Docker, port 9443.
 
 #### Volums
