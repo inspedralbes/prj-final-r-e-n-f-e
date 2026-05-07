@@ -26,6 +26,9 @@ Route::prefix('v1')->group(function (): void {
     Route::post('auth/login-temporal', [AuthController::class, 'loginTemporal']);
     Route::patch('/fullfill-user-profile', [UsuariController::class, 'fullfillUserProfile'])->middleware(('auth:sanctum'));
 
+    // Rutes d'Usuaris
+    Route::get('perfil/{id}', [UsuariController::class, 'enviarPerfil'])->middleware(['auth:sanctum']);
+
     // Grup protegit per policy de perfil completo
     Route::middleware(['auth:sanctum', 'can:canPerformAction,App\\Models\\Usuari'])->group(function () {
         // Rutes d'Usuaris

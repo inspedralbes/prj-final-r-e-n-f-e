@@ -11,6 +11,7 @@ import { JustificantsComponent } from './features/alumnes/justificants/justifica
 import { LlistaFaltesComponent } from './features/professors/llista-faltes/llista-faltes.component';
 import { GestioInscritsComponent } from './features/professors/gestio-classe/gestio-inscrits.component';
 import { HorariAlumnesComponent } from './features/professors/horari-alumnes/horari-alumnes.component';
+import { PerfilComponent } from './features/perfil/perfil.component';
 import { AdminAssignaturesComponent } from './features/administracio/admin-assignatures/admin-assignatures.component';
 import { AdminClassesComponent } from './features/administracio/admin-classes/admin-classes.component';
 import { AdminUsuarisComponent } from './features/administracio/admin-usuaris/admin-usuaris.component';
@@ -34,5 +35,7 @@ export const routes: Routes = [
   { path: 'admin-usuaris', component: AdminUsuarisComponent },
   { path: 'admin-periodes', component: AdminPeriodesComponent },
   { path: 'auth/callback', component: AuthCallbackComponent },
+  { path: 'profile', component: PerfilComponent },
+  { path: 'profile/:id', component: PerfilComponent },
   { path: 'completar-perfil', component: CompletarPerfilComponent },
 ];
