@@ -16,8 +16,8 @@ class JustificantsSeeder extends Seeder
         DB::table('justificants')->insert([
             [
                 'id_alum' => 1,
-                'fecha_inici' => '2026-04-02',
-                'fecha_fi' => '2026-04-04',
+                'data_inici' => '2026-04-02',
+                'data_fi' => '2026-04-04',
                 'comentari' => 'Justificant de prova per alumne 1',
                 'document' => null,
                 'estat' => 'Pendent',
@@ -26,8 +26,8 @@ class JustificantsSeeder extends Seeder
             ],
             [
                 'id_alum' => 2,
-                'fecha_inici' => '2026-04-03',
-                'fecha_fi' => '2026-04-05',
+                'data_inici' => '2026-04-03',
+                'data_fi' => '2026-04-05',
                 'comentari' => 'Justificant de prova per alumne 2',
                 'document' => null,
                 'estat' => 'Acceptada',
@@ -36,8 +36,8 @@ class JustificantsSeeder extends Seeder
             ],
             [
                 'id_alum' => 11,
-                'fecha_inici' => '2026-05-01',
-                'fecha_fi' => '2026-05-02',
+                'data_inici' => '2026-05-01',
+                'data_fi' => '2026-05-02',
                 'comentari' => 'Grip de 2 dies (Pendent)',
                 'document' => null,
                 'estat' => 'Pendent',
@@ -46,8 +46,8 @@ class JustificantsSeeder extends Seeder
             ],
             [
                 'id_alum' => 11,
-                'fecha_inici' => '2026-04-20',
-                'fecha_fi' => '2026-04-20',
+                'data_inici' => '2026-04-20',
+                'data_fi' => '2026-04-20',
                 'comentari' => 'Visita metge (Rebutjada)',
                 'document' => null,
                 'estat' => 'Rebutjada',

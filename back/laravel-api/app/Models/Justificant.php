@@ -13,8 +13,8 @@ class Justificant extends Model
 
     protected $fillable = [
         'id_alum',
-        'fecha_inici',
-        'fecha_fi',
+        'data_inici',
+        'data_fi',
         'comentari',
         'document',
         'estat',

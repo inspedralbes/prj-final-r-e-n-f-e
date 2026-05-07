@@ -115,15 +115,15 @@
 
 ### `justificants`
 
-| Columna            | Tipo              | Notas                           |
-| ------------------ | ----------------- | ------------------------------- |
-| id                 | bigint PK         | autoincrement                   |
-| id_alum            | FK → usuaris      | cascadeOnDelete                 |
-| fecha_inici        | date              |                                 |
-| fecha_fi           | date              |                                 |
-| comentari          | text              | nullable                        |
-| document           | string            | nullable                        |
-| estat              | enum              | Pendent / Acceptada / Rebutjada |
+| Columna    | Tipo         | Notas                           |
+| ---------- | ------------ | ------------------------------- |
+| id         | bigint PK    | autoincrement                   |
+| id_alum    | FK → usuaris | cascadeOnDelete                 |
+| data_inici | date         |                                 |
+| data_fi    | date         |                                 |
+| comentari  | text         | nullable                        |
+| document   | string       | nullable                        |
+| estat      | enum         | Pendent / Acceptada / Rebutjada |
 
 ---
 

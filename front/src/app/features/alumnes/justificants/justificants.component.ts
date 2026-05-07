@@ -52,8 +52,8 @@ export class JustificantsComponent implements OnInit {
 
     const nouJustificant = {
       id_alum: Number(this.authService.usuarioInfo?.id),
-      fecha_inici: this.obtenirValorText(formData, 'fecha_inici'),
-      fecha_fi: this.obtenirValorText(formData, 'fecha_fi'),
+      data_inici: this.obtenirValorText(formData, 'data_inici'),
+      data_fi: this.obtenirValorText(formData, 'data_fi'),
       comentari: this.obtenirValorText(formData, 'comentari'),
       estat: 'Pendent' as const,
     };

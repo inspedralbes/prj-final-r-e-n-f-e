@@ -41,8 +41,8 @@ class JustificantController extends Controller
         // Actualitzar assistències del període a 'Justificada' si eren 'Falta'
         \DB::table('assistencies')
             ->whereIn('id_inscripcio', $inscripcions)
-            ->whereDate('data', '>=', $justificant->fecha_inici)
-            ->whereDate('data', '<=', $justificant->fecha_fi)
+            ->whereDate('data', '>=', $justificant->data_inici)
+            ->whereDate('data', '<=', $justificant->data_fi)
             ->where('estat', 'Falta')
             ->update(['estat' => 'Justificada']);
 
@@ -56,8 +56,8 @@ class JustificantController extends Controller
     {
         $validated = $request->validate([
             'id_alum' => 'required|exists:usuaris,id',
-            'fecha_inici' => 'required|date',
-            'fecha_fi' => 'required|date|after_or_equal:fecha_inici',
+            'data_inici' => 'required|date',
+            'data_fi' => 'required|date|after_or_equal:data_inici',
             'comentari' => 'nullable|string',
             'document' => 'nullable|file',
             'estat' => 'nullable|string|in:Pendent,Acceptada,Rebutjada',
@@ -71,8 +71,8 @@ class JustificantController extends Controller
         // Cerca la primera i última assistència del període
         $assistencies = \DB::table('assistencies')
             ->whereIn('id_inscripcio', $inscripcions)
-            ->whereDate('data', '>=', $validated['fecha_inici'])
-            ->whereDate('data', '<=', $validated['fecha_fi'])
+            ->whereDate('data', '>=', $validated['data_inici'])
+            ->whereDate('data', '<=', $validated['data_fi'])
             ->orderBy('data')
             ->get();
 
@@ -107,8 +107,8 @@ class JustificantController extends Controller
 
         $justificant = Justificant::create([
             'id_alum' => $validated['id_alum'],
-            'fecha_inici' => $validated['fecha_inici'],
-            'fecha_fi' => $validated['fecha_fi'],
+            'data_inici' => $validated['data_inici'],
+            'data_fi' => $validated['data_fi'],
             'comentari' => $validated['comentari'] ?? null,
             'document' => $validated['document'],
             'estat' => $validated['estat'] ?? 'Pendent',
@@ -152,8 +152,8 @@ class JustificantController extends Controller
 
         $validated = $request->validate([
             'id_alum' => 'sometimes|required|exists:usuaris,id',
-            'fecha_inici' => 'sometimes|required|date',
-            'fecha_fi' => 'sometimes|required|date|after_or_equal:fecha_inici',
+            'data_inici' => 'sometimes|required|date',
+            'data_fi' => 'sometimes|required|date|after_or_equal:data_inici',
             'comentari' => 'nullable|string',
             'document' => 'nullable|file',
             'estat' => 'sometimes|required|string|in:Pendent,Acceptada,Rebutjada',

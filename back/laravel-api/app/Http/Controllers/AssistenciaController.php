@@ -294,8 +294,8 @@ class AssistenciaController extends Controller
                         }
                         $findJustificacio = DB::table('justificants')
                             ->where('id_alum', $alumneId)
-                            ->whereDate('fecha_inici', '<=', $valor->data)
-                            ->whereDate('fecha_fi', '>=', $valor->data)
+                            ->whereDate('data_inici', '<=', $valor->data)
+                            ->whereDate('data_fi', '>=', $valor->data)
                             ->where('estat', 'Acceptada')
                             ->exists();
 
