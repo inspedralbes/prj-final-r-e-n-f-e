@@ -14,7 +14,7 @@ class JustificantController extends Controller
     {
         return response()->json([
             'success' => true,
-            'data' => Justificant::with(['alumne', 'assignaturaInici', 'assignaturaFi'])->get(),
+            'data' => Justificant::with(['alumne'])->get(),
             'message' => 'Justificants obtinguts correctament'
         ], Response::HTTP_OK);
     }
@@ -31,10 +31,10 @@ class JustificantController extends Controller
         }
 
         // Marcar justificante com acceptat
-        $justificant->acceptada = true;
+        $justificant->estat = 'Acceptada';
         $justificant->save();
 
-        // Buscar los id_inscripcio del alumno
+        // Cerca l'id_inscripcio de l'alumne
         $inscripcions = \DB::table('inscrits')
             ->where('id_alumne', $justificant->id_alum)
             ->pluck('id');
@@ -42,38 +42,38 @@ class JustificantController extends Controller
         // Actualitzar assistències del període a 'Justificada' si eren 'Falta'
         \DB::table('assistencies')
             ->whereIn('id_inscripcio', $inscripcions)
-            ->whereDate('data', '>=', $justificant->fecha_inici)
-            ->whereDate('data', '<=', $justificant->fecha_fi)
-            ->where('tipus', 'Falta')
-            ->update(['tipus' => 'Justificada']);
+            ->whereDate('data', '>=', $justificant->data_inici)
+            ->whereDate('data', '<=', $justificant->data_fi)
+            ->where('estat', 'Falta')
+            ->update(['estat' => 'Justificada']);
 
         return response()->json([
             'success' => true,
             'message' => 'Justificant acceptat i assistències justificades correctament',
-            'data' => $justificant->load(['alumne', 'assignaturaInici', 'assignaturaFi'])
+            'data' => $justificant->load(['alumne'])
         ], Response::HTTP_OK);
     }
     public function store(Request $request)
     {
         $validated = $request->validate([
             'id_alum' => 'required|exists:usuaris,id',
-            'fecha_inici' => 'required|date',
-            'fecha_fi' => 'required|date|after_or_equal:fecha_inici',
+            'data_inici' => 'required|date',
+            'data_fi' => 'required|date|after_or_equal:data_inici',
             'comentari' => 'nullable|string',
             'document' => 'nullable|file',
-            'acceptada' => 'required|boolean',
+            'estat' => 'nullable|string|in:Pendent,Acceptada,Rebutjada',
         ]);
 
-        // Buscar los id_inscripcio del alumno
+        // Cerca l'id_inscripcio de l'alumne
         $inscripcions = \DB::table('inscrits')
             ->where('id_alumne', $validated['id_alum'])
             ->pluck('id');
 
-        // Buscar la primera i última assistència de l'alumne en el període
+        // Cerca la primera i última assistència del període
         $assistencies = \DB::table('assistencies')
             ->whereIn('id_inscripcio', $inscripcions)
-            ->whereDate('data', '>=', $validated['fecha_inici'])
-            ->whereDate('data', '<=', $validated['fecha_fi'])
+            ->whereDate('data', '>=', $validated['data_inici'])
+            ->whereDate('data', '<=', $validated['data_fi'])
             ->orderBy('data')
             ->get();
 
@@ -108,11 +108,11 @@ class JustificantController extends Controller
 
         $justificant = Justificant::create([
             'id_alum' => $validated['id_alum'],
-            'fecha_inici' => $validated['fecha_inici'],
-            'fecha_fi' => $validated['fecha_fi'],
+            'data_inici' => $validated['data_inici'],
+            'data_fi' => $validated['data_fi'],
             'comentari' => $validated['comentari'] ?? null,
             'document' => $validated['document'],
-            'acceptada' => $validated['acceptada'],
+            'estat' => $validated['estat'] ?? 'Pendent',
         ]);
 
         return response()->json([
@@ -153,11 +153,11 @@ class JustificantController extends Controller
 
         $validated = $request->validate([
             'id_alum' => 'sometimes|required|exists:usuaris,id',
-            'fecha_inici' => 'sometimes|required|date',
-            'fecha_fi' => 'sometimes|required|date|after_or_equal:fecha_inici',
+            'data_inici' => 'sometimes|required|date',
+            'data_fi' => 'sometimes|required|date|after_or_equal:data_inici',
             'comentari' => 'nullable|string',
             'document' => 'nullable|file',
-            'acceptada' => 'sometimes|required|boolean',
+            'estat' => 'sometimes|required|string|in:Pendent,Acceptada,Rebutjada',
         ]);
 
         // Gestionar la pujada del fitxer
@@ -250,5 +250,12 @@ class JustificantController extends Controller
             'success' => false,
             'message' => 'No hi ha resposta'
         ], Response::HTTP_OK);
+    public function getByAlumne($alumneId)
+    {
+        $justificants = Justificant::where('id_alum', $alumneId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($justificants, Response::HTTP_OK);
     }
 }

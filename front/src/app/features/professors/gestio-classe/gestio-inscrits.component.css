@@ -203,3 +203,63 @@ h3 {
         transform: rotate(360deg);
     }
 }
+/* Estils per a les icones i els nous botons */
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.user-avatar-mini {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.user-avatar-mini ng-icon {
+    font-size: 18px;
+}
+
+.btn-icon-circular {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-icon-circular ng-icon {
+    font-size: 20px;
+}
+
+.btn-icon-circular.delete {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.btn-icon-circular.delete:hover {
+    background: #ef4444;
+    color: white;
+    transform: scale(1.1);
+}
+
+.btn-icon-circular.add {
+    background: #dcfce7;
+    color: #22c55e;
+}
+
+.btn-icon-circular.add:hover {
+    background: #22c55e;
+    color: white;
+    transform: scale(1.1);
+}

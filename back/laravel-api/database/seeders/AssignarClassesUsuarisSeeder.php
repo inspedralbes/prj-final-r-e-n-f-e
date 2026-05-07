@@ -10,11 +10,7 @@ class AssignarClassesUsuarisSeeder extends Seeder
     public function run(): void
     {
         DB::table('usuaris')
-            ->where('id', 3)
-            ->update(['id_classe' => 1]);
-
-        DB::table('usuaris')
-            ->where('id', 4)
+            ->whereIn('id', [3, 4, 11])
             ->update(['id_classe' => 1]);
     }
 }

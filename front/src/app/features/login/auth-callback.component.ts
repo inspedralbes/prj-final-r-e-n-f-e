@@ -19,7 +19,7 @@ export class AuthCallbackComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Extraer el código de los query params
+    // Extreure el codi dels paràmetres URL
     this.route.queryParams.subscribe(params => {
       const code = params['code'];
       const error = params['error'];
@@ -31,7 +31,7 @@ export class AuthCallbackComponent implements OnInit {
       }
 
       if (code) {
-        // Enviar el código al backend
+        // Enviar el codi al backend
         this.authService.handleGoogleCallback(code);
       } else {
         console.error('No se recibió código de Google');
