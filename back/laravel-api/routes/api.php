@@ -59,6 +59,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('horaris/granular', [HorariController::class, 'actualitzarHorariGranular']);
         Route::get('classes/{id}/horaris', [HorariController::class, 'getHorarisClasse']);
         Route::get('horaris/professor/{id}', [HorariController::class, 'getSessionsProfessor']);
+        Route::get('horaris/professor/{id}/context', [HorariController::class, 'getContextAssistencia']);
         Route::apiResource('horaris', HorariController::class);
         Route::get('/horaris/usuari/{id}', [HorariController::class, 'getHorari']);
         Route::get('/usuaris/{id}/classe-actual', [HorariController::class, 'getClasseActual']);

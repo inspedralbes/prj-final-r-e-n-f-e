@@ -27,8 +27,8 @@
             <select
               id="sessioSelect"
               class="select-modern"
-              (change)="canviarSessio($event)"
-              [value]="sessioSeleccionadaId()"
+              [ngModel]="sessioSeleccionadaId()"
+              (ngModelChange)="canviarSessioManualDirecte($event)"
             >
               @for (sessio of sessionsProfessor(); track sessio.id) {
                 <option [value]="sessio.id">

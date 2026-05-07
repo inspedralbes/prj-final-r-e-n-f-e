@@ -1,5 +1,6 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { InscritsManagerService } from '../../../shared/services/inscrits/inscrits-manager.service';
@@ -22,6 +23,7 @@ export class LlistaClasseComponent implements OnInit {
   private inscritsManager = inject(InscritsManagerService);
   private assistenciesManager = inject(AssistenciesManagerService);
   private horarisManager = inject(HorarisManagerService);
+  private route = inject(ActivatedRoute);
 
   diesSetmana = ['Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres'];
   datesSetmana: string[] = []; // Formatat per mostrar (DD/MM)
@@ -61,33 +63,42 @@ export class LlistaClasseComponent implements OnInit {
     return lletraMap[sessio.codi_hora.charAt(0).toUpperCase()] ?? -1;
   });
 
-  async ngOnInit() {
+  ngOnInit() {
     this.calcularDatesSetmana();
 
-    // Fase 2: Obtenim l'usuari profe i descarreguem NOMÉS els seus horaris
     const usuariLoguejat = JSON.parse(localStorage.getItem('usuari') || '{}');
     if (usuariLoguejat && usuariLoguejat.id) {
-      const sessionsDelBackend = await this.horarisManager.getSessionsProfessor(usuariLoguejat.id);
-      this.sessionsProfessorData.set(sessionsDelBackend);
+      
+      // Demanem al servidor tot el context d'un cop (més segur i eficient)
+      this.horarisManager.getContextAssistencia(usuariLoguejat.id).then(context => {
+        if (!context) return;
 
-      if (sessionsDelBackend && sessionsDelBackend.length > 0) {
-        const primeraSessioId = sessionsDelBackend[0].id ?? null;
-        this.sessioSeleccionadaId.set(primeraSessioId);
-        await this.carregarGraellaPerALaSessio(primeraSessioId);
-      }
+        this.sessionsProfessorData.set(context.sessions);
+
+        // Escoltarem els canvis de la URL o inicialitzem
+        this.route.queryParams.subscribe(async (params) => {
+          const sessioIdParam = params['sessioId'];
+          
+          // La prioritat 1 és la URL (clic directe). 
+          // La prioritat 2 és el que el servidor ens recomana com a "actual" o "per defecte".
+          const idASeleccionar = sessioIdParam ? Number(sessioIdParam) : context.default_id;
+
+          if (idASeleccionar) {
+            this.sessioSeleccionadaId.set(idASeleccionar);
+            await this.carregarGraellaPerALaSessio(idASeleccionar);
+          }
+        });
+      });
     }
   }
 
-  async carregarGraellaPerALaSessio(idSessio: number | null) {
-    if (!idSessio) {
-      this.alumnesAmbAssistencia.set([]);
-      return;
-    }
-
+  async carregarGraellaPerALaSessio(idSessio: number) {
+    // Netegem la graella actual per donar feedback visual de que s'està carregant
+    this.alumnesAmbAssistencia.set([]);
+    
     const dataIniciBD = this.datesRealsLaravel[0];
     const dataFiBD = this.datesRealsLaravel[4];
 
-    // La nova màgia de Fase 2. Només ens arribaran en un array els inscrits amb l'assistència d'aquella setmana!
     const llistaDinsBack = await this.assistenciesManager.getAssistenciaSetmanal(
       idSessio,
       dataIniciBD,
@@ -181,10 +192,12 @@ export class LlistaClasseComponent implements OnInit {
     return (nom + cognom).toUpperCase();
   }
 
-  canviarSessio(event: any) {
-    const nouId = Number(event.target.value);
-    this.sessioSeleccionadaId.set(nouId);
-    this.carregarGraellaPerALaSessio(nouId);
+  canviarSessioManualDirecte(nouIdRaw: any) {
+    const nouId = Number(nouIdRaw);
+    if (nouId) {
+      this.sessioSeleccionadaId.set(nouId);
+      this.carregarGraellaPerALaSessio(nouId);
+    }
   }
 
   // Guarda o actualitza l'estat d'assistència a la Base de Dades

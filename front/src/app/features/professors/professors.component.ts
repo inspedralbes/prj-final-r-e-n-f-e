@@ -1,5 +1,6 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { AssignaturesManagerService } from '../../shared/services/assignatures/assignatures-manager.service';
 import { HorarisManagerService } from '../../shared/services/horaris/horaris-manager.service';
@@ -21,6 +22,7 @@ export class ProfessorsComponent implements OnInit {
   private horarisManager = inject(HorarisManagerService);
   private imparteixManager = inject(ImparteixManagerService);
   private authService = inject(AuthService);
+  private router = inject(Router);
 
   carregantDades = computed(() => this.horarisManager.isLoading());
 
@@ -157,6 +159,15 @@ export class ProfessorsComponent implements OnInit {
 
   commutarFranja() {
     this.franjaHoraria.update((valor) => (valor === 'AM' ? 'PM' : 'AM'));
+  }
+
+  anarAPassarLlista() {
+    const sessio = this.classeActual();
+    if (sessio && sessio.id) {
+      this.router.navigate(['/llista-classe'], { queryParams: { sessioId: sessio.id } });
+    } else {
+      this.router.navigate(['/llista-classe']);
+    }
   }
 
   // Demanem a Laravel totes les assignatures en entrar
