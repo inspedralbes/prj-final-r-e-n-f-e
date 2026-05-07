@@ -1,0 +1,312 @@
+:host {
+  --radius-large: 32px;
+}
+
+/* ── Layout principal ────────────────────────────────── */
+.disseny-principal {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: 'Outfit', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.contingut {
+  flex-grow: 1;
+  margin-top: 180px;
+  padding: 20px 40px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.graella-tauler {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* ── Targeta hero ────────────────────────────────────── */
+.targeta-classe-actual {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  border-radius: var(--radius-large);
+  padding: 40px;
+  color: var(--text-main, #1e293b);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.contingut-targeta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 65%;
+}
+
+.targeta-classe-actual h1 {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.targeta-classe-actual p {
+  margin: 0;
+  color: var(--text-muted, #64748b);
+  font-size: 1.05rem;
+}
+
+.boto-accio {
+  background: var(--primary-color, #6366f1);
+  color: white;
+  border: none;
+  padding: 12px 28px;
+  border-radius: 50px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 20px rgba(99, 102, 241, 0.15);
+}
+
+.boto-accio:hover {
+  transform: translateY(-2px);
+  background: var(--primary-light, #818cf8);
+  box-shadow: 0 12px 25px rgba(99, 102, 241, 0.25);
+}
+
+/* ── Contenidor de justificants ──────────────────────── */
+.contenidor-faltes {
+  background: var(--glass-bg, rgba(255, 255, 255, 0.45));
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-radius: 28px;
+  padding: 30px;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.6));
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.capçalera-faltes h2 {
+  font-size: 1.5rem;
+  color: var(--text-main, #1e293b);
+  font-weight: 800;
+  margin: 0;
+}
+
+.taula-detall {
+  display: flex;
+  flex-direction: column;
+}
+
+.fila-detall {
+  display: grid;
+  grid-template-columns: 1.2fr 1.8fr 3fr 1fr;
+  padding: 15px 15px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+.fila-detall:not(.capçalera-taula):hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.fila-detall:last-child {
+  border-bottom: none;
+}
+
+.capçalera-taula {
+  font-weight: 700;
+  color: var(--text-muted, #64748b);
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.04);
+  padding-bottom: 12px;
+}
+
+.col-data { font-weight: 600; color: var(--text-main, #1e293b); }
+.col-rang { color: var(--text-muted, #64748b); font-size: 0.9rem; }
+.col-comentari { color: var(--text-muted, #64748b); font-size: 0.9rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.badge-estat {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-align: center;
+  display: inline-block;
+  text-transform: uppercase;
+}
+
+.estat-acceptada .badge-estat { background: rgba(34, 197, 94, 0.1); color: #15803d; }
+.estat-pendent .badge-estat { background: rgba(245, 158, 11, 0.1); color: #b45309; }
+.estat-rebutjada .badge-estat { background: rgba(239, 68, 68, 0.1); color: #b91c1c; }
+
+.sense-dades {
+  text-align: center;
+  padding: 40px;
+  color: var(--text-muted, #94a3b8);
+  font-size: 0.95rem;
+}
+
+/* ── Carregant ────────────────────────────────────── */
+.carregant-contenidor {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+}
+
+.carregant-contenidor p {
+  color: var(--text-muted, #64748b);
+  font-weight: 600;
+  font-size: 1rem;
+  font-style: italic;
+  margin: 0;
+}
+
+/* ── Modal de Justificació ─────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.3);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-contingut {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  padding: 30px;
+  border-radius: 24px;
+  width: 440px;
+  max-width: 95%;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+}
+
+.modal-capçalera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-capçalera h3 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0;
+}
+
+.boto-tancar {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: var(--text-muted, #94a3b8);
+  transition: color 0.2s;
+}
+
+.boto-tancar:hover { color: var(--text-main, #1e293b); }
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+  color: var(--text-muted, #475569);
+  font-size: 0.85rem;
+}
+
+.form-group input, .form-group textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  background: white;
+  transition: all 0.2s;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+  outline: none;
+  border-color: var(--primary-color, #6366f1);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.08);
+}
+
+.form-group textarea {
+  height: 90px;
+  resize: vertical;
+}
+
+.modal-accions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 25px;
+}
+
+.boto-cancelar, .boto-enviar {
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+  border: none;
+}
+
+.boto-cancelar {
+  background: #f1f5f9;
+  color: var(--text-muted, #64748b);
+}
+
+.boto-cancelar:hover { background: #e2e8f0; }
+
+.boto-enviar {
+  background: var(--primary-color, #6366f1);
+  color: white;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+}
+
+.boto-enviar:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 15px rgba(99, 102, 241, 0.2);
+}
+
+/* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  .fila-detall {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px;
+  }
+  .capçalera-taula { display: none; }
+  .col-comentari { grid-column: span 2; }
+}
+
+
+

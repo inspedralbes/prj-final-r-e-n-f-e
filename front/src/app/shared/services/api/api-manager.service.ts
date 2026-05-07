@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 
@@ -10,13 +10,29 @@ export class ApiManagerService {
   private readonly http = inject(HttpClient);
   private readonly baseUrl = environment.backendUrl;
 
+  private getAuthHeaders(): { headers?: HttpHeaders } {
+    const token = localStorage.getItem('token');
+
+    if (!token) {
+      return {};
+    }
+
+    return {
+      headers: new HttpHeaders({
+        Authorization: `Bearer ${token}`,
+      }),
+    };
+  }
+
   /**
    * Petición GET genérica
    * Recibe el endpoint  y devuelve de forma asíncrona lo que retorne el backend
    */
   async get<T>(endpoint: string): Promise<T> {
     try {
-      const data = await firstValueFrom(this.http.get<T>(`${this.baseUrl}${endpoint}`));
+      const data = await firstValueFrom(
+        this.http.get<T>(`${this.baseUrl}${endpoint}`, this.getAuthHeaders()),
+      );
       return data;
     } catch (error) {
       console.error(`Error en GET ${endpoint}:`, error);
@@ -26,7 +42,9 @@ export class ApiManagerService {
 
   async post<T>(endpoint: string, body: any): Promise<T> {
     try {
-      const data = await firstValueFrom(this.http.post<T>(`${this.baseUrl}${endpoint}`, body));
+      const data = await firstValueFrom(
+        this.http.post<T>(`${this.baseUrl}${endpoint}`, body, this.getAuthHeaders()),
+      );
       return data;
     } catch (error) {
       console.error(`Error en POST ${endpoint}:`, error);
@@ -37,7 +55,10 @@ export class ApiManagerService {
   async postBlob(endpoint: string, body: any): Promise<Blob> {
     try {
       const data = await firstValueFrom(
-        this.http.post(`${this.baseUrl}${endpoint}`, body, { responseType: 'blob' }),
+        this.http.post(`${this.baseUrl}${endpoint}`, body, {
+          responseType: 'blob',
+          ...this.getAuthHeaders(),
+        }),
       );
       return data;
     } catch (error) {
@@ -51,7 +72,9 @@ export class ApiManagerService {
    */
   async put<T>(endpoint: string, body: any): Promise<T> {
     try {
-      const data = await firstValueFrom(this.http.put<T>(`${this.baseUrl}${endpoint}`, body));
+      const data = await firstValueFrom(
+        this.http.put<T>(`${this.baseUrl}${endpoint}`, body, this.getAuthHeaders()),
+      );
       return data;
     } catch (error) {
       console.error(`Error en PUT ${endpoint}:`, error);
@@ -64,7 +87,9 @@ export class ApiManagerService {
    */
   async delete<T>(endpoint: string): Promise<T> {
     try {
-      const data = await firstValueFrom(this.http.delete<T>(`${this.baseUrl}${endpoint}`));
+      const data = await firstValueFrom(
+        this.http.delete<T>(`${this.baseUrl}${endpoint}`, this.getAuthHeaders()),
+      );
       return data;
     } catch (error) {
       console.error(`Error en DELETE ${endpoint}:`, error);

@@ -200,7 +200,7 @@ $dadesValidades = $peticio->validate([
             'data_naixement' => 'required|date',
             'photo' => 'nullable|file',
         ]);
-        
+
         if($request->hasFile('photo'))
             {                
                 $newFile = $request->file('photo');
@@ -232,4 +232,4 @@ $dadesValidades = $peticio->validate([
             'message' => 'Perfil completat correctament'
         ]);
     }
-}  
+}
