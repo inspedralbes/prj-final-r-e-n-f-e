@@ -11,6 +11,10 @@ import { LlistaFaltesComponent } from './features/professors/llista-faltes/llist
 import { GestioInscritsComponent } from './features/professors/gestio-classe/gestio-inscrits.component';
 import { HorariAlumnesComponent } from './features/professors/horari-alumnes/horari-alumnes.component';
 import { PerfilComponent } from './features/perfil/perfil.component';
+import { AdminAssignaturesComponent } from './features/administracio/admin-assignatures/admin-assignatures.component';
+import { AdminClassesComponent } from './features/administracio/admin-classes/admin-classes.component';
+import { AdminUsuarisComponent } from './features/administracio/admin-usuaris/admin-usuaris.component';
+import { AdminPeriodesComponent } from './features/administracio/admin-periodes/admin-periodes.component';
 import { CompletarPerfilComponent } from './features/completar-perfil/completar-perfil.component';
 
 export const routes: Routes = [
@@ -24,6 +28,10 @@ export const routes: Routes = [
   { path: 'llista-faltes', component: LlistaFaltesComponent },
   { path: 'gestio-inscrits', component: GestioInscritsComponent },
   { path: 'horari-alumnes', component: HorariAlumnesComponent },
+  { path: 'admin-assignatures', component: AdminAssignaturesComponent },
+  { path: 'admin-classes', component: AdminClassesComponent },
+  { path: 'admin-usuaris', component: AdminUsuarisComponent },
+  { path: 'admin-periodes', component: AdminPeriodesComponent },
   { path: 'auth/callback', component: AuthCallbackComponent },
   { path: 'profile', component: PerfilComponent },
   { path: 'profile/:id', component: PerfilComponent },

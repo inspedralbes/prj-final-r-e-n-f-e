@@ -24,6 +24,24 @@ class UsuariController extends Controller
     }
 
     /**
+     * Retorna només els usuaris d'un rol específic.
+     * Ho fem així perquè el Frontend no descarregui tota la BBDD.
+     */
+    public function usuarisPerRol($rol)
+    {
+        // 1. Busco directament a la BBDD només els usuaris amb aquest rol
+        $usuaris = Usuari::with(['classe'])
+                  ->where('rol', 'like', $rol)
+                  ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $usuaris,
+            'message' => "He trobat els usuaris amb rol $rol"
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Desa un nou usuari.
      */
     public function store(Request $peticio)
@@ -33,7 +51,7 @@ class UsuariController extends Controller
             'cognom' => 'required|string|max:255',
             'email' => 'required|email|unique:usuaris,email',
             'email_pares' => 'nullable|email',
-            'rol' => 'required|string|in:admin,professor,alumne,pare',
+            'rol' => 'required|string|in:admin,professor,alumne,pare,Administrador,Professor,Alumne,Pares',
             'password' => 'required|string|min:8',
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id',
         ]);
@@ -90,7 +108,7 @@ $dadesValidades = $peticio->validate([
             'email' => 'sometimes|required|email|unique:usuaris,email,' . $id,
             'email_pares' => 'nullable|email',
             'data_naixement' => 'nullable|date',
-            'rol' => 'sometimes|required|string|in:admin,professor,alumne,pare',
+            'rol' => 'sometimes|required|string|in:Administrador,Profe,Alumne',
             'password' => 'sometimes|required|string|min:8',
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id,' . $id,
             'id_classe' => 'nullable|exists:classes,id',

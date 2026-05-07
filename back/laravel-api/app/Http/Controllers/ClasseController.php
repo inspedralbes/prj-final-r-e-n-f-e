@@ -8,6 +8,7 @@ use App\Models\Inscrit;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class ClasseController extends Controller
 {
@@ -133,6 +134,23 @@ class ClasseController extends Controller
             'success' => true,
             'data' => $classe,
             'message' => 'Classe del tutor obtinguda correctament.'
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Retorna els alumnes que pertanyen a la classe.
+     * Fase 2: Mètode segur per no llistar tota la BBDD.
+     */
+    public function getAlumnesClasse($id)
+    {
+        $alumnes = DB::table('usuaris')
+            ->where('rol', 'Alumne')
+            ->where('id_classe', $id)
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $alumnes
         ], Response::HTTP_OK);
     }
 
