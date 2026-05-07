@@ -227,7 +227,7 @@ class JustificantController extends Controller
         $llistaJustificants = [];
 
         foreach($alumnes as $alumne) {
-            $justificants = DB::table('justificant')->where('id_alum', $alumne->id)->get(['id', 'fecha_inici', 'fecha_fi', 'comentari', 'document', 'acceptada']);
+            $justificants = DB::table('justificant')->where('id_alum', $alumne->id)->get(['id', 'data_inici', 'data_fi', 'comentari', 'document', 'acceptada']);
             if ($justificants->isNotEmpty()) {
                 $llistaJustificants[] = (object) [
                     'alumne' => (object) [
