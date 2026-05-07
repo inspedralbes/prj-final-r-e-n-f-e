@@ -10,11 +10,12 @@
     --secondary-color: #a78bfa;
     --accent-color: #f472b6;
 
-    /* Ultra Glass Tokens (Molt més clars i transparents) */
-    --glass-bg: rgba(255, 255, 255, 0.45);
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --glass-blur: blur(20px);
-    --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+    /* Ultra Glass Tokens (Molt més evidents i premium) */
+    --glass-bg: rgba(255, 255, 255, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.7);
+    --glass-blur: blur(25px) saturate(200%);
+    --glass-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.15);
+    --glass-reflection: inset 0 1px 1px rgba(255, 255, 255, 0.8);
 
     /* Text - Fosc per a contrast en mode clar */
     --text-main: #1e293b;
@@ -23,6 +24,15 @@
     /* Radius */
     --radius-l: 32px;
     --radius-m: 20px;
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-reflection);
+    border-radius: var(--radius-m);
 }
 
 body {
@@ -62,11 +72,19 @@ body::after {
     width: 100%;
     height: 100%;
     background:
-        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.2), transparent 30%),
-        radial-gradient(circle at 85% 85%, rgba(244, 114, 182, 0.2), transparent 35%),
-        radial-gradient(circle at 50% 50%, rgba(167, 139, 250, 0.1), transparent 40%);
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.35), transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(244, 114, 182, 0.35), transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(167, 139, 250, 0.25), transparent 50%);
     z-index: -1;
     pointer-events: none;
+    animation: organic-move 25s infinite alternate ease-in-out;
+}
+
+@keyframes organic-move {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(2%, 1%) scale(1.02); }
+    66% { transform: translate(-1%, 2%) scale(1.01); }
+    100% { transform: translate(0, 0) scale(1); }
 }
 
 /* Scrollbar Premium Light */
