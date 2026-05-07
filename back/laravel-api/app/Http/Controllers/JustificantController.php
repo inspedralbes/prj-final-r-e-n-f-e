@@ -33,7 +33,7 @@ class JustificantController extends Controller
         $justificant->estat = 'Acceptada';
         $justificant->save();
 
-        // Buscar los id_inscripcio del alumno
+        // Cerca l'id_inscripcio de l'alumne
         $inscripcions = \DB::table('inscrits')
             ->where('id_alumne', $justificant->id_alum)
             ->pluck('id');
@@ -63,12 +63,12 @@ class JustificantController extends Controller
             'estat' => 'nullable|string|in:Pendent,Acceptada,Rebutjada',
         ]);
 
-        // Buscar los id_inscripcio del alumno
+        // Cerca l'id_inscripcio de l'alumne
         $inscripcions = \DB::table('inscrits')
             ->where('id_alumne', $validated['id_alum'])
             ->pluck('id');
 
-        // Buscar la primera i última assistència de l'alumne en el període
+        // Cerca la primera i última assistència del període
         $assistencies = \DB::table('assistencies')
             ->whereIn('id_inscripcio', $inscripcions)
             ->whereDate('data', '>=', $validated['fecha_inici'])

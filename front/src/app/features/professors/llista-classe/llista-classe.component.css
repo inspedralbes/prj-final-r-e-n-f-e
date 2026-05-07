@@ -258,3 +258,7 @@ h1 {
 .p-4 {
     background-color: #f59e0b;
 }
+.alumne-avatar ng-icon {
+    font-size: 20px;
+    color: #1e1b4b;
+}

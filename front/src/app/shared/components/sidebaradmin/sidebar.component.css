@@ -1,0 +1,160 @@
+/* ===== NAVBAR FLOTANT ESTRETA — PILL GLASS ===== */
+.barra-superior {
+  position: fixed;
+  top: 16px;                      /* Marge superior flotant */
+  left: 50%;
+  transform: translateX(-50%);    /* Centrat horitzontal */
+  width: fit-content;             /* S'ajusta al contingut */
+  min-width: 480px;
+  max-width: 720px;
+  z-index: 100;
+
+  /* Glassmorphism potent */
+  background: rgba(255, 255, 255, 0.25);   /* Molt transparent */
+  backdrop-filter: blur(32px) saturate(180%);
+  -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow:
+    0 8px 32px -4px rgba(99, 102, 241, 0.18),  /* Ombra violeta */
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7);     /* Reflex interior */
+
+  /* Forma de pill */
+  border-radius: 999px;
+
+  /* Layout intern */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 52px;
+  gap: 8px;
+}
+
+/* Grup d'enllaços del centre */
+.seccio-esquerra {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+}
+
+.logo {
+  display: none;
+}
+
+.enllacos-navegacio {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Cada botó de navegació */
+.element-navegacio {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 6px 12px;
+  transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+  color: var(--text-main);
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 500;
+  gap: 0;                /* Gap 0 per defecte: icona sola, sense espai */
+  white-space: nowrap;
+  overflow: hidden;      /* Amaga el text que surt mentre anima */
+}
+
+/* Text ocult per defecte */
+.element-navegacio span {
+  max-width: 0;          /* Ocupa 0 amplada → invisible */
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-width 0.3s ease,
+    opacity   0.2s ease,
+    margin    0.3s ease;
+  margin-left: 0;        /* Sense marge quan està amagat */
+  display: inline-block;
+}
+
+/* Text visible en hover */
+.element-navegacio:hover span,
+.element-navegacio.actiu span {
+  max-width: 100px;      /* Suficient per qualsevol etiqueta */
+  opacity: 1;
+  margin-left: 6px;      /* Espai entre icona i text quan apareix */
+}
+
+.element-navegacio:hover {
+  background: rgba(99, 102, 241, 0.12);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+/* Estat actiu */
+.element-navegacio.actiu {
+  background: rgba(99, 102, 241, 0.18);
+  color: var(--primary-color);
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(99, 102, 241, 0.2);
+}
+
+/* Icona */
+.caixa-icona {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.caixa-icona ng-icon {
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(0, 0, 0, 0.7);
+  transition: color 0.2s ease;
+}
+
+/* En hover i actiu: to violeta (--primary-color: #6366f1) */
+.element-navegacio:hover .caixa-icona ng-icon,
+.element-navegacio.actiu .caixa-icona ng-icon {
+  color: var(--primary-color);
+}
+
+/* Separador visual entre links i perfil */
+.separador {
+  width: 1px;
+  height: 24px;
+  background: rgba(99, 102, 241, 0.2);
+  margin: 0 4px;
+}
+
+/* Botó de perfil */
+.seccio-perfil {
+  display: flex;
+  align-items: center;
+}
+
+.caixa-icona.perfil {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(99, 102, 241, 0.12);
+  border: 1.5px solid rgba(99, 102, 241, 0.3);
+  transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.caixa-icona.perfil ng-icon {
+  font-size: 20px;
+}
+
+.caixa-icona.perfil:hover {
+  background: rgba(99, 102, 241, 0.22);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
