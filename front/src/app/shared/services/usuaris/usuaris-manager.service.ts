@@ -9,7 +9,7 @@ export class UsuarisManagerService {
   private apiManager = inject(ApiManagerService);
 
   usuaris = signal<Usuari[]>([]);
-  isLoading = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
 
   /**
@@ -122,5 +122,23 @@ export class UsuarisManagerService {
       }
     }
     return result;
+  }
+
+  /**
+   * Mètode segur (Fase 2): Descarrega només els usuaris d'un rol específic directament des del Backend
+   * Així evitem descarregar pares i administradors cada vegada.
+   */
+  async getUsuarisPerRol(rol: string) {
+    this.isLoading.set(true);
+    try {
+      const resp = await this.apiManager.get<any>(`/usuaris/rol/${rol}`);
+      const llista = resp.data || resp;
+      return llista;
+    } catch (err) {
+      console.error(`Error descarregant usuaris amb rol ${rol}`, err);
+      return [];
+    } finally {
+      this.isLoading.set(false);
+    }
   }
 }

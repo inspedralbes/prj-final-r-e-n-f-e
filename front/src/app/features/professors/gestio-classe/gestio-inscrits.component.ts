@@ -8,11 +8,14 @@ import { Classe } from '../../../shared/models/classe.model';
 import { Usuari } from '../../../shared/models/usuaris.model';
 
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroUserPlus, heroUserMinus, heroUser } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-gestio-inscrits',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent],
+  imports: [CommonModule, FormsModule, SidebarComponent, NgIconComponent],
+  providers: [provideIcons({ heroUserPlus, heroUserMinus, heroUser })],
   templateUrl: './gestio-inscrits.component.html',
   styleUrl: './gestio-inscrits.component.css',
 })
@@ -21,6 +24,7 @@ export class GestioInscritsComponent implements OnInit {
   public serveiAuth = inject(AuthService);
   public serveiClasses = inject(ClassesManagerService);
   public serveiUsuaris = inject(UsuarisManagerService);
+  isLoading = signal(true);
 
   // Variables per guardar la informació que pintarem
   classeTrobada = signal<Classe | null>(null);
@@ -36,36 +40,29 @@ export class GestioInscritsComponent implements OnInit {
     // 1. Obtenim l'ID del professor loguejat
     const usuari = this.serveiAuth.usuarioInfo;
 
+    this.isLoading.set(true);
     if (usuari && usuari.id) {
       // 2. Preguntem al servei per la classe on és tutor
       const classe = await this.serveiClasses.obtenirClasseTutor(usuari.id);
       this.classeTrobada.set(classe);
 
-      // 3. Carreguem tots els usuaris
-      await this.serveiUsuaris.carregarUsuaris();
-      const tots = this.serveiUsuaris.usuaris();
+      // 3. Mètode segur (Fase 2): Descarreguem NOMÉS els usuaris que són alumnes des del Backend
+      // Ens estalviem descarregar centenars de pares d'alumnes i administradors que no necessitem aquí.
+      const nomesAlumnesSegurs = await this.serveiUsuaris.getUsuarisPerRol('Alumne');
+      this.alumnesDisponibles.set(nomesAlumnesSegurs);
 
-      const nomésAlumnes: Usuari[] = [];
-      if (tots && Array.isArray(tots)) {
-        for (let i = 0; i < tots.length; i++) {
-          if (tots[i].rol === 'Alumne') {
-            nomésAlumnes.push(tots[i]);
-          }
-        }
-      }
-      this.alumnesDisponibles.set(nomésAlumnes);
-
-      // Filtrem només els que pertanyen a AQUESTA classe (Llista Mestra)
+      // 4. Filtrem només els que pertanyen a AQUESTA classe usant un bucle primitiu
       if (classe) {
         const elsMeusAlumnes: Usuari[] = [];
-        for (let j = 0; j < nomésAlumnes.length; j++) {
-          if (nomésAlumnes[j].id_classe === classe.id) {
-            elsMeusAlumnes.push(nomésAlumnes[j]);
+        for (let j = 0; j < nomesAlumnesSegurs.length; j++) {
+          if (nomesAlumnesSegurs[j].id_classe === classe.id) {
+            elsMeusAlumnes.push(nomesAlumnesSegurs[j]);
           }
         }
         this.alumnesDeLaClasse.set(elsMeusAlumnes);
       }
     }
+    this.isLoading.set(false);
   }
 
   async afegirAlumneAClasse(email: string) {

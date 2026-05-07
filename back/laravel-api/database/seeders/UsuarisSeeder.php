@@ -86,20 +86,6 @@ class UsuarisSeeder extends Seeder
             ],
             [
                 'id' => 6,
-                'nom' => 'Pol Prats',
-                'cognom' => null,
-                'rol' => 'Profe',
-                'email' => 'pprats@inspedralbes.cat',
-                'email_pares' => null,
-                'password' => null,
-                'token' => null,
-                'nfc_id' => null,
-                'id_classe' => null,
-                'horari_guardies' => null,
-                'data_naixement' => 'null'
-            ],
-            [
-                'id' => 7,
                 'nom' => 'Alvaro Perez',
                 'cognom' => null,
                 'rol' => 'Profe',
@@ -111,10 +97,38 @@ class UsuarisSeeder extends Seeder
                 'id_classe' => null,
                 'horari_guardies' => null,
                 'data_naixement' => 'null'
+            ],
+            [
+                'id' => 10,
+                'nom' => 'Test Professor',
+                'cognom' => 'TENFE',
+                'rol' => 'Profe',
+                'email' => 'testprofe@inspedralbes.cat',
+                'email_pares' => null,
+                'password' => null,
+                'token' => null,
+                'nfc_id' => null,
+                'id_classe' => null,
+                'horari_guardies' => null,
+                'data_naixement' => null
+            ],
+            [
+                'id' => 11,
+                'nom' => 'Test Alumne',
+                'cognom' => 'TENFE',
+                'rol' => 'Alumne',
+                'email' => 'testalumne@inspedralbes.cat',
+                'email_pares' => 'pares@inspedralbes.cat',
+                'password' => null,
+                'token' => null,
+                'nfc_id' => null,
+                'id_classe' => null,
+                'horari_guardies' => null,
+                'data_naixement' => '2000-01-01'
             ]
         ]);
 
-        // Sincronizar secuencia en PostgreSQL automáticamente después del Seed
+        // Sincronitza la seqüència en PostgreSQL després del Seed
         if (DB::connection()->getDriverName() === 'pgsql') {
             DB::statement("SELECT setval(pg_get_serial_sequence('usuaris', 'id'), coalesce(max(id),0) + 1, false) FROM usuaris;");
         }

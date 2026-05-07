@@ -48,14 +48,14 @@ class AuthController extends Controller
                 'code' => 'required|string'
             ]);
 
-            // Obtenir el usuari de Google
+            // Obtenir l'usuari de Google
             $googleUser = Socialite::driver('google')
                 ->stateless()
                 ->user();
 
             $user_email = $googleUser->getEmail();
 
-            // Validar que el email pertany al domini de l'institut
+            // Validar domini de l'institut
             if (!str_ends_with($user_email, '@inspedralbes.cat')) {
                 return response()->json([
                     'success' => false,
@@ -63,13 +63,13 @@ class AuthController extends Controller
                 ], Response::HTTP_FORBIDDEN);
             }
 
-            // Assignació de rol basada en el prefix del email
+            // Assignació de rol segons el prefix de l'email
             $user_rol = 'Profe';
             if (preg_match('/^a[0-9]{2}/', $user_email)) {
                 $user_rol = 'Alumne';
             }
 
-            // Per a fer proves, fem que el primer usuari sigui admin
+            // Hardcodejem admin per a proves
             if ($user_email === 'a23cliferand@inspedralbes.cat') {
                 $user_rol = 'Admin';
             }
@@ -125,7 +125,6 @@ class AuthController extends Controller
             }
 
             // Si el usuari JA existeix, no modificar res - només autenticar
-
             if (!$user->photo) {
                 try {
                     $contents = Http::get($googleUser->getAvatar())->body();
@@ -157,7 +156,7 @@ class AuthController extends Controller
                 }
             }
             
-            // Generem el token de Sanctum per l'usuari
+            // Generem token Sanctum
             $token = $user->createToken('google-auth')->plainTextToken;
 
             return response()->json([
