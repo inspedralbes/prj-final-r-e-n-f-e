@@ -250,6 +250,8 @@ class JustificantController extends Controller
             'success' => false,
             'message' => 'No hi ha resposta'
         ], Response::HTTP_OK);
+    }
+    
     public function getByAlumne($alumneId)
     {
         $justificants = Justificant::where('id_alum', $alumneId)
