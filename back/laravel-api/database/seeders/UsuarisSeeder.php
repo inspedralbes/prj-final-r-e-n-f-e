@@ -69,6 +69,62 @@ class UsuarisSeeder extends Seeder
                 'id_classe' => null,
                 'horari_guardies' => null,
                 'data_naixement' => '1999-05-03'
+            ],
+            [
+                'id' => 5,
+                'nom' => 'Ermengol bota',
+                'cognom' => null,
+                'rol' => 'Admin',
+                'email' => 'ebota@inspedralbes.cat',
+                'email_pares' => null,
+                'password' => null,
+                'token' => null,
+                'nfc_id' => null,
+                'id_classe' => null,
+                'horari_guardies' => null,
+                'data_naixement' => 'null'
+            ],
+            [
+                'id' => 6,
+                'nom' => 'Alvaro Perez',
+                'cognom' => null,
+                'rol' => 'Profe',
+                'email' => 'aperezh@inspedralbes.cat',
+                'email_pares' => null,
+                'password' => null,
+                'token' => null,
+                'nfc_id' => null,
+                'id_classe' => null,
+                'horari_guardies' => null,
+                'data_naixement' => 'null'
+            ],
+            [
+                'id' => 10,
+                'nom' => 'Test Professor',
+                'cognom' => 'TENFE',
+                'rol' => 'Profe',
+                'email' => 'testprofe@inspedralbes.cat',
+                'email_pares' => null,
+                'password' => null,
+                'token' => null,
+                'nfc_id' => null,
+                'id_classe' => null,
+                'horari_guardies' => null,
+                'data_naixement' => null
+            ],
+            [
+                'id' => 11,
+                'nom' => 'Test Alumne',
+                'cognom' => 'TENFE',
+                'rol' => 'Alumne',
+                'email' => 'testalumne@inspedralbes.cat',
+                'email_pares' => 'pares@inspedralbes.cat',
+                'password' => null,
+                'token' => null,
+                'nfc_id' => null,
+                'id_classe' => null,
+                'horari_guardies' => null,
+                'data_naixement' => '2000-01-01'
             ]
         ]);
 

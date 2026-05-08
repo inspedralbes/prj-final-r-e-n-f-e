@@ -31,21 +31,43 @@ export class JustificantsManagerService {
   }
 
   /**
+   * Carrega els justificants d'un alumne concret
+   */
+  async carregarJustificantsPerAlumne(idAlumne: number) {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    try {
+      const data = await this.apiManager.get<Justificant[]>(`/justificants/alumne/${idAlumne}`);
+      this.justificants.set(data);
+    } catch (err) {
+      this.error.set("S'ha produït un error al recuperar els justificants de l'alumne");
+      console.error(err);
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
    * Afegeix un nou justificant (POST)
    */
-  async afegirJustificant(nouJustificant: Partial<Justificant>) {
+  async afegirJustificant(nouJustificant: Partial<Justificant>, documentFile?: File | null) {
     try {
-      const creada = await this.apiManager.post<Justificant>('/justificants', nouJustificant);
+      const formData = new FormData();
 
-      // Lògica primitiva
-      const llistaActual = this.justificants();
-      const llistaNova = [];
-      for (let i = 0; i < llistaActual.length; i++) {
-        llistaNova.push(llistaActual[i]);
+      for (const [clau, valor] of Object.entries(nouJustificant)) {
+        if (valor !== null && valor !== undefined) {
+          formData.append(clau, String(valor));
+        }
       }
-      llistaNova.push(creada);
 
-      this.justificants.set(llistaNova);
+      if (documentFile) {
+        formData.append('document', documentFile);
+      }
+
+      const creada = await this.apiManager.post<Justificant>('/justificants', formData);
+
+      this.justificants.set([...this.justificants(), creada]);
       return creada;
     } catch (err) {
       console.error('Error afegint justificant:', err);

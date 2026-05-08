@@ -13,15 +13,11 @@ class Justificant extends Model
 
     protected $fillable = [
         'id_alum',
-        'fecha_inici',
-        'fecha_fi',
+        'data_inici',
+        'data_fi',
         'comentari',
         'document',
-        'acceptada',
-    ];
-
-    protected $casts = [
-        'acceptada' => 'boolean',
+        'estat',
     ];
 
     public function alumne()
