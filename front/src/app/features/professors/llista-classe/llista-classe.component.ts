@@ -33,14 +33,13 @@ export class LlistaClasseComponent implements OnInit {
   sessionsProfessorData = signal<Horari[]>([]);
   alumnesAmbAssistencia = signal<any[]>([]);
   sessioSeleccionadaId = signal<number | null>(null);
+  isSaving = signal(false);
 
   carregantDades = computed(() => this.assistenciesManager.isLoading() || this.horarisManager.isLoading());
 
   // Ordenem el llistat per a l'HTML
   sessionsProfessor = computed(() => {
     const llista = this.sessionsProfessorData();
-    // primitive sort loop? No, sort in string is better.
-    // Lògica bàsica requerida pel client
     llista.sort((a: Horari, b: Horari) => a.codi_hora.localeCompare(b.codi_hora));
     return llista;
   });
@@ -60,44 +59,62 @@ export class LlistaClasseComponent implements OnInit {
     if (!sessio) return -1;
 
     const lletraMap: { [key: string]: number } = { L: 0, M: 1, X: 2, J: 3, V: 4 };
-    return lletraMap[sessio.codi_hora.charAt(0).toUpperCase()] ?? -1;
+    const index = lletraMap[sessio.codi_hora.charAt(0).toUpperCase()] ?? -1;
+    console.log(`[DIA_ACTIU] Sessió seleccionada id=${idSessio}, codi_hora="${sessio.codi_hora}", índex dia=${index}`);
+    return index;
   });
 
   ngOnInit() {
     this.calcularDatesSetmana();
+    console.log('[INIT] Dates de la setmana (UI):', this.datesSetmana);
+    console.log('[INIT] Dates per a la BD (Laravel):', this.datesRealsLaravel);
 
     const usuariLoguejat = JSON.parse(localStorage.getItem('usuari') || '{}');
+    console.log('[INIT] Usuari del localStorage (clau "usuari"):', usuariLoguejat);
+
     if (usuariLoguejat && usuariLoguejat.id) {
-      
-      // Demanem al servidor tot el context d'un cop (més segur i eficient)
+      console.log(`[INIT] Carregant context per al professor id=${usuariLoguejat.id}...`);
+
       this.horarisManager.getContextAssistencia(usuariLoguejat.id).then(context => {
-        if (!context) return;
+        console.log('[INIT] Context rebut del servidor:', context);
+
+        if (!context) {
+          console.warn('[INIT] ⚠️ El context és null. Comprova que /horaris/professor/:id/context retorna dades.');
+          return;
+        }
+
+        console.log('[INIT] Sessions del professor:', context.sessions);
+        console.log('[INIT] Sessió per defecte (default_id):', context.default_id);
 
         this.sessionsProfessorData.set(context.sessions);
 
-        // Escoltarem els canvis de la URL o inicialitzem
         this.route.queryParams.subscribe(async (params) => {
           const sessioIdParam = params['sessioId'];
-          
-          // La prioritat 1 és la URL (clic directe). 
-          // La prioritat 2 és el que el servidor ens recomana com a "actual" o "per defecte".
+          console.log('[INIT] Paràmetre URL (sessioId):', sessioIdParam);
+
           const idASeleccionar = sessioIdParam ? Number(sessioIdParam) : context.default_id;
+          console.log('[INIT] ID de sessió a carregar:', idASeleccionar);
 
           if (idASeleccionar) {
             this.sessioSeleccionadaId.set(idASeleccionar);
             await this.carregarGraellaPerALaSessio(idASeleccionar);
+          } else {
+            console.warn('[INIT] ⚠️ No hi ha sessió per seleccionar (ni URL ni default_id). El professor pot no tenir sessió activa ara.');
           }
         });
       });
+    } else {
+      console.error('[INIT] ❌ No hi ha usuari autenticat al localStorage (clau "usuari").');
     }
   }
 
   async carregarGraellaPerALaSessio(idSessio: number) {
-    // Netegem la graella actual per donar feedback visual de que s'està carregant
+    console.log(`[GRAELLA] ── Carregant graella per a la sessió id=${idSessio} ──`);
     this.alumnesAmbAssistencia.set([]);
-    
+
     const dataIniciBD = this.datesRealsLaravel[0];
     const dataFiBD = this.datesRealsLaravel[4];
+    console.log(`[GRAELLA] Rang de dates: ${dataIniciBD} → ${dataFiBD}`);
 
     const llistaDinsBack = await this.assistenciesManager.getAssistenciaSetmanal(
       idSessio,
@@ -105,27 +122,38 @@ export class LlistaClasseComponent implements OnInit {
       dataFiBD,
     );
 
-    const resultatFinal = [];
+    console.log('[GRAELLA] Resposta crua del servidor:', llistaDinsBack);
+
+    const resultatFinal: any[] = [];
+    const totesLesAssistenciesDelGrup: any[] = [];
+
     if (llistaDinsBack && Array.isArray(llistaDinsBack)) {
+      console.log(`[GRAELLA] Total inscrits rebuts: ${llistaDinsBack.length}`);
+
       for (let i = 0; i < llistaDinsBack.length; i++) {
         const inscrit = llistaDinsBack[i];
         const alumne = inscrit.alumne;
 
-        // Ara organitzarem les assistències que ens arriben per dies
+        if (!alumne) {
+          console.warn(`[GRAELLA] ⚠️ Inscrit id=${inscrit.id} no té dades d'alumne!`, inscrit);
+          continue;
+        }
+
+        // Inicialitzem totes les cel·les en blanc
         const assistenciaNativa: any = {};
-        // Posem tots els dies buits per defecte
         for (let j = 0; j < this.datesSetmana.length; j++) {
           assistenciaNativa[this.datesSetmana[j]] = '';
         }
 
-        // Omplim si n'hi ha. Les assistencies ja venen filtrades de Backend!
         const assistenciesDades = inscrit.assistencies;
+        console.log(`[GRAELLA] Alumne "${alumne.nom} ${alumne.cognom}" (inscrit_id=${inscrit.id}) té ${assistenciesDades?.length ?? 0} assistències:`, assistenciesDades);
+
         if (assistenciesDades && Array.isArray(assistenciesDades)) {
           for (let a = 0; a < assistenciesDades.length; a++) {
             const assisInfo = assistenciesDades[a];
+            totesLesAssistenciesDelGrup.push(assisInfo);
             const dataFormatCurta = assisInfo.data.substring(0, 10);
 
-            // Quin dia setmana toca (0..4) ?
             let indexDia = -1;
             for (let k = 0; k < this.datesRealsLaravel.length; k++) {
               if (this.datesRealsLaravel[k] === dataFormatCurta) {
@@ -133,12 +161,14 @@ export class LlistaClasseComponent implements OnInit {
                 break;
               }
             }
+
             if (indexDia >= 0) {
               const diaVisible = this.datesSetmana[indexDia];
-              assistenciaNativa[diaVisible] = getSimbolAssistencia(
-                assisInfo.estat,
-                !!assisInfo.justificat,
-              );
+              const simbol = getSimbolAssistencia(assisInfo.estat, !!assisInfo.justificat);
+              assistenciaNativa[diaVisible] = simbol;
+              console.log(`[GRAELLA]   ✔ data="${dataFormatCurta}" → dia="${diaVisible}", estat="${assisInfo.estat}", símbol="${simbol}"`);
+            } else {
+              console.warn(`[GRAELLA]   ⚠️ data="${dataFormatCurta}" no coincideix amb cap dia de la setmana actual (${this.datesRealsLaravel.join(', ')})`);
             }
           }
         }
@@ -151,9 +181,15 @@ export class LlistaClasseComponent implements OnInit {
           assistencia: assistenciaNativa,
         });
       }
+    } else {
+      console.warn('[GRAELLA] ⚠️ La resposta del servidor no és un array:', llistaDinsBack);
     }
 
+    console.log('[GRAELLA] Resultat final per a la UI:', resultatFinal);
+    console.log(`[GRAELLA] Store d'assistències actualitzat amb ${totesLesAssistenciesDelGrup.length} registres.`);
+
     this.alumnesAmbAssistencia.set(resultatFinal);
+    this.assistenciesManager.assistencies.set(totesLesAssistenciesDelGrup);
   }
 
   // Compatibilitat Html actual
@@ -170,14 +206,12 @@ export class LlistaClasseComponent implements OnInit {
       const dia = new Date(dilluns);
       dia.setDate(dilluns.getDate() + i);
 
-      // Formatem per a la UI (Exemple: 15/03)
       const diaFormatat =
         dia.getDate().toString().padStart(2, '0') +
         '/' +
         (dia.getMonth() + 1).toString().padStart(2, '0');
       this.datesSetmana.push(diaFormatat);
 
-      // Formatem per a la Base de Dades (Exemple: 2024-03-15)
       const anyBD = dia.getFullYear();
       const mesBD = (dia.getMonth() + 1).toString().padStart(2, '0');
       const diaBD = dia.getDate().toString().padStart(2, '0');
@@ -194,6 +228,7 @@ export class LlistaClasseComponent implements OnInit {
 
   canviarSessioManualDirecte(nouIdRaw: any) {
     const nouId = Number(nouIdRaw);
+    console.log(`[SESSIO] Professor canvia manualment a sessió id=${nouId}`);
     if (nouId) {
       this.sessioSeleccionadaId.set(nouId);
       this.carregarGraellaPerALaSessio(nouId);
@@ -205,20 +240,11 @@ export class LlistaClasseComponent implements OnInit {
     const indexDia = this.datesSetmana.indexOf(dataVisible);
     const dataBD = this.datesRealsLaravel[indexDia];
 
-    if (!nouEstat) return;
-
-    // Preparem les dades per a l'api de Laravel
-    const dades = {
-      id_inscripcio: alumne.id_inscripcio_db,
-      data: dataBD,
-      estat: this.mapejarSimbolAEstat(nouEstat),
-      id_profe: JSON.parse(localStorage.getItem('usuari') || '{}').id,
-    };
+    console.log(`[GUARDAR] Alumne="${alumne.nom}" (inscripcio_id=${alumne.id_inscripcio_db}), dia="${dataVisible}"→"${dataBD}", estat="${nouEstat}"`);
 
     const llistaAssistencies = this.assistenciesManager.assistencies();
     let existent = null;
 
-    // Bucle per trobar si l'assistència d'aquest dia ja es va crear abans
     for (let i = 0; i < llistaAssistencies.length; i++) {
       const a = llistaAssistencies[i];
       if (
@@ -231,10 +257,31 @@ export class LlistaClasseComponent implements OnInit {
       }
     }
 
-    // Si ja existia, la modifiquem. Si no, en creem una de nova.
+    console.log(`[GUARDAR] Registre existent a la BD:`, existent ? `id=${existent.id}, estat="${existent.estat}"` : 'cap (nou registre)');
+
+    if (!nouEstat || nouEstat.trim() === '') {
+      if (existent) {
+        console.log(`[GUARDAR] 🗑 Esborrant assistència id=${existent.id}...`);
+        await this.assistenciesManager.esborrarAssistencia(existent.id);
+      }
+      return;
+    }
+
+    const estatBD = this.mapejarSimbolAEstat(nouEstat);
+    const dades = {
+      id_inscripcio: alumne.id_inscripcio_db,
+      data: dataBD,
+      estat: estatBD,
+      id_profe: JSON.parse(localStorage.getItem('usuari') || '{}').id,
+    };
+
+    console.log(`[GUARDAR] Dades a enviar:`, dades);
+
     if (existent) {
+      console.log(`[GUARDAR] 🔄 PUT → Actualitzant assistència id=${existent.id}...`);
       await this.assistenciesManager.actualitzarAssistencia(existent.id, dades as any);
     } else {
+      console.log(`[GUARDAR] ➕ POST → Creant nova assistència...`);
       await this.assistenciesManager.afegirAssistencia(dades as any);
     }
   }
@@ -246,6 +293,52 @@ export class LlistaClasseComponent implements OnInit {
     } else {
       const seguentCol = document.getElementById(`input-${filaIndex}-${colIndex + 1}`);
       if (seguentCol) seguentCol.focus();
+    }
+  }
+
+  async guardarTotaAssistencia() {
+    const diaIndex = this.diaActivIndex();
+    console.log(`[GUARDAR_TOT] ── Iniciant guardada massiva ──`);
+    console.log(`[GUARDAR_TOT] Índex del dia actiu: ${diaIndex}`);
+
+    if (diaIndex === -1) {
+      console.warn('[GUARDAR_TOT] ⚠️ diaActivIndex = -1. Pot ser que la sessió seleccionada no tingui codi_hora vàlid (L/M/X/J/V).');
+      alert("No hi ha cap sessió activa per avaluar.");
+      return;
+    }
+
+    const diaVisible = this.datesSetmana[diaIndex];
+    const dataBD = this.datesRealsLaravel[diaIndex];
+    const alumnes = this.alumnesFiltrats();
+    console.log(`[GUARDAR_TOT] Dia visible="${diaVisible}", data BD="${dataBD}", total alumnes=${alumnes.length}`);
+
+    if (alumnes.length === 0) {
+      alert("No hi ha alumnes per a aquesta sessió.");
+      return;
+    }
+
+    const alumnesAmbValor = alumnes.filter((a: any) => a.assistencia[diaVisible] && a.assistencia[diaVisible].trim() !== '');
+    const alumnesSenseValor = alumnes.filter((a: any) => !a.assistencia[diaVisible] || a.assistencia[diaVisible].trim() === '');
+
+    if (alumnesSenseValor.length > 0) {
+      console.warn(`[GUARDAR_TOT] ⚠️ Alumnes sense assistència marcada (${alumnesSenseValor.length}):`, alumnesSenseValor.map((a: any) => a.nom));
+    }
+
+    this.isSaving.set(true);
+    try {
+      let guardats = 0;
+      console.log(`[GUARDAR_TOT] Enviant dades per a ${alumnesAmbValor.length} alumnes amb assistència marcada...`);
+      for (const alumne of alumnesAmbValor) {
+        await this.guardarAssistencia(alumne, diaVisible, alumne.assistencia[diaVisible]);
+        guardats++;
+      }
+      console.log(`[GUARDAR_TOT] ✅ Guardats ${guardats} registres correctament!`);
+      alert(`Assistència desada! (${guardats} de ${alumnes.length} alumnes marcats)`);
+    } catch (e) {
+      console.error('[GUARDAR_TOT] ❌ ERROR en guardar:', e);
+      alert("Hi ha hagut un error en guardar l'assistència.");
+    } finally {
+      this.isSaving.set(false);
     }
   }
 
