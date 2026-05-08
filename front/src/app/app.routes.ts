@@ -17,6 +17,7 @@ import { AdminClassesComponent } from './features/administracio/admin-classes/ad
 import { AdminUsuarisComponent } from './features/administracio/admin-usuaris/admin-usuaris.component';
 import { AdminPeriodesComponent } from './features/administracio/admin-periodes/admin-periodes.component';
 import { CompletarPerfilComponent } from './features/completar-perfil/completar-perfil.component';
+import { JustificantsComponents } from './features/professors/justificants/justificants.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
@@ -38,4 +39,5 @@ export const routes: Routes = [
   { path: 'profile', component: PerfilComponent },
   { path: 'profile/:id', component: PerfilComponent },
   { path: 'completar-perfil', component: CompletarPerfilComponent },
+  { path: 'gestio-justificants', component: JustificantsComponents },
 ];

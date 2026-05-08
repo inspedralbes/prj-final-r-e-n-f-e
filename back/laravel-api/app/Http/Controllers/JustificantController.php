@@ -20,7 +20,7 @@ class JustificantController extends Controller
     }
 
     // Acceptar un justificant i marcar assistències com a Justificada
-    public function acceptar($id)
+    public function acceptar(Request $request, $id)
     {
         $justificant = Justificant::find($id);
         if (!$justificant) {
@@ -30,8 +30,14 @@ class JustificantController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // Marcar justificante com acceptat
-        $justificant->estat = 'Acceptada';
+        if($request->acceptat){
+            $justificant->acceptada = true;
+        }
+
+        if($request->acceptat == false) {
+            $justificant->acceptada = false;
+        }
+
         $justificant->save();
 
         // Cerca l'id_inscripcio de l'alumne
@@ -223,16 +229,17 @@ class JustificantController extends Controller
         }
 
         $user_tutor_class = $user->id_classe;
-        $alumnes = DB::table('usuaris')->where('id_classe', $user_tutor_class)->where('rol', 'Alumne')->get(['id', 'email', 'nom', 'photo']);
+        $alumnes = DB::table('usuaris')->where('id_classe', $user_tutor_class)->where('rol', 'Alumne')->get(['id', 'email', 'nom', 'cognom','photo']);
         $llistaJustificants = [];
 
         foreach($alumnes as $alumne) {
-            $justificants = DB::table('justificant')->where('id_alum', $alumne->id)->get(['id', 'data_inici', 'data_fi', 'comentari', 'document', 'acceptada']);
+            $justificants = DB::table('justificant')->where('id_alum', $alumne->id)->get(['id', 'data_inici', 'data_fi', 'comentari', 'document', 'estat']);
             if ($justificants->isNotEmpty()) {
                 $llistaJustificants[] = (object) [
                     'alumne' => (object) [
                         'email' => $alumne->email,
                         'nom' => $alumne->nom, 
+                        'cognom' => $alumne->cognom,
                         'photo' => $alumne->photo
                     ],
                     'justificants' => $justificants
