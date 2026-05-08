@@ -17,10 +17,10 @@
   display: flex;
   flex-direction: column;
   background-color: transparent;
-  height: 100vh;
+  min-height: 100vh;
   font-family: 'Outfit', sans-serif;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .contingut {
@@ -28,7 +28,6 @@
   padding: 30px;
   padding-top: 100px;
   z-index: 1;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -59,8 +58,8 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
+  margin-bottom: 40px;
   position: relative;
-  overflow: hidden;
 }
 
 .targeta-horari-premium::before {

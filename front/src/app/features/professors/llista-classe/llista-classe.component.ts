@@ -317,11 +317,23 @@ export class LlistaClasseComponent implements OnInit {
       return;
     }
 
-    const alumnesAmbValor = alumnes.filter((a: any) => a.assistencia[diaVisible] && a.assistencia[diaVisible].trim() !== '');
-    const alumnesSenseValor = alumnes.filter((a: any) => !a.assistencia[diaVisible] || a.assistencia[diaVisible].trim() === '');
+    const alumnesAmbValor = [];
+    const alumnesSenseValor = [];
+    for (let i = 0; i < alumnes.length; i++) {
+      const a = alumnes[i];
+      if (a.assistencia[diaVisible] && a.assistencia[diaVisible].trim() !== '') {
+        alumnesAmbValor.push(a);
+      } else {
+        alumnesSenseValor.push(a);
+      }
+    }
 
     if (alumnesSenseValor.length > 0) {
-      console.warn(`[GUARDAR_TOT] ⚠️ Alumnes sense assistència marcada (${alumnesSenseValor.length}):`, alumnesSenseValor.map((a: any) => a.nom));
+      const nomsSenseValor = [];
+      for (let j = 0; j < alumnesSenseValor.length; j++) {
+        nomsSenseValor.push(alumnesSenseValor[j].nom);
+      }
+      console.warn(`[GUARDAR_TOT] ⚠️ Alumnes sense assistència marcada (${alumnesSenseValor.length}):`, nomsSenseValor);
     }
 
     this.isSaving.set(true);

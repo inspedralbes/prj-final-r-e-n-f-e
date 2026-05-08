@@ -37,11 +37,13 @@ export class HorariAlumnesComponent implements OnInit {
   professorsDisponiblesSegur = signal<Usuari[]>([]);
   horarisDelaClasseSegur = signal<Horari[]>([]);
 
-  isLoading = computed(() => 
-    this.serveiHoraris.isLoading() || 
-    this.serveiClasses.isLoading() || 
-    this.serveiUsuaris.isLoading()
-  );
+  // Mètode per saber si algun servei està carregant dades
+  estaCarregant(): boolean {
+    if (this.serveiHoraris.isLoading()) return true;
+    if (this.serveiClasses.isLoading()) return true;
+    if (this.serveiUsuaris.isLoading()) return true;
+    return false;
+  }
 
   async ngOnInit() {
     // 1. Obtenim la classe on és tutor
@@ -53,12 +55,11 @@ export class HorariAlumnesComponent implements OnInit {
         if (classe) {
             // 2. Carreguem nomes els alumnes de la classe, els horaris d'aquesta classe
             // i tots els usuaris que són profes directament filtrats al Laravel.
-            const [alumnes, horaris, profes] = await Promise.all([
-                this.serveiClasses.getAlumnesClasse(classe.id),
-                this.serveiHoraris.getHorarisClasse(classe.id),
-                this.serveiUsuaris.getUsuarisPerRol('Profe')
-            ]);
-            
+            // Carreguem cada llista de forma seqüencial sense Promise.all
+            const alumnes = await this.serveiClasses.getAlumnesClasse(classe.id);
+            const horaris = await this.serveiHoraris.getHorarisClasse(classe.id);
+            const profes = await this.serveiUsuaris.getUsuarisPerRol('Profe');
+
             this.alumnesDelaClasseSegur.set(alumnes);
             this.horarisDelaClasseSegur.set(horaris);
             this.professorsDisponiblesSegur.set(profes);
@@ -71,10 +72,18 @@ export class HorariAlumnesComponent implements OnInit {
     this.serveiAules.carregarAules();
   }
 
-  // Compatibilitat amb l'HTML actual
-  alumnesDelaClasse = computed(() => this.alumnesDelaClasseSegur());
-  professorsDisponibles = computed(() => this.professorsDisponiblesSegur());
-  horariDelaClasse = computed(() => this.horarisDelaClasseSegur());
+  // Mètodes d'accés directe als signals (sense computed)
+  alumnesDelaClasse(): Usuari[] {
+    return this.alumnesDelaClasseSegur();
+  }
+
+  professorsDisponibles(): Usuari[] {
+    return this.professorsDisponiblesSegur();
+  }
+
+  horariDelaClasse(): Horari[] {
+    return this.horarisDelaClasseSegur();
+  }
 
   // Graella visual (Estructura de dades per al Grid)
   quadreHorari = computed(() => {
@@ -100,8 +109,13 @@ export class HorariAlumnesComponent implements OnInit {
         const lletraDia = horari.codi_hora.charAt(0).toUpperCase();
         const numeroHora = parseInt(horari.codi_hora.substring(1), 10);
 
-        const dies: { [key: string]: number } = { L: 0, M: 1, X: 2, J: 3, V: 4 };
-        const indexColumna = dies[lletraDia] ?? -1;
+        // Convertim la lletra del dia a l'índex de columna (0=Dll, 1=Dm, 2=Dx, 3=Dj, 4=Dv)
+        let indexColumna = -1;
+        if (lletraDia === 'L') indexColumna = 0;
+        else if (lletraDia === 'M') indexColumna = 1;
+        else if (lletraDia === 'X') indexColumna = 2;
+        else if (lletraDia === 'J') indexColumna = 3;
+        else if (lletraDia === 'V') indexColumna = 4;
 
         if (indexColumna === -1 || isNaN(numeroHora)) continue;
 
@@ -140,21 +154,32 @@ export class HorariAlumnesComponent implements OnInit {
 
   obtenirNomProfe(cell: any): string {
     if (!cell || cell === 'ESBARJO') return '';
-    if (cell.professor) return `${cell.professor.nom ?? ''} ${cell.professor.cognom ?? ''}`.trim();
-    return 'Professor';
+    if (!cell.professor) return 'Professor';
+    // Construïm el nom complet evitant valors nuls
+    let nom = '';
+    let cognom = '';
+    if (cell.professor.nom) nom = cell.professor.nom;
+    if (cell.professor.cognom) cognom = cell.professor.cognom;
+    let nomComplet = nom + ' ' + cognom;
+    // Eliminem espais del principi i del final manualment
+    return nomComplet.trim();
   }
 
   obtenirInicialsProfe(cell: any): string {
     if (!cell || cell === 'ESBARJO' || !cell.professor) return '??';
-    const nom = cell.professor.nom?.charAt(0) || '';
-    const cognom = cell.professor.cognom?.charAt(0) || '';
-    return (nom + cognom).toUpperCase();
+    let inicialNom = '';
+    let inicialCognom = '';
+    if (cell.professor.nom) inicialNom = cell.professor.nom.charAt(0);
+    if (cell.professor.cognom) inicialCognom = cell.professor.cognom.charAt(0);
+    return (inicialNom + inicialCognom).toUpperCase();
   }
 
   obtenirInicialsAlumne(alumne: Usuari): string {
-    const nom = alumne.nom?.charAt(0) || '';
-    const cognom = alumne.cognom?.charAt(0) || '';
-    return (nom + cognom).toUpperCase();
+    let inicialNom = '';
+    let inicialCognom = '';
+    if (alumne.nom) inicialNom = alumne.nom.charAt(0);
+    if (alumne.cognom) inicialCognom = alumne.cognom.charAt(0);
+    return (inicialNom + inicialCognom).toUpperCase();
   }
 
   totsSeleccionats(): boolean {

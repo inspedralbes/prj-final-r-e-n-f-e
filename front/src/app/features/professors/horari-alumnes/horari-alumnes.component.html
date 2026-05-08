@@ -10,7 +10,7 @@
   <div class="contingut">
     <!-- Aquesta es la targeta gran que aguanta tot l'horari -->
     <div class="targeta-horari-premium">
-      @if (isLoading()) {
+      @if (estaCarregant()) {
         <div class="admin-loading-container">
           <div class="admin-spinner"></div>
           <p>Muntant la quadrícula de l'horari...</p>
