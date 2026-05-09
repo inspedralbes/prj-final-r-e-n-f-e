@@ -82,7 +82,7 @@ class UsuarisSeeder extends Seeder
                 'nfc_id' => null,
                 'id_classe' => null,
                 'horari_guardies' => null,
-                'data_naixement' => 'null'
+                'data_naixement' => null
             ],
             [
                 'id' => 6,
@@ -96,7 +96,7 @@ class UsuarisSeeder extends Seeder
                 'nfc_id' => null,
                 'id_classe' => null,
                 'horari_guardies' => null,
-                'data_naixement' => 'null'
+                'data_naixement' => null
             ],
             [
                 'id' => 10,
