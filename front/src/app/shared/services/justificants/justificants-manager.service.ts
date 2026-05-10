@@ -136,13 +136,32 @@ export class JustificantsManagerService {
     this.error.set(null);
 
     try {
-      const data = await this.apiManager.get<JustificantNet[]>(`/justificants/tutoria/pendents`);
-      this.justificantsTutoria.set(data);
+      const response = await this.apiManager.get<{ success: boolean; data: JustificantNet[] }>(
+        `/justificants/tutoria/pendents`,
+      );
+      this.justificantsTutoria.set(response.data);
     } catch (err) {
       this.error.set("S'ha produït un error al recuperar els justificants");
       throw err;
     } finally {
       this.isLoading.set(false);
+    }
+  }
+
+  async acceptarJustificant(id: number, acceptat: boolean) {
+    try {
+      const response = await this.apiManager.post<{ success: boolean; data: Justificant }>(
+        `/justificants/acceptar/${id}`,
+        { acceptat },
+      );
+
+      if (response.success) {
+        await this.carregarJustificantsTutoria();
+      }
+      return response;
+    } catch (err) {
+      console.error(`Error acceptant justificant ${id}:`, err);
+      throw err;
     }
   }
 }

@@ -1,5 +1,6 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgIconsModule } from '@ng-icons/core';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { JustificantsManagerService } from '../../../shared/services/justificants/justificants-manager.service';
 import { Justificant, JustificantNet } from '../../../shared/models/justificants.model';
@@ -7,14 +8,14 @@ import { Usuari } from '../../../shared/models/usuaris.model';
 
 @Component({
   selector: 'app-justificants',
-  imports: [CommonModule, SidebarComponent],
+  imports: [CommonModule, SidebarComponent, NgIconsModule],
   templateUrl: './justificants.component.html',
   styleUrl: './justificants.component.css',
 })
 export class JustificantsComponents implements OnInit {
   private justificantManager = inject(JustificantsManagerService);
 
-  justificantsPendents = signal(this.justificantManager.justificantsTutoria());
+  justificantsPendents = this.justificantManager.justificantsTutoria;
   alumneExpandit = signal<number | null>(null);
   modalObert = signal(false);
   justificantSeleccionat = signal<Justificant | null>(null);
@@ -60,10 +61,22 @@ export class JustificantsComponents implements OnInit {
   }
 
   async acceptarJustificant(id: number) {
-
+    try {
+      await this.justificantManager.acceptarJustificant(id, true);
+      this.tancarModal();
+    } catch (error) {
+      console.error('Error acceptant justificant:', error);
+      alert('Error en acceptar el justificant.');
+    }
   }
 
   async declinarJustificant(id: number) {
-
+    try {
+      await this.justificantManager.acceptarJustificant(id, false);
+      this.tancarModal();
+    } catch (error) {
+      console.error('Error declinant justificant:', error);
+      alert('Error en declinar el justificant.');
+    }
   }
 }

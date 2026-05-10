@@ -14,5 +14,5 @@ export interface Justificant {
 
 export interface JustificantNet {
   alumne: Partial<Usuari>;
-  justificants: Partial<Justificant>[];
+  justificants: Justificant[];
 }

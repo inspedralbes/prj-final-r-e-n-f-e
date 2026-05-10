@@ -31,11 +31,11 @@ class JustificantController extends Controller
         }
 
         if($request->acceptat){
-            $justificant->acceptada = true;
+            $justificant->estat = 'Acceptada';
         }
 
         if($request->acceptat == false) {
-            $justificant->acceptada = false;
+            $justificant->estat = 'Rebutjada';
         }
 
         $justificant->save();
@@ -221,7 +221,7 @@ class JustificantController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        if ($user->rol !== 'Professor' || $user->id_classe == null){
+        if ($user->rol !== 'Profe' || $user->id_classe == null){
             return response()->json([
                 'success' => false,
                 'message' => 'No tens una classe assignada com a tutor'
@@ -233,10 +233,11 @@ class JustificantController extends Controller
         $llistaJustificants = [];
 
         foreach($alumnes as $alumne) {
-            $justificants = DB::table('justificant')->where('id_alum', $alumne->id)->get(['id', 'data_inici', 'data_fi', 'comentari', 'document', 'estat']);
+            $justificants = DB::table('justificants')->where('id_alum', $alumne->id)->get(['id', 'data_inici', 'data_fi', 'comentari', 'document', 'estat']);
             if ($justificants->isNotEmpty()) {
                 $llistaJustificants[] = (object) [
                     'alumne' => (object) [
+                        'id' => $alumne->id,
                         'email' => $alumne->email,
                         'nom' => $alumne->nom, 
                         'cognom' => $alumne->cognom,
