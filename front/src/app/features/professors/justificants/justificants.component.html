@@ -119,8 +119,8 @@
 
 	<div class="modal-body">
 	  <div class="document-preview">
-		@if (justificantSeleccionat()?.document) {
-		<img [src]="'http://localhost:8000/back/' + justificantSeleccionat()?.document"
+		@if (documentUrl()) {
+		<img [src]="documentUrl()"
 		  alt="Justificant" class="document-img">
 		} @else {
 		<div class="no-document">

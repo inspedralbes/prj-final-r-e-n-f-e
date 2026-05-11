@@ -20,6 +20,7 @@ export class JustificantsComponents implements OnInit {
   alumneExpandit = signal<number | null>(null);
   modalObert = signal(false);
   justificantSeleccionat = signal<Justificant | null>(null);
+  documentUrl = signal<string | null>(null);
 
   ngOnInit() {
     this.justificantManager.carregarJustificantsTutoria();
@@ -53,10 +54,22 @@ export class JustificantsComponents implements OnInit {
   obrirModal(justificant: Justificant, event: Event) {
     event.stopPropagation();
     this.justificantSeleccionat.set(justificant);
+
+    if (justificant.document instanceof Blob) {
+      const url = URL.createObjectURL(justificant.document);
+      this.documentUrl.set(url);
+    } else {
+      this.documentUrl.set(null);
+    }
+
     this.modalObert.set(true);
   }
 
   tancarModal() {
+    if (this.documentUrl()) {
+      URL.revokeObjectURL(this.documentUrl()!);
+      this.documentUrl.set(null);
+    }
     this.modalObert.set(false);
     this.justificantSeleccionat.set(null);
   }
