@@ -14,12 +14,25 @@
             </button>
           </div>
         </div>
+        
+        @if (inscritsPerUsuari().length > 0) {
+          <div class="mitjana-global" 
+               [class.alerta]="!isLoading() && inscritsPerUsuari()[0].percentatge >= 20"
+               [class.avis]="!isLoading() && inscritsPerUsuari()[0].percentatge >= 15 && inscritsPerUsuari()[0].percentatge < 20">
+            <div class="percentatge-valor" 
+                 [class.alerta]="!isLoading() && inscritsPerUsuari()[0].percentatge >= 20"
+                 [class.avis]="!isLoading() && inscritsPerUsuari()[0].percentatge >= 15 && inscritsPerUsuari()[0].percentatge < 20">
+              @if (isLoading()) { <span class="text-carregant">Carregant...</span> } @else { {{ inscritsPerUsuari()[0].percentatge }}% }
+            </div>
+            <div class="percentatge-etiqueta">Faltes Globals</div>
+          </div>
+        }
       </div>
 
       <!-- Contenidor de faltes -->
       <div class="contenidor-faltes">
         <div class="capçalera-faltes">
-          <h2>{{ inscritsPerUsuari()[indexActual()].nom_assignatura[0].nom }}</h2>
+          <h2>{{ inscritsPerUsuari()[indexActual()]?.nom_assignatura?.[0]?.nom || 'Selecciona una assignatura' }}</h2>
         </div>
 
         @if (showDespegable()) {
@@ -29,6 +42,8 @@
                 class="assignatura-item"
                 (click)="setIndex($index)"
                 [class.actiu]="indexActual() === $index"
+                [class.border-alerta]="!isLoading() && assignatura.percentatge >= 20"
+                [class.border-avis]="!isLoading() && assignatura.percentatge >= 15 && assignatura.percentatge < 20"
               >
                 {{ assignatura.nom_assignatura[0].nom }}
               </span>
@@ -38,16 +53,30 @@
 
         <div class="container_comptador">
           <div class="comptador">
-            <span class="numero">{{ inscritsPerUsuari()[indexActual()].retards }}</span>
+            <span class="numero">
+              @if (isLoading()) { <span class="text-carregant">Carregant...</span> } @else { {{ inscritsPerUsuari()[indexActual()].retards }} }
+            </span>
             <div class="titol_comptador">Retards</div>
           </div>
           <div class="comptador">
-            <span class="numero">{{ inscritsPerUsuari()[indexActual()].faltes }}</span>
+            <span class="numero">
+              @if (isLoading()) { <span class="text-carregant">Carregant...</span> } @else { {{ inscritsPerUsuari()[indexActual()].faltes }} }
+            </span>
             <div class="titol_comptador">Faltes</div>
           </div>
           <div class="comptador">
-            <span class="numero">{{ inscritsPerUsuari()[indexActual()].justificades }}</span>
+            <span class="numero">
+              @if (isLoading()) { <span class="text-carregant">Carregant...</span> } @else { {{ inscritsPerUsuari()[indexActual()].justificades }} }
+            </span>
             <div class="titol_comptador">Justificades</div>
+          </div>
+          <div class="comptador percentatge-card" 
+               [class.alerta]="!isLoading() && inscritsPerUsuari()[indexActual()].percentatge >= 20"
+               [class.avis]="!isLoading() && inscritsPerUsuari()[indexActual()].percentatge >= 15 && inscritsPerUsuari()[indexActual()].percentatge < 20">
+            <span class="numero">
+              @if (isLoading()) { <span class="text-carregant">Carregant...</span> } @else { {{ inscritsPerUsuari()[indexActual()].percentatge }}% }
+            </span>
+            <div class="titol_comptador">Faltes</div>
           </div>
         </div>
       </div>

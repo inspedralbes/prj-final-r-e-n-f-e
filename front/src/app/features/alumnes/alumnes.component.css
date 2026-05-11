@@ -60,6 +60,54 @@
   max-width: 60%;
 }
 
+/* Estils nous per la mitjana global */
+.mitjana-global {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  padding: 24px;
+  border-radius: 30px;
+  box-shadow: 0 10px 30px rgba(99, 102, 241, 0.1);
+  min-width: 160px;
+  border: 2px solid #6366f1;
+}
+
+.percentatge-valor {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #6366f1;
+  line-height: 1;
+}
+
+.percentatge-valor.alerta {
+  color: #ef4444;
+}
+
+.percentatge-valor.avis {
+  color: #f59e0b;
+}
+
+.mitjana-global.alerta {
+  border-color: #ef4444;
+  box-shadow: 0 10px 30px rgba(239, 68, 68, 0.1);
+}
+
+.mitjana-global.avis {
+  border-color: #f59e0b;
+  box-shadow: 0 10px 30px rgba(245, 158, 11, 0.1);
+}
+
+.percentatge-etiqueta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 8px;
+}
+
 .insignia-estat {
   background-color: #dcfce7;
   display: inline-flex;
@@ -194,6 +242,16 @@
   box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
 }
 
+.assignatura-item.border-alerta {
+  border-color: #ef4444;
+  color: #ef4444;
+}
+
+.assignatura-item.border-avis {
+  border-color: #f59e0b;
+  color: #f59e0b;
+}
+
 /* ── Comptadors ──────────────────────────────────────── */
 .container_comptador {
   display: flex;
@@ -221,6 +279,34 @@
   box-shadow: 0 20px 50px rgba(99, 102, 241, 0.12);
 }
 
+.comptador.alerta {
+  border-color: #ef4444;
+}
+
+.comptador.alerta .numero {
+  color: #ef4444;
+}
+
+.comptador.alerta .titol_comptador {
+  background: rgba(239, 68, 68, 0.08);
+  color: #ef4444;
+  border-top-color: rgba(239, 68, 68, 0.1);
+}
+
+.comptador.avis {
+  border-color: #f59e0b;
+}
+
+.comptador.avis .numero {
+  color: #f59e0b;
+}
+
+.comptador.avis .titol_comptador {
+  background: rgba(245, 158, 11, 0.08);
+  color: #f59e0b;
+  border-top-color: rgba(245, 158, 11, 0.1);
+}
+
 .numero {
   display: flex;
   align-items: center;
@@ -233,6 +319,13 @@
   padding: 32px 16px 24px;
   width: 100%;
   box-sizing: border-box;
+}
+
+.text-carregant {
+  font-size: 1.2rem;
+  letter-spacing: 0;
+  font-weight: 600;
+  opacity: 0.7;
 }
 
 .titol_comptador {
@@ -266,6 +359,7 @@
 
   .container_comptador {
     gap: 16px;
+    flex-wrap: wrap;
   }
 
   .comptador {
@@ -275,6 +369,15 @@
   .numero {
     font-size: 2.8rem;
     padding: 24px 12px 18px;
+  }
+
+  .mitjana-global {
+    min-width: 130px;
+    padding: 16px;
+  }
+
+  .percentatge-valor {
+    font-size: 2.2rem;
   }
 }
 
@@ -288,6 +391,8 @@
   .targeta-classe-actual {
     padding: 28px;
     min-height: unset;
+    flex-direction: column;
+    gap: 20px;
   }
 
   .targeta-classe-actual h1 {
@@ -328,6 +433,10 @@
   .numero {
     font-size: 2.4rem;
     padding: 20px 10px 14px;
+  }
+
+  .mitjana-global {
+    width: 100%;
   }
 }
 
