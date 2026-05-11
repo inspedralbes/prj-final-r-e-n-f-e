@@ -38,7 +38,14 @@
       </div>
     </a>
 
-    <!-- 6. Horari Alumnes (Tutor) -->
+    <!-- 6. Gestio Justificants -->
+    <a routerLink="/gestio-justificants" routerLinkActive="actiu" class="element-navegacio">
+      <div class="caixa-icona">
+        <ng-icon name="heroDocumentText"></ng-icon>
+      </div>
+    </a>
+
+    <!-- 7. Horari Alumnes (Tutor) -->
     @if (esTutor) {
     <a routerLink="/horari-alumnes" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona">
@@ -47,7 +54,7 @@
     </a>
     }
 
-    <!-- 7. Icona Perfil -->
+    <!-- 8. Icona Perfil -->
     <a routerLink="/profile" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona perfil">
         <ng-icon name="heroUserCircle"></ng-icon>

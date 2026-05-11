@@ -1,158 +1,171 @@
-<div class="disseny-principal">
-  <app-sidebar></app-sidebar>
+<div class="disseny-principal"> 
+	<app-sidebar></app-sidebar>
 
-  <div class="contingut">
-    <div class="targeta-llista">
-      <div class="capçalera-llista">
-        <div class="titol-seccio">
-          <h1>Justificants</h1>
-          <p class="setmana-info">Gestió de peticions d'alumnes</p>
-        </div>
-      </div>
+	<div class="contingut">
+		<div class="targeta-llista">
 
-      <div class="contenedor-alumnes">
-        @for (case of justificantsPendents(); track case.alumne.id) {
-        <div class="alumne-card" [class.expanded]="alumneExpandit() === case.alumne?.id"
-          (click)="toggleAlumne(case.alumne?.id)">
-          <div class="alumne-header">
-            <div class="alumne-avatar">
-              @if (case.alumne?.photo) {
-              <img [src]="'http://localhost:8000/back/' + case.alumne.photo" [alt]="case.alumne?.nom">
-              } @else {
-              <span>{{ obtenirInicials(case.alumne) }}</span>
-              }
-            </div>
-            <div class="alumne-info">
-              <span class="alumne-nom">{{ case.alumne?.nom }} {{ case.alumne?.cognom }}</span>
-              <span class="alumne-email">{{ case.alumne?.email }}</span>
-            </div>
-            <div class="alumne-stats">
-              <div class="stat-badge pendent">
-                <span class="stat-count">{{ comptarEstat(case.justificants, 'Pendent') }}</span>
-                <span class="stat-label">Pendents</span>
-              </div>
-              <div class="stat-badge acceptat">
-                <span class="stat-count">{{ comptarEstat(case.justificants, 'Acceptada') }}</span>
-                <span class="stat-label">Acceptats</span>
-              </div>
-              <div class="stat-badge declinat">
-                <span class="stat-count">{{ comptarEstat(case.justificants, 'Rebutjada') }}</span>
-                <span class="stat-label">Rebutjats</span>
-              </div>
-            </div>
-            <div class="expand-icon">
-              <ng-icon name="heroChevronDown"></ng-icon>
-            </div>
-          </div>
+			<div class="capçalera-llista">
+				<div class="titol-seccio">
+					<h1>Justificants</h1>
+					<p class="setmana-info">Gestió de peticions d'alumnes</p>
+				</div>
+			</div>
 
-          @if (alumneExpandit() === case.alumne?.id) {
-          <div class="justificants-list">
-            @for (justificant of case.justificants; track justificant.id) {
-            <div class="justificant-item">
-              <div class="justificant-dates">
-                <span class="date-label">Inici:</span>
-                <span class="date-value">{{ formatarData(justificant.data_inici) }}</span>
-                <span class="date-label">Fi:</span>
-                <span class="date-value">{{ formatarData(justificant.data_fi) }}</span>
-              </div>
-              <div class="justificant-status">
-                <span class="status-badge" [class]="justificant.estat">
-                  {{ justificant.estat}}
-                </span>
-              </div>
-              <div class="justificant-actions">
-                <button class="btn btn-veure" (click)="obrirModal(justificant, $event)">
-                  <ng-icon name="heroEye"></ng-icon>
-                  Veure
-                </button>
-                @if (justificant.estat === 'Pendent') {
-                <button class="btn btn-acceptar" (click)="acceptarJustificant(justificant.id)">
-                  <ng-icon name="heroCheck"></ng-icon>
-                  Acceptar
-                </button>
-                <button class="btn btn-declinar" (click)="declinarJustificant(justificant.id)">
-                  <ng-icon name="heroXMark"></ng-icon>
-                  Rebutjar
-                </button>
-                }
-              </div>
-            </div>
-            } @empty {
-            <div class="empty-justificants">
-              <p>Aquest alumne no té justificants</p>
-            </div>
-            }
-          </div>
-          }
-        </div>
-        } @empty {
-        <div class="empty-state">
-          <p>No hi ha justificants pendents</p>
-        </div>
-        }
-      </div>
-    </div>
-  </div>
-</div>
+			@if ( isLoading() ){
+				<div class="contenedor-alumnes">
+					<p>Carregant...</p>
+				</div>
+} @else {
+				<div class="contenedor-alumnes">
+					@for (case of justificantsPendents(); track case.alumne.id) {
+						<div class="alumne-card" [class.expanded]="alumneExpandit() === case.alumne?.id" (click)="toggleAlumne(case.alumne?.id)">
+							<div class="alumne-header">
+								<div class="alumne-avatar">
+				
+					@if (case.alumne?.photo) {
+						<img [src]="'http://localhost:8000/back/' + case.alumne.photo" [alt]="case.alumne?.nom">
+					} @else {
+						<span>{{ obtenirInicials(case.alumne) }}</span>
+					}
+				</div> 
+
+				<div class="alumne-info">
+					<span class="alumne-nom">{{ case.alumne?.nom }} {{ case.alumne?.cognom }}</span>
+					<span class="alumne-email">{{ case.alumne?.email }}</span>
+				</div>
+
+				<div class="alumne-stats">
+					<div class="stat-badge pendent">
+						<span class="stat-count">{{ comptarEstat(case.justificants, 'Pendent') }}</span>
+						<span class="stat-label">Pendents</span>
+					</div>
+
+					<div class="stat-badge acceptat">
+						<span class="stat-count">{{ comptarEstat(case.justificants, 'Acceptada') }}</span>
+						<span class="stat-label">Acceptats</span>
+					</div>
+
+					<div class="stat-badge declinat">
+						<span class="stat-count">{{ comptarEstat(case.justificants, 'Rebutjada') }}</span>
+						<span class="stat-label">Rebutjats</span>
+					</div>
+				</div>
+
+				<div class="expand-icon">
+					<ng-icon name="heroChevronDown"></ng-icon>
+				</div>
+
+				</div>
+
+				@if (alumneExpandit() === case.alumne?.id) {
+				<div class="justificants-list">
+					@for (justificant of case.justificants; track justificant.id) {
+					<div class="justificant-item">
+
+						<div class="justificant-dates">
+							<span class="date-label">Inici:</span>
+							<span class="date-value">{{ formatarData(justificant.data_inici) }}</span>
+							<span class="date-label">Fi:</span>
+							<span class="date-value">{{ formatarData(justificant.data_fi) }}</span>
+						</div>
+
+						<div class="justificant-status">
+							<span class="status-badge" [class]="justificant.estat">
+							{{ justificant.estat}}
+							</span>
+						</div>
+
+						<div class="justificant-actions">
+							<button class="btn btn-veure" (click)="obrirModal(justificant, $event)">
+							<ng-icon name="heroEye"></ng-icon>
+							Veure
+							</button>
+								@if (justificant.estat === 'Pendent') {
+									<button class="btn btn-acceptar" (click)="acceptarJustificant(justificant.id)">
+									<ng-icon name="heroCheck"></ng-icon>
+									Acceptar
+									</button>
+									<button class="btn btn-declinar" (click)="declinarJustificant(justificant.id)">
+									<ng-icon name="heroXMark"></ng-icon>
+									Rebutjar
+									</button>
+								}
+						</div>
+				  </div>
+				} @empty {
+				<div class="empty-justificants">
+			  	<p>Aquest alumne no té justificants</p>
+				</div>
+				}
+				</div>
+				}
+					</div>
+				} @empty {
+				<div class="empty-state">
+				  <p>No hi ha justificants pendents</p>
+				</div>
+				}
+				</div>
+			}
 
 @if (modalObert()) {
 <div class="modal-overlay" (click)="tancarModal()">
   <div class="modal-card" (click)="$event.stopPropagation()">
-    <button class="btn-close" (click)="tancarModal()">×</button>
-    <div class="modal-header">
-      <h2>Detalls del Justificant</h2>
-      <p class="modal-sub">Informació completa de la petició</p>
-    </div>
+	<button class="btn-close" (click)="tancarModal()">×</button>
+	<div class="modal-header">
+	  <h2>Detalls del Justificant</h2>
+	  <p class="modal-sub">Informació completa de la petició</p>
+	</div>
 
-    <div class="modal-body">
-      <div class="document-preview">
-        @if (justificantSeleccionat()?.document) {
-        <img [src]="'http://localhost:8000/back/' + justificantSeleccionat()?.document"
-          alt="Justificant" class="document-img">
-        } @else {
-        <div class="no-document">
-          <ng-icon name="heroDocumentText" size="48"></ng-icon>
-          <p>No hi ha document adjuntat</p>
-        </div>
-        }
-      </div>
+	<div class="modal-body">
+	  <div class="document-preview">
+		@if (justificantSeleccionat()?.document) {
+		<img [src]="'http://localhost:8000/back/' + justificantSeleccionat()?.document"
+		  alt="Justificant" class="document-img">
+		} @else {
+		<div class="no-document">
+		  <ng-icon name="heroDocumentText" size="48"></ng-icon>
+		  <p>No hi ha document adjuntat</p>
+		</div>
+		}
+	  </div>
 
-      <div class="justificant-info">
-        <div class="info-row">
-          <span class="info-label">Període:</span>
-          <span class="info-value">
-            {{ formatarData(justificantSeleccionat()?.data_inici!) }} -
-            {{ formatarData(justificantSeleccionat()?.data_fi!) }}    
-          </span>
-        </div>
-        <div class="info-row">
-          <span class="info-label">Estat:</span>
-          <span class="status-badge" [class]="justificantSeleccionat()?.estat">
-            {{ justificantSeleccionat()?.estat }}
-          </span>
-        </div>
-        @if (justificantSeleccionat()?.comentari) {
-        <div class="info-row">
-          <span class="info-label">Comentari:</span>
-          <span class="info-value">{{ justificantSeleccionat()?.comentari }}</span>
-        </div>
-        }
-      </div>
-    </div>
+	  <div class="justificant-info">
+		<div class="info-row">
+		  <span class="info-label">Període:</span>
+		  <span class="info-value">
+			{{ formatarData(justificantSeleccionat()?.data_inici!) }} -
+			{{ formatarData(justificantSeleccionat()?.data_fi!) }}    
+		  </span>
+		</div>
+		<div class="info-row">
+		  <span class="info-label">Estat:</span>
+		  <span class="status-badge" [class]="justificantSeleccionat()?.estat">
+			{{ justificantSeleccionat()?.estat }}
+		  </span>
+		</div>
+		@if (justificantSeleccionat()?.comentari) {
+		<div class="info-row">
+		  <span class="info-label">Comentari:</span>
+		  <span class="info-value">{{ justificantSeleccionat()?.comentari }}</span>
+		</div>
+		}
+	  </div>
+	</div>
 
-    <div class="modal-actions">
-      <button class="btn btn-secondary" (click)="tancarModal()">Tancar</button>
-      @if (justificantSeleccionat()?.estat === 'Pendent') {
-      <button class="btn btn-acceptar" (click)="acceptarJustificant(justificantSeleccionat()?.id!)">
-        <ng-icon name="heroCheck"></ng-icon>
-        Acceptar
-      </button>
-      <button class="btn btn-declinar" (click)="declinarJustificant(justificantSeleccionat()?.id!)">
-        <ng-icon name="heroXMark"></ng-icon>
-        Declinar
-      </button>
-      }
-    </div>
+	<div class="modal-actions">
+	  <button class="btn btn-secondary" (click)="tancarModal()">Tancar</button>
+	  @if (justificantSeleccionat()?.estat === 'Pendent') {
+	  <button class="btn btn-acceptar" (click)="acceptarJustificant(justificantSeleccionat()?.id!)">
+		<ng-icon name="heroCheck"></ng-icon>
+		Acceptar
+	  </button>
+	  <button class="btn btn-declinar" (click)="declinarJustificant(justificantSeleccionat()?.id!)">
+		<ng-icon name="heroXMark"></ng-icon>
+		Declinar
+	  </button>
+	  }
+	</div>
   </div>
 </div>
 }

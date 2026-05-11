@@ -88,7 +88,11 @@
 
 .alumne-card.expanded {
   background: rgba(255, 255, 255, 0.7);
-  border-color: var(--primary-color);
+}
+
+.alumne-card.expanded:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .alumne-header {

@@ -16,6 +16,7 @@ export class JustificantsComponents implements OnInit {
   private justificantManager = inject(JustificantsManagerService);
 
   justificantsPendents = this.justificantManager.justificantsTutoria;
+  isLoading = this.justificantManager.isLoading;
   alumneExpandit = signal<number | null>(null);
   modalObert = signal(false);
   justificantSeleccionat = signal<Justificant | null>(null);
