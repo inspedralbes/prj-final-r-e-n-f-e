@@ -344,10 +344,10 @@ export class LlistaClasseComponent implements OnInit {
         await this.guardarAssistencia(alumne, diaVisible, alumne.assistencia[diaVisible]);
         guardats++;
       }
-      console.log(`[GUARDAR_TOT] ✅ Guardats ${guardats} registres correctament!`);
+      console.log(`[GUARDAR_TOT] Guardats ${guardats} registres correctament!`);
       alert(`Assistència desada! (${guardats} de ${alumnes.length} alumnes marcats)`);
     } catch (e) {
-      console.error('[GUARDAR_TOT] ❌ ERROR en guardar:', e);
+      console.error('[GUARDAR_TOT] ERROR en guardar:', e);
       alert("Hi ha hagut un error en guardar l'assistència.");
     } finally {
       this.isSaving.set(false);
