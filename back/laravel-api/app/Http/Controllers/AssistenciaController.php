@@ -377,4 +377,26 @@ class AssistenciaController extends Controller
             ], 500);
         }
     }
+
+    public function rankingFaltesClasse($idClasse)
+    {
+        $ranking = DB::table('usuaris')
+            ->where('id_classe', $idClasse)
+            ->where('rol', 'Alumne')
+            ->leftJoin('inscrits', 'usuaris.id', '=', 'inscrits.id_alumne')
+            ->leftJoin('assistencies', function($join) {
+                $join->on('inscrits.id', '=', 'assistencies.id_inscripcio')
+                     ->where('assistencies.estat', '=', 'Falta');
+            })
+            ->select('usuaris.id', 'usuaris.nom', 'usuaris.cognom', DB::raw('count(assistencies.id) as total_faltes'))
+            ->groupBy('usuaris.id', 'usuaris.nom', 'usuaris.cognom')
+            ->orderBy('total_faltes', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $ranking,
+            'message' => 'Ranking de faltes de la classe obtingut correctament'
+        ], Response::HTTP_OK);
+    }
 }

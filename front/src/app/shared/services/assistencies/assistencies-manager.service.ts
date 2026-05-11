@@ -162,13 +162,28 @@ export class AssistenciesManagerService {
     }
   }
   /**
+   * Obté el ranking de faltes per a una classe
+   */
+  async getRankingClasse(idClasse: number) {
+    this.isLoading.set(true);
+    try {
+      const resp = await this.apiManager.get<any>(`/assistencies/classe/${idClasse}/ranking`);
+      return resp.data || resp;
+    } catch (err) {
+      console.error('Error obtenint el ranking de classe:', err);
+      return [];
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
    * Genera un informe de faltes en format PDF
    */
-  async generarInformeFaltes(id_alumne: number, id_tutor: number, faltes: number) {
+  async generarInformeFaltes(id_alumne: number, faltes: number) {
     try {
       const resp = await this.apiManager.postBlob('/carta-faltes/generar', {
         id_alumne,
-        id_tutor,
         faltes,
       });
       return resp;
