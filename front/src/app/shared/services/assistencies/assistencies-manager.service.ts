@@ -162,6 +162,22 @@ export class AssistenciesManagerService {
     }
   }
   /**
+   * Obté el ranking de faltes per a les assignatures del professor actual
+   */
+  async getRankingProfessor() {
+    this.isLoading.set(true);
+    try {
+      const resp = await this.apiManager.get<any>('/assistencies/ranking-profe');
+      return resp.data || resp;
+    } catch (err) {
+      console.error('Error obtenint el ranking de professor:', err);
+      return [];
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
    * Obté el ranking de faltes per a una classe
    */
   async getRankingClasse(idClasse: number) {
