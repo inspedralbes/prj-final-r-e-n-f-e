@@ -77,7 +77,6 @@ body::after {
         radial-gradient(circle at 50% 50%, rgba(167, 139, 250, 0.25), transparent 50%);
     z-index: -1;
     pointer-events: none;
-    animation: organic-move 25s infinite alternate ease-in-out;
 }
 
 @keyframes organic-move {
