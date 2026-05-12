@@ -9,7 +9,7 @@
     <p>Carregant perfil...</p>
   </div>
 } @else if (u) {
-  <div class="perfil-container">
+  <div class="perfil-container" [class.tema-alumne]="isAlumne">
     <!-- Header amb foto i info bàsica -->
     <div class="perfil-header">
       <div class="foto-container">
@@ -26,7 +26,11 @@
           (click)="toggleMode()"
           [title]="mode() === 'read' ? 'Editar perfil' : 'Cancel·lar edició'"
         >
-          <span>⚙️</span>
+          @if (mode() === 'read') {
+            <ng-icon name="heroCog8Tooth" class="icona-roda"></ng-icon>
+          } @else {
+            <ng-icon name="heroXMark" class="icona-roda"></ng-icon>
+          }
         </button>
       }
     </div>

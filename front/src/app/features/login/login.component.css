@@ -268,3 +268,50 @@
     font-size: 0.85rem;
     margin: 0;
 }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 480px) {
+    .fons-login {
+        padding: 20px;
+    }
+    
+    .targeta-login {
+        padding: 35px 25px;
+        border-radius: 24px;
+        gap: 20px;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .encapçalament-login h1 {
+        font-size: 1.6rem;
+    }
+
+    .encapçalament-login p {
+        font-size: 0.9rem;
+    }
+
+    .input-wrapper input {
+        padding: 14px 40px 14px 16px;
+        font-size: 0.95rem;
+    }
+
+    .boto-entrar, .boto-google {
+        height: 50px;
+        font-size: 1rem;
+    }
+    
+    .fons-login::before {
+        width: 300px;
+        height: 300px;
+        top: -50px;
+        right: -50px;
+    }
+    
+    .fons-login::after {
+        width: 200px;
+        height: 200px;
+        bottom: -20px;
+        left: -20px;
+    }
+}

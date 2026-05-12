@@ -114,6 +114,11 @@ h1 {
     box-shadow: 0 6px 15px rgba(124, 58, 237, 0.4);
 }
 
+.btn-guardar-llista:active:not(:disabled) {
+    transform: scale(0.95);
+    box-shadow: 0 2px 5px rgba(124, 58, 237, 0.3);
+}
+
 .btn-guardar-llista.boto-loading {
     pointer-events: none;
     opacity: 0.8;

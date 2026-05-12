@@ -6,6 +6,7 @@ import { HorarisManagerService } from '../../../shared/services/horaris/horaris-
 import { AssignaturesManagerService } from '../../../shared/services/assignatures/assignatures-manager.service';
 import { AulesManagerService } from '../../../shared/services/aules/aules-manager.service';
 import { AuthService } from '../../../services/auth.service';
+import { SocketService } from '../../../services/socket.service';
 import { FormsModule } from '@angular/forms';
 import { Classe } from '../../../shared/models/classe.model';
 import { UsuarisManagerService } from '../../../shared/services/usuaris/usuaris-manager.service';
@@ -30,6 +31,7 @@ export class HorariAlumnesComponent implements OnInit {
   serveiAules = inject(AulesManagerService);
   serveiAuth = inject(AuthService);
   serveiUsuaris = inject(UsuarisManagerService);
+  socketService = inject(SocketService);
 
   // Nou estat segur (Fase 2) carregat exclusivament del backend
   laMevaClasse = signal<Classe | null>(null);
@@ -70,6 +72,15 @@ export class HorariAlumnesComponent implements OnInit {
     // d'Assignatures i Aules disponibles al centre per posar-les al <select> del HTML
     this.serveiAssignatures.carregarAssignatures();
     this.serveiAules.carregarAules();
+    
+    this.socketService.listenToEvent('horari_updated').subscribe(async () => {
+      console.log('[SOCKET] horari_updated rebut a horari-alumnes, recarregant...');
+      const classe = this.laMevaClasse();
+      if (classe) {
+        const horaris = await this.serveiHoraris.getHorarisClasse(classe.id);
+        this.horarisDelaClasseSegur.set(horaris);
+      }
+    });
   }
 
   // Mètodes d'accés directe als signals (sense computed)

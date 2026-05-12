@@ -79,13 +79,6 @@ body::after {
     pointer-events: none;
 }
 
-@keyframes organic-move {
-    0% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(2%, 1%) scale(1.02); }
-    66% { transform: translate(-1%, 2%) scale(1.01); }
-    100% { transform: translate(0, 0) scale(1); }
-}
-
 /* Scrollbar Premium Light */
 ::-webkit-scrollbar {
     width: 8px;

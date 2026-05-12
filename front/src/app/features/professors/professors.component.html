@@ -53,23 +53,25 @@
           </div>
 
           <!-- La graella on es veuen els dies i les hores -->
-          <div class="graella-horari">
-            <!-- Els noms de la setmana (Dilluns, Dimarts...) -->
-            <div class="cel-la-capçalera buida"></div>
-            @for (dia of diesSetmana; track dia) {
-              <div class="cel-la-capçalera">{{ dia }}</div>
-            }
-
-            <!-- Aquí és on es pinten les hores i el que toca a cada hora -->
-            @for (franja of horariActual(); track franja.hora) {
-              <div class="cel-la-hora">{{ franja.hora }}</div>
-              @for (assignatura of franja.assignatures; track $index) {
-                <!-- Si és l'esbarjo, li posem un color diferent -->
-                <div class="cel-la-assignatura" [class.esbarjo]="assignatura === 'ESBARJO'">
-                  <span class="text-assignatura">{{ assignatura }}</span>
-                </div>
+          <div class="scroll-wrapper">
+            <div class="graella-horari">
+              <!-- Els noms de la setmana (Dilluns, Dimarts...) -->
+              <div class="cel-la-capçalera buida"></div>
+              @for (dia of diesSetmana; track dia) {
+                <div class="cel-la-capçalera">{{ dia }}</div>
               }
-            }
+
+              <!-- Aquí és on es pinten les hores i el que toca a cada hora -->
+              @for (franja of horariActual(); track franja.hora) {
+                <div class="cel-la-hora">{{ franja.hora }}</div>
+                @for (assignatura of franja.assignatures; track $index) {
+                  <!-- Si és l'esbarjo, li posem un color diferent -->
+                  <div class="cel-la-assignatura" [class.esbarjo]="assignatura === 'ESBARJO'">
+                    <span class="text-assignatura">{{ assignatura }}</span>
+                  </div>
+                }
+              }
+            </div>
           </div>
         </div>
       </div>
