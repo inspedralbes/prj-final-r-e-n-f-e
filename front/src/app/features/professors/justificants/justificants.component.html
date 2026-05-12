@@ -9,6 +9,13 @@
 					<h1>Justificants</h1>
 					<p class="setmana-info">Gestió de peticions d'alumnes</p>
 				</div>
+				<div class="filter-toggle">
+					<label class="toggle-label">
+						<input type="checkbox" [checked]="mostrarSoloPendents()" (change)="mostrarSoloPendents.set(!mostrarSoloPendents())">
+						<span class="toggle-slider"></span>
+						<span class="toggle-text">Només pendents</span>
+					</label>
+				</div>
 			</div>
 
 			@if ( isLoading() ){
@@ -17,7 +24,7 @@
 				</div>
 } @else {
 				<div class="contenedor-alumnes">
-					@for (case of justificantsPendents(); track case.alumne.id) {
+					@for (case of filteredJustificants(); track case.alumne.id) {
 						<div class="alumne-card" [class.expanded]="alumneExpandit() === case.alumne?.id" (click)="toggleAlumne(case.alumne?.id)">
 							<div class="alumne-header">
 								<div class="alumne-avatar">
@@ -40,6 +47,7 @@
 						<span class="stat-label">Pendents</span>
 					</div>
 
+					@if (!mostrarSoloPendents()) {
 					<div class="stat-badge acceptat">
 						<span class="stat-count">{{ comptarEstat(case.justificants, 'Acceptada') }}</span>
 						<span class="stat-label">Acceptats</span>
@@ -49,6 +57,7 @@
 						<span class="stat-count">{{ comptarEstat(case.justificants, 'Rebutjada') }}</span>
 						<span class="stat-label">Rebutjats</span>
 					</div>
+					}
 				</div>
 
 				<div class="expand-icon">
@@ -120,8 +129,11 @@
 	<div class="modal-body">
 	  <div class="document-preview">
 		@if (documentUrl()) {
-		<img [src]="documentUrl()"
-		  alt="Justificant" class="document-img">
+			@if (isPdf(documentUrl())) {
+				<embed [src]="getFullDocumentUrl(documentUrl())" type="application/pdf" class="document-pdf">
+			} @else {
+				<img [src]="getFullDocumentUrl(documentUrl())" alt="Justificant" class="document-img">
+			}
 		} @else {
 		<div class="no-document">
 		  <ng-icon name="heroDocumentText" size="48"></ng-icon>

@@ -21,6 +21,29 @@ export class JustificantsComponents implements OnInit {
   modalObert = signal(false);
   justificantSeleccionat = signal<Justificant | null>(null);
   documentUrl = signal<string | null>(null);
+  mostrarSoloPendents = signal(false);
+  filteredJustificants = computed(() => {
+    const justificantList = this.justificantsPendents();
+    if (!this.mostrarSoloPendents()) {
+      return justificantList;
+    }
+    return justificantList
+      .map(caseAlumne => ({
+        ...caseAlumne,
+        justificants: caseAlumne.justificants.filter(j => j.estat === 'Pendent')
+      }))
+      .filter(caseAlumne => caseAlumne.justificants.length > 0);
+  });
+
+  isPdf(url: string | null): boolean {
+    if (!url) return false;
+    return url.toLowerCase().endsWith('.pdf');
+  }
+
+  getFullDocumentUrl(path: string | null): string | null {
+    if (!path) return null;
+    return `http://localhost:8000/back/${path}`;
+  }
 
   ngOnInit() {
     this.justificantManager.carregarJustificantsTutoria();
@@ -54,24 +77,14 @@ export class JustificantsComponents implements OnInit {
   obrirModal(justificant: Justificant, event: Event) {
     event.stopPropagation();
     this.justificantSeleccionat.set(justificant);
-
-    if (justificant.document instanceof Blob) {
-      const url = URL.createObjectURL(justificant.document);
-      this.documentUrl.set(url);
-    } else {
-      this.documentUrl.set(null);
-    }
-
+    this.documentUrl.set(justificant.document);
     this.modalObert.set(true);
   }
 
   tancarModal() {
-    if (this.documentUrl()) {
-      URL.revokeObjectURL(this.documentUrl()!);
-      this.documentUrl.set(null);
-    }
     this.modalObert.set(false);
     this.justificantSeleccionat.set(null);
+    this.documentUrl.set(null);
   }
 
   async acceptarJustificant(id: number) {

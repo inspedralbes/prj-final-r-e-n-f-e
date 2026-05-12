@@ -234,6 +234,20 @@ class JustificantController extends Controller
 
         foreach($alumnes as $alumne) {
             $justificants = DB::table('justificants')->where('id_alum', $alumne->id)->get(['id', 'data_inici', 'data_fi', 'comentari', 'document', 'estat']);
+            
+            foreach($justificants as $j) {
+                if ($j->document) {
+                    $filepath = storage_path('app/' . $j->document);
+                    if (file_exists($filepath)) {
+                        $content = file_get_contents($filepath);
+                        $mime = mime_content_type($filepath);
+                        $j->document = 'data:' . $mime . ';base64,' . base64_encode($content);
+                    } else {
+                        $j->document = null;
+                    }
+                }
+            }
+            
             if ($justificants->isNotEmpty()) {
                 $llistaJustificants[] = (object) [
                     'alumne' => (object) [
