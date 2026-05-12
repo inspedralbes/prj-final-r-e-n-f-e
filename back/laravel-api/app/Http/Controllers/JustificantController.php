@@ -237,7 +237,8 @@ class JustificantController extends Controller
             
             foreach($justificants as $j) {
                 if ($j->document) {
-                    $filepath = storage_path('app/' . $j->document);
+                    $relativePath = str_replace('storage/', '', $j->document);
+                    $filepath = storage_path('app/' . $relativePath);
                     if (file_exists($filepath)) {
                         $content = file_get_contents($filepath);
                         $mime = mime_content_type($filepath);

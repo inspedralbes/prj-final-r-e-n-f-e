@@ -130,9 +130,9 @@
 	  <div class="document-preview">
 		@if (documentUrl()) {
 			@if (isPdf(documentUrl())) {
-				<embed [src]="getFullDocumentUrl(documentUrl())" type="application/pdf" class="document-pdf">
+				<embed [src]="getDocumentSrc(documentUrl())" type="application/pdf" class="document-pdf">
 			} @else {
-				<img [src]="getFullDocumentUrl(documentUrl())" alt="Justificant" class="document-img">
+				<img [src]="getDocumentUrl(documentUrl())" alt="Justificant" class="document-img">
 			}
 		} @else {
 		<div class="no-document">

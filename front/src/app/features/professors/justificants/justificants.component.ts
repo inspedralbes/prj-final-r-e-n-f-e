@@ -1,6 +1,7 @@
 import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NgIconsModule } from '@ng-icons/core';
+import { DomSanitizer, SafeResourceUrl, SafeUrl } from '@angular/platform-browser';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { JustificantsManagerService } from '../../../shared/services/justificants/justificants-manager.service';
 import { Justificant, JustificantNet } from '../../../shared/models/justificants.model';
@@ -14,6 +15,7 @@ import { Usuari } from '../../../shared/models/usuaris.model';
 })
 export class JustificantsComponents implements OnInit {
   private justificantManager = inject(JustificantsManagerService);
+  private sanitizer = inject(DomSanitizer);
 
   justificantsPendents = this.justificantManager.justificantsTutoria;
   isLoading = this.justificantManager.isLoading;
@@ -37,11 +39,25 @@ export class JustificantsComponents implements OnInit {
 
   isPdf(url: string | null): boolean {
     if (!url) return false;
+    if (url.startsWith('data:')) {
+      return url.includes('application/pdf');
+    }
     return url.toLowerCase().endsWith('.pdf');
   }
 
-  getFullDocumentUrl(path: string | null): string | null {
+  getDocumentSrc(path: string | null): SafeResourceUrl | null {
     if (!path) return null;
+    if (path.startsWith('data:')) {
+      return this.sanitizer.bypassSecurityTrustResourceUrl(path);
+    }
+    return this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:8000/back/${path}`);
+  }
+
+  getDocumentUrl(path: string | null): string {
+    if (!path) return '';
+    if (path.startsWith('data:')) {
+      return path;
+    }
     return `http://localhost:8000/back/${path}`;
   }
 
