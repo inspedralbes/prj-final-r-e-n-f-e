@@ -6,6 +6,7 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
 import { InscritsManagerService } from '../../../shared/services/inscrits/inscrits-manager.service';
 import { AssistenciesManagerService } from '../../../shared/services/assistencies/assistencies-manager.service';
 import { HorarisManagerService } from '../../../shared/services/horaris/horaris-manager.service';
+import { SocketService } from '../../../services/socket.service';
 import { getSimbolAssistencia } from '../../../shared/utils/assistencia-utils';
 import { Horari } from '../../../shared/models/horaris.model';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
@@ -23,6 +24,7 @@ export class LlistaClasseComponent implements OnInit {
   private inscritsManager = inject(InscritsManagerService);
   private assistenciesManager = inject(AssistenciesManagerService);
   private horarisManager = inject(HorarisManagerService);
+  private socketService = inject(SocketService);
   private route = inject(ActivatedRoute);
 
   diesSetmana = ['Dilluns', 'Dimarts', 'Dimecres', 'Dijous', 'Divendres'];
@@ -71,6 +73,16 @@ export class LlistaClasseComponent implements OnInit {
 
     const usuariLoguejat = JSON.parse(localStorage.getItem('usuari') || '{}');
     console.log('[INIT] Usuari del localStorage (clau "usuari"):', usuariLoguejat);
+
+    // Escoltador del Socket
+    this.socketService.listenToEvent('assistencia_updated').subscribe((data: any) => {
+      console.log('[SOCKET] assistencia_updated rebut!', data);
+      const idSessioActual = this.sessioSeleccionadaId();
+      if (idSessioActual) {
+        console.log('[SOCKET] Recarregant graella per a sessio:', idSessioActual);
+        this.carregarGraellaPerALaSessio(idSessioActual);
+      }
+    });
 
     if (usuariLoguejat && usuariLoguejat.id) {
       console.log(`[INIT] Carregant context per al professor id=${usuariLoguejat.id}...`);

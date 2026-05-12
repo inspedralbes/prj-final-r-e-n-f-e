@@ -51,7 +51,13 @@ io.on("connection", (socket) => {
 
 // Ruta per els sockets
 app.post("/api/broadcast", (req, res) => {
-  // Sockets
+  const { event, data } = req.body;
+  if (!event) {
+    return res.status(400).json({ error: "Falta l'esdeveniment (event)" });
+  }
+  console.log(`[SOCKET] Emetent esdeveniment: ${event}`);
+  io.emit(event, data);
+  res.json({ success: true, message: `Esdeveniment ${event} emès` });
 });
 
 // Endpoint per convertir Word a PDF (version per base64)

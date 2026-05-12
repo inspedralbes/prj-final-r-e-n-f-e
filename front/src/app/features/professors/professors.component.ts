@@ -6,6 +6,7 @@ import { AssignaturesManagerService } from '../../shared/services/assignatures/a
 import { HorarisManagerService } from '../../shared/services/horaris/horaris-manager.service';
 import { ImparteixManagerService } from '../../shared/services/imparteix/imparteix-manager.service';
 import { AuthService } from '../../services/auth.service';
+import { SocketService } from '../../services/socket.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroArrowRight, heroArrowsUpDown } from '@ng-icons/heroicons/outline';
 
@@ -22,6 +23,7 @@ export class ProfessorsComponent implements OnInit {
   private horarisManager = inject(HorarisManagerService);
   private imparteixManager = inject(ImparteixManagerService);
   private authService = inject(AuthService);
+  private socketService = inject(SocketService);
   private router = inject(Router);
 
   carregantDades = computed(() => this.horarisManager.isLoading());
@@ -174,5 +176,11 @@ export class ProfessorsComponent implements OnInit {
   ngOnInit() {
     this.horarisManager.getHorari();
     this.horarisManager.getClasseActual();
+
+    this.socketService.listenToEvent('horari_updated').subscribe(() => {
+      console.log('[SOCKET] horari_updated rebut, recarregant horaris...');
+      this.horarisManager.getHorari();
+      this.horarisManager.getClasseActual();
+    });
   }
 }

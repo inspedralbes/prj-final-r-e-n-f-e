@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class HorariController extends Controller
 {
@@ -64,6 +65,15 @@ class HorariController extends Controller
 
         $horari = Horari::create($dadesValidades);
 
+        try {
+            Http::timeout(2)->post(env('NODE_URL', 'http://pfg1-back-node:3000') . '/api/broadcast', [
+                'event' => 'horari_updated',
+                'data' => $horari
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error broadcasting horari_updated: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
             'data' => $horari->load(['assignatura', 'classe', 'aula', 'professor']),
@@ -109,6 +119,15 @@ class HorariController extends Controller
         ]);
 
         $horari->update($dadesValidades);
+
+        try {
+            Http::timeout(2)->post(env('NODE_URL', 'http://pfg1-back-node:3000') . '/api/broadcast', [
+                'event' => 'horari_updated',
+                'data' => $horari
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error broadcasting horari_updated: ' . $e->getMessage());
+        }
 
         return response()->json([
             'success' => true,
@@ -164,6 +183,15 @@ class HorariController extends Controller
             );
         }
 
+        try {
+            Http::timeout(2)->post(env('NODE_URL', 'http://pfg1-back-node:3000') . '/api/broadcast', [
+                'event' => 'horari_updated',
+                'data' => $horari
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error broadcasting horari_updated: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
             'data' => $horari->load(['assignatura', 'aula', 'professor']),
@@ -183,6 +211,15 @@ class HorariController extends Controller
         }
 
         $horari->delete();
+
+        try {
+            Http::timeout(2)->post(env('NODE_URL', 'http://pfg1-back-node:3000') . '/api/broadcast', [
+                'event' => 'horari_updated',
+                'data' => ['id' => $id, 'deleted' => true]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error broadcasting horari_updated: ' . $e->getMessage());
+        }
 
         return response()->json([
             'success' => true,
