@@ -480,3 +480,22 @@
   background: #e2e8f0;
   color: var(--text-dark);
 }
+
+/* Estils per a les icones de lhorari */
+.icona-afegir ng-icon {
+    font-size: 24px;
+    color: #cbd5e1;
+}
+
+.avatar-mini ng-icon {
+    font-size: 16px;
+    color: #6366f1;
+}
+
+.btn-close ng-icon {
+    font-size: 20px;
+}
+
+.alumne-avatar ng-icon {
+    font-size: 18px;
+}

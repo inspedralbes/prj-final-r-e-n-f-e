@@ -1,0 +1,178 @@
+﻿# Estructura de la Base de Datos (estado real según migraciones)
+
+## Tablas
+
+### `usuaris`
+
+| Columna         | Tipo                       | Notas                  |
+| --------------- | -------------------------- | ---------------------- |
+| id              | bigint PK                  | autoincrement          |
+| nom             | string                     |                        |
+| cognom          | string                     | nullable               |
+| rol             | enum(Admin, Profe, Alumne) | default: Alumne        |
+| email           | string                     | unique                 |
+| email_pares     | string                     | nullable               |
+| password        | string                     | nullable               |
+| token           | string                     | nullable               |
+| nfc_id          | string                     | nullable               |
+| horari_guardies | string                     | nullable               |
+| google_id       | string                     | nullable               |
+| id_classe       | FK → classes               | nullable, nullOnDelete |
+
+---
+
+### `periodes`
+
+| Columna         | Tipo      | Notas         |
+| --------------- | --------- | ------------- |
+| id              | bigint PK | autoincrement |
+| trimestre_1_ini | date      | nullable      |
+| trimestre_1_fi  | date      | nullable      |
+| trimestre_2_ini | date      | nullable      |
+| trimestre_2_fi  | date      | nullable      |
+| trimestre_3_ini | date      | nullable      |
+| trimestre_3_fi  | date      | nullable      |
+
+---
+
+### `assignatures`
+
+| Columna            | Tipo         | Notas                  |
+| ------------------ | ------------ | ---------------------- |
+| id                 | bigint PK    | autoincrement          |
+| nom                | string       |                        |
+| id_classe_projecte | FK → classes | nullable, nullOnDelete |
+| interval           | string       | nullable               |
+| exempcio           | boolean      | default: false         |
+
+---
+
+### `cursos`
+
+| Columna    | Tipo          | Notas                  |
+| ---------- | ------------- | ---------------------- |
+| id         | bigint PK     | autoincrement          |
+| tipus      | enum(GM, GS)  |                        |
+| nom        | string        |                        |
+| id_tutor   | FK → usuaris  | nullable, nullOnDelete |
+| id_periode | FK → periodes | nullable, nullOnDelete |
+
+---
+
+### `classes`
+
+| Columna  | Tipo         | Notas                  |
+| -------- | ------------ | ---------------------- |
+| id       | bigint PK    | autoincrement          |
+| id_curs  | FK → cursos  | cascadeOnDelete        |
+| nom      | string       |                        |
+| id_tutor | FK → usuaris | nullable, nullOnDelete |
+| id_aula  | FK → aules   | nullable, nullOnDelete |
+
+---
+
+### `aules`
+
+| Columna | Tipo      | Notas         |
+| ------- | --------- | ------------- |
+| id      | bigint PK | autoincrement |
+| nom     | string    |               |
+
+---
+
+### `imparteix`
+
+| Columna        | Tipo              | Notas           |
+| -------------- | ----------------- | --------------- |
+| id             | bigint PK         | autoincrement   |
+| id_profe       | FK → usuaris      | cascadeOnDelete |
+| id_assignatura | FK → assignatures | cascadeOnDelete |
+| titular        | boolean           | default: false  |
+
+---
+
+### `inscrits`
+
+| Columna        | Tipo              | Notas           |
+| -------------- | ----------------- | --------------- |
+| id             | bigint PK         | autoincrement   |
+| id_alumne      | FK → usuaris      | cascadeOnDelete |
+| id_assignatura | FK → assignatures | cascadeOnDelete |
+
+---
+
+### `assistencies`
+
+| Columna       | Tipo                          | Notas           |
+| ------------- | ----------------------------- | --------------- |
+| id            | bigint PK                     | autoincrement   |
+| id_inscripcio | FK → inscrits                 | cascadeOnDelete |
+| data          | date                          |                 |
+| estat         | enum(Assistit, Falta, Retart) | nullable        |
+| id_profe      | FK → usuaris                  | nullable        |
+
+---
+
+### `justificants`
+
+| Columna    | Tipo         | Notas                           |
+| ---------- | ------------ | ------------------------------- |
+| id         | bigint PK    | autoincrement                   |
+| id_alum    | FK → usuaris | cascadeOnDelete                 |
+| data_inici | date         |                                 |
+| data_fi    | date         |                                 |
+| comentari  | text         | nullable                        |
+| document   | string       | nullable                        |
+| estat      | enum         | Pendent / Acceptada / Rebutjada |
+
+---
+
+### `horaris`
+
+| Columna   | Tipo              | Notas                  |
+| --------- | ----------------- | ---------------------- |
+| id        | bigint PK         | autoincrement          |
+| codi_hora | string            | nullable               |
+| id_assig  | FK → assignatures | cascadeOnDelete        |
+| id_classe | FK → classes      | cascadeOnDelete        |
+| id_aula   | FK → aules        | nullable, nullOnDelete |
+
+---
+
+### `sensors`
+
+| Columna | Tipo       | Notas                  |
+| ------- | ---------- | ---------------------- |
+| id      | bigint PK  | autoincrement          |
+| mac     | string     | nullable               |
+| id_aula | FK → aules | nullable, nullOnDelete |
+
+---
+
+### `sessions`
+
+| Columna       | Tipo       | Notas             |
+| ------------- | ---------- | ----------------- |
+| id            | string PK  |                   |
+| user_id       | foreignId  | nullable, indexed |
+| ip_address    | string(45) | nullable          |
+| user_agent    | text       | nullable          |
+| payload       | longText   |                   |
+| last_activity | integer    | indexed           |
+
+---
+
+### `personal_access_tokens`
+
+| Columna        | Tipo       | Notas             |
+| -------------- | ---------- | ----------------- |
+| id             | bigint PK  | autoincrement     |
+| tokenable_type | string     | morph             |
+| tokenable_id   | bigint     | morph             |
+| name           | text       |                   |
+| token          | string(64) | unique            |
+| abilities      | text       | nullable          |
+| last_used_at   | timestamp  | nullable          |
+| expires_at     | timestamp  | nullable, indexed |
+
+---

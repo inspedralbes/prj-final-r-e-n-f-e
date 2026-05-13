@@ -12,7 +12,7 @@ export class InscritsManagerService {
   idAlumne = signal<string>('idAlumne');
   inscrits = signal<Inscrit[]>([]);
   inscritsPerUsuari = signal<assistenciaPerUsuari[]>([]);
-  isLoading = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
 
   /**

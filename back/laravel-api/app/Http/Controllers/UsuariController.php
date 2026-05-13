@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuari;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
@@ -23,6 +24,24 @@ class UsuariController extends Controller
     }
 
     /**
+     * Retorna només els usuaris d'un rol específic.
+     * Ho fem així perquè el Frontend no descarregui tota la BBDD.
+     */
+    public function usuarisPerRol($rol)
+    {
+        // 1. Busco directament a la BBDD només els usuaris amb aquest rol
+        $usuaris = Usuari::with(['classe'])
+                  ->where('rol', 'like', $rol)
+                  ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $usuaris,
+            'message' => "He trobat els usuaris amb rol $rol"
+        ], Response::HTTP_OK);
+    }
+
+    /**
      * Desa un nou usuari.
      */
     public function store(Request $peticio)
@@ -32,7 +51,7 @@ class UsuariController extends Controller
             'cognom' => 'required|string|max:255',
             'email' => 'required|email|unique:usuaris,email',
             'email_pares' => 'nullable|email',
-            'rol' => 'required|string|in:admin,professor,alumne,pare',
+            'rol' => 'required|string|in:admin,professor,alumne,pare,Administrador,Professor,Alumne,Pares',
             'password' => 'required|string|min:8',
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id',
         ]);
@@ -83,12 +102,13 @@ class UsuariController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        $dadesValidades = $peticio->validate([
+$dadesValidades = $peticio->validate([
             'nom' => 'sometimes|required|string|max:255',
             'cognom' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:usuaris,email,' . $id,
             'email_pares' => 'nullable|email',
-            'rol' => 'sometimes|required|string|in:admin,professor,alumne,pare',
+            'data_naixement' => 'nullable|date',
+            'rol' => 'sometimes|required|string|in:Administrador,Profe,Alumne',
             'password' => 'sometimes|required|string|min:8',
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id,' . $id,
             'id_classe' => 'nullable|exists:classes,id',
@@ -129,6 +149,48 @@ class UsuariController extends Controller
         ], Response::HTTP_OK);
     }
 
+    /**
+     * Obte el perfil de l'usuari autenticat.
+     */
+    public function enviarPerfil(Request $request, $id)
+    {
+        $authUser = $request->user();
+
+        if(!in_array($authUser->rol, ['Admin', 'Profe']) && $authUser->id !== (int) $id){
+            return response()->json([
+                'message' => 'Acceso denegado. No puedes ver la información de otro usuario.'
+            ], 403);
+        }
+
+        $user = Usuari::findOrFail($id);
+
+        $classe = DB::table('classes')->where('id', $user->id_classe)->first(['nom', 'id_curs', 'id_tutor']);
+        $curs = $classe ? DB::table('cursos')->where('id', $classe->id_curs)->first(['nom']) : null;
+        $infoAdicional = [];
+
+        if ($user->rol === 'Alumne' && $classe) {
+            $tutor = $classe->id_tutor ? DB::table('usuaris')->where('id', $classe->id_tutor)->first(['nom', 'cognom']) : null;
+
+            $infoAdicional = [
+                'classe' => $classe->nom,
+                'curs' => $curs ? $curs->nom : null,
+                'tutor' => $tutor
+            ];
+
+        } elseif ($user->rol === 'Profe' && !empty($user->id_classe)) {
+            $infoAdicional = [
+                'classe' => $classe ? $classe->nom : null,
+                'curs' => $curs ? $curs->nom : null,
+            ];   
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'user' => $user,    
+                'info' => $infoAdicional,
+            ], Response::HTTP_OK]);
+    }
     public function fullfillUserProfile(Request $request)
     {
         $user = $request->user();
@@ -136,17 +198,31 @@ class UsuariController extends Controller
         $dadesValidades = $request->validate([
             'email_pares' => 'nullable|email',
             'data_naixement' => 'required|date',
-            'photo' => 'nullable|file'
+            'photo' => 'nullable|file',
         ]);
-        
+
         if($request->hasFile('photo'))
-            {
-                $path = str_replace("/storage/public","",$user->photo);
-                Storage::disk('public')->put($path, $request->file('photo'));
+            {                
+                $newFile = $request->file('photo');
+                $user_rol = $user->rol;
+                $user_email = $user->email;
+
+                if($user_rol === 'Alumne'){
+                            Storage::disk('public')->makeDirectory('photos/' . 'alumnes');
+                            $filename = 'photos/alumnes/' . $user_email . '.jpg';
+                        }
+
+                        else if($user_rol === 'Profe' || $user_rol === 'Admin') {
+                            Storage::disk('public')->makeDirectory('photos/' . 'profes');
+                            $filename = 'photos/profes/' . $user_email . '.jpg';
+                        }
+
+                        // Ahora guardar l'arxiu a la carpeta pública
+                        Storage::disk('public')->put($filename, file_get_contents($newFile));
             }        
 
         $user->update([
-            'data_naixament' => $request->data_naixament,
+            'data_naixement' => $request->data_naixement,
             'email_pares' => $request->email_pares
         ]);
 
@@ -156,4 +232,4 @@ class UsuariController extends Controller
             'message' => 'Perfil completat correctament'
         ]);
     }
-}  
+}

@@ -13,6 +13,7 @@ use Illuminate\Http\Response;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class AssistenciaController extends Controller
 {
@@ -22,6 +23,29 @@ class AssistenciaController extends Controller
             'success' => true,
             'data' => Assistencia::with(['inscripcio.alumne', 'inscripcio.assignatura', 'professor'])->get(),
             'message' => 'Assistències obtingudes correctament'
+        ], Response::HTTP_OK);
+    }
+
+    /**
+     * Fase 2: Mètode segur per descarregar NOMÉS les assistències d'una setmana d'un horari concret.
+     */
+    public function assistenciaSetmanalHorari(Request $peticio, $idHorari)
+    {
+        $dataIni = $peticio->query('data_ini');
+        $dataFi = $peticio->query('data_fi');
+
+        // Buscar inscripcions per a aquest horari
+        $inscrits = Inscrit::where('id_horari', $idHorari)
+            ->with(['alumne', 'assistencies' => function ($query) use ($dataIni, $dataFi) {
+                if ($dataIni && $dataFi) {
+                    $query->whereBetween('data', [$dataIni, $dataFi]);
+                }
+            }])
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'data' => $inscrits
         ], Response::HTTP_OK);
     }
 
@@ -106,15 +130,6 @@ class AssistenciaController extends Controller
             'message' => 'Assistència eliminada correctament'
         ], Response::HTTP_OK);
     }
-    /**
-     * Endpoint
-     * POST /api/admin/generar-assistencies
-     * BODY:
-     *      {
-     *      "data_ini": "2026-02-23",
-     *      "data_fi": "2026-02-27"
-     *      }
-     */
 
     public function generar(Request $peticio)
     {
@@ -127,7 +142,6 @@ class AssistenciaController extends Controller
             $dataIni = Carbon::createFromFormat('Y-m-d', $validated['data_ini']);
             $dataFi = Carbon::createFromFormat('Y-m-d', $validated['data_fi']);
 
-            // Mapatge dia setmana a lletra del codi_hora
             $letraDies = [
                 'Monday' => 'L',
                 'Tuesday' => 'M',
@@ -136,31 +150,25 @@ class AssistenciaController extends Controller
                 'Friday' => 'V',
             ];
 
-            // Per a cada classe
             foreach (Classe::all() as $classe) {
-                // Obtenir assignatures de la classe
                 $assignaturesClasse = $classe->horaris()
                     ->with('assignatura')
                     ->get()
                     ->pluck('assignatura')
                     ->unique('id');
 
-                // Verificar si hi ha projecte per a aquesta classe
                 $projecte = $assignaturesClasse->firstWhere('id_classe_projecte', $classe->id);
 
-                // Obtenir alumnes inscrits
                 $alumnes = Usuari::whereHas('inscrits', function ($query) use ($assignaturesClasse) {
                     $query->whereIn('id_assignatura', $assignaturesClasse->pluck('id'));
                 })->with('inscrits')->get();
 
-                // Per a cada dia del període
                 foreach (CarbonPeriod::create($dataIni, $dataFi) as $data) {
                     $letraDia = $letraDies[$data->format('l')] ?? null;
                     if (!$letraDia) {
                         continue;
                     }
 
-                    // Obtenir horaris del dia (que comencen amb la lletra del dia)
                     $horarisDia = $classe->horaris()
                         ->with('assignatura')
                         ->get()
@@ -168,18 +176,14 @@ class AssistenciaController extends Controller
                             return str_starts_with($h->codi_hora, $letraDia);
                         });
 
-                    // Per a cada horari
                     foreach ($horarisDia as $horari) {
                         $assignatura = $horari->assignatura;
 
-                        // Si hi ha projecte i l'assignatura no és excepció, usar projecte
                         if ($projecte && $assignatura->esSubstituible()) {
                             $assignatura = $projecte;
                         }
 
-                        // Crear assistències per a cada alumne
                         foreach ($alumnes as $alumne) {
-                            // Cercar inscripció directa a la col·lecció carregada
                             $inscripcio = $alumne->inscrits->firstWhere('id_assignatura', $assignatura->id);
 
                             if ($inscripcio) {
@@ -207,9 +211,10 @@ class AssistenciaController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function perAssignatura($id){
-        $dades = Assistencia::whereHas('inscripcio',
-        function($query) use ($id){
+
+    public function perAssignatura($id)
+    {
+        $dades = Assistencia::whereHas('inscripcio', function($query) use ($id) {
             $query->where('id_assignatura', $id);
         })->get();
 
@@ -219,91 +224,157 @@ class AssistenciaController extends Controller
             'message' => 'Dades obtingudes correctament'
         ], Response::HTTP_OK);
     }
-    public function assistenciaPerAlumne($alumneId){
-        $resultat = [];
 
-        // Get all inscripcions for the student, grouped by assignatura
-        $inscripcions = DB::table('inscrits')
-            ->where('id_alumne', $alumneId)
-            ->select('id', 'id_assignatura')
-            ->get();
+    public function assistenciaPerAlumne($alumneId)
+    {
+        try {
+            $resultat = [];
+            $dataIni = null;
+            $dataFi = null;
+            $trimestreActual = 1;
 
-        // Group inscription IDs by id_assignatura
-        $perAssignatura = [];
-        foreach ($inscripcions as $inscripcio) {
-            $perAssignatura[$inscripcio->id_assignatura][] = $inscripcio->id;
-        }
+            // 1. Detecció del període i trimestre actual
+            if (Schema::hasTable('periodes')) {
+                $periodeActiu = null;
+                if (Schema::hasColumn('periodes', 'actiu')) {
+                    $periodeActiu = DB::table('periodes')->where('actiu', true)->first();
+                }
+                if (!$periodeActiu) {
+                    $periodeActiu = DB::table('periodes')->first();
+                }
 
-        $retard_total = 0;
-        $faltes_total = 0;
-        $justificades_total = 0;
+                if ($periodeActiu) {
+                    $ara = Carbon::now();
+                    $t1_ini = !empty($periodeActiu->trimestre_1_ini) ? Carbon::parse($periodeActiu->trimestre_1_ini) : null;
+                    $t1_fi = !empty($periodeActiu->trimestre_1_fi) ? Carbon::parse($periodeActiu->trimestre_1_fi) : null;
+                    $t2_ini = !empty($periodeActiu->trimestre_2_ini) ? Carbon::parse($periodeActiu->trimestre_2_ini) : null;
+                    $t2_fi = !empty($periodeActiu->trimestre_2_fi) ? Carbon::parse($periodeActiu->trimestre_2_fi) : null;
+                    $t3_ini = !empty($periodeActiu->trimestre_3_ini) ? Carbon::parse($periodeActiu->trimestre_3_ini) : null;
+                    $t3_fi = !empty($periodeActiu->trimestre_3_fi) ? Carbon::parse($periodeActiu->trimestre_3_fi) : null;
 
-        foreach ($perAssignatura as $idAssignatura => $inscripcioIds) {
-            $retard = 0;
-            $faltes = 0;
-            $justificades = 0;
-
-            // Get subject name
-            $nomAssignatura = DB::table('assignatures')
-                ->where('id', $idAssignatura)
-                ->select('nom')
-                ->get();
-
-            // Get all assistencies for all inscripcions of this subject
-            $assistenciesValue = DB::table('assistencies')
-                ->whereIn('id_inscripcio', $inscripcioIds)
-                ->select('id', 'estat')
-                ->get();
-
-            foreach ($assistenciesValue as $valor) {
-                switch ($valor->estat) {
-                    case 'Retard':
-                    case 'Retart':
-                        $retard++;
-                        $retard_total++;
-                        break;
-                    case 'Falta':
-                    case 'Justificada':
-                        if ($valor->estat === 'Justificada') {
-                            $justificades++;
-                            $justificades_total++;
-                            break;
-                        }
-                        $findJustificacio = DB::table('justificants')
-                            ->where('id_assistencia_ini', $valor->id)
-                            ->select('acceptada')
-                            ->first();
-
-                        if ($findJustificacio !== null) {
-                            $justificades++;
-                            $justificades_total++;
-                        } else {
-                            $faltes++;
-                            $faltes_total++;
-                        }
-                        break;
-                    default:
-                        break;
+                    if ($t1_ini && $t1_fi && $ara->between($t1_ini, $t1_fi)) {
+                        $dataIni = $t1_ini; $dataFi = $t1_fi; $trimestreActual = 1;
+                    } elseif ($t2_ini && $t2_fi && $ara->between($t2_ini, $t2_fi)) {
+                        $dataIni = $t2_ini; $dataFi = $t2_fi; $trimestreActual = 2;
+                    } elseif ($t3_ini && $t3_fi && $ara->between($t3_ini, $t3_fi)) {
+                        $dataIni = $t3_ini; $dataFi = $t3_fi; $trimestreActual = 3;
+                    } else {
+                        $dataIni = $t1_ini; $dataFi = $t3_fi; $trimestreActual = 1;
+                    }
                 }
             }
 
-            $entry = (object) [
-                'nom_assignatura' => $nomAssignatura,
-                'retards'         => $retard,
-                'faltes'          => $faltes,
-                'justificades'    => $justificades,
-            ];
-            $resultat[] = $entry;
-        }
+            // Columna d'hores segons el trimestre
+            $columnaHores = "hores_{$trimestreActual}r_trimestre";
 
-        $entry_total = (object) [
-            'nom_assignatura' => [ (object) ['nom' => 'Total'] ],
-            'retards'         => $retard_total,
-            'faltes'          => $faltes_total,
-            'justificades'    => $justificades_total,
-        ];
-        array_unshift($resultat, $entry_total);
-        return $resultat;
+            // 2. Inscripcions de l'alumne
+            $inscripcions = DB::table('inscrits')
+                ->where('id_alumne', $alumneId)
+                ->select('id', 'id_assignatura')
+                ->get();
+
+            $perAssignatura = [];
+            foreach ($inscripcions as $insc) {
+                $perAssignatura[$insc->id_assignatura][] = $insc->id;
+            }
+
+            $retard_total = 0;
+            $faltes_total = 0;
+            $justificades_total = 0;
+            $hores_totals_curs = 0;
+
+            // 3. Processar cada assignatura
+            foreach ($perAssignatura as $idAssignatura => $inscripcioIds) {
+                $retard = 0;
+                $faltes = 0;
+                $justificades = 0;
+
+                // Obtenir dades d'hores de l'assignatura per aquest trimestre
+                $assignatura = DB::table('assignatures')
+                    ->where('id', $idAssignatura)
+                    ->first(['nom', $columnaHores]);
+
+                $nom = $assignatura ? $assignatura->nom : 'Assignatura';
+                $horesTrimestre = ($assignatura && isset($assignatura->$columnaHores)) ? (int)$assignatura->$columnaHores : 0;
+                $hores_totals_curs += $horesTrimestre;
+
+                $queryAssis = DB::table('assistencies')
+                    ->whereIn('id_inscripcio', $inscripcioIds);
+
+                if ($dataIni && $dataFi) {
+                    $queryAssis->whereBetween('data', [$dataIni->format('Y-m-d'), $dataFi->format('Y-m-d')]);
+                }
+
+                $assistenciesValue = $queryAssis->select('id', 'estat', 'data')->get();
+
+                foreach ($assistenciesValue as $valor) {
+                    switch ($valor->estat) {
+                        case 'Retard':
+                        case 'Retart':
+                            $retard++;
+                            $retard_total++;
+                            break;
+                        case 'Falta':
+                        case 'Justificada':
+                            if ($valor->estat === 'Justificada') {
+                                $justificades++;
+                                $justificades_total++;
+                                break;
+                            }
+                            $findJustificacio = DB::table('justificants')
+                                ->where('id_alum', $alumneId)
+                                ->whereDate('data_inici', '<=', $valor->data)
+                                ->whereDate('data_fi', '>=', $valor->data)
+                                ->where('estat', 'Acceptada')
+                                ->exists();
+
+                            if ($findJustificacio) {
+                                $justificades++;
+                                $justificades_total++;
+                            } else {
+                                $faltes++;
+                                $faltes_total++;
+                            }
+                            break;
+                    }
+                }
+
+                // Percentatge de faltes = Faltes No Justificades / Hores * 100
+                $percentatge = ($horesTrimestre > 0)
+                    ? round(($faltes / $horesTrimestre) * 100, 2)
+                    : 0;
+
+                $resultat[] = (object) [
+                    'nom_assignatura' => [ (object)['nom' => $nom] ],
+                    'retards'         => $retard,
+                    'faltes'          => $faltes,
+                    'justificades'    => $justificades,
+                    'percentatge'     => $percentatge,
+                ];
+            }
+
+            // Mitjana global basada en la suma de totes les hores del trimestre
+            $percentatge_global = ($hores_totals_curs > 0)
+                ? round(($faltes_total / $hores_totals_curs) * 100, 2)
+                : 0;
+
+            $entry_total = (object) [
+                'nom_assignatura' => [ (object) ['nom' => 'Total'] ],
+                'retards'         => $retard_total,
+                'faltes'          => $faltes_total,
+                'justificades'    => $justificades_total,
+                'percentatge'     => $percentatge_global,
+            ];
+            array_unshift($resultat, $entry_total);
+
+            return response()->json($resultat);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage(),
+                'line' => $e->getLine()
+            ], 500);
+        }
     }
 }
-

@@ -12,18 +12,26 @@ class Periode extends Model
     protected $table = 'periodes';
 
     protected $fillable = [
-        'trimestre_1',
-        'trimestre_2',
-        'trimestre_3',
+        'nom',
+        'actiu',
+        'trimestre_1_ini',
+        'trimestre_1_fi',
+        'trimestre_2_ini',
+        'trimestre_2_fi',
+        'trimestre_3_ini',
+        'trimestre_3_fi',
     ];
 
     /**
      * Get the dates as Carbon instances.
      */
     protected $casts = [
-        'trimestre_1' => 'date',
-        'trimestre_2' => 'date',
-        'trimestre_3' => 'date',
+        'trimestre_1_ini' => 'date',
+        'trimestre_1_fi' => 'date',
+        'trimestre_2_ini' => 'date',
+        'trimestre_2_fi' => 'date',
+        'trimestre_3_ini' => 'date',
+        'trimestre_3_fi' => 'date',
     ];
 
     public function cursos()
