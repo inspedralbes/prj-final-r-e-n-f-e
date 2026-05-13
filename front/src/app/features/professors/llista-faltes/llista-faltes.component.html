@@ -7,48 +7,63 @@
   <app-sidebar></app-sidebar>
 
 
-  <div class="contingut">
+  <div class="contingut relative-container">
     <div class="targeta-llista">
       <div class="capçalera-llista">
         <h1>Rànquing de Faltes</h1>
         <p class="setmana-info">Alumnes amb més absències acumulades</p>
       </div>
-      <!-- Botó per fer proves al generar l'informe de faltes -->
-      <button (click)="generarInformeFaltes(3,1,30)">Generar Informe de Faltes</button>
 
-      <!-- La taula on es veu qui ha faltat més a cada classe -->
-      <div class="contenedor-taula">
-        <table class="taula-assistencia">
-          <thead>
-            <tr>
-              <th class="col-nom">Nom de l'alumne</th>
-              <th class="col-assignatura">Assignatura</th>
-              <th class="col-faltes">Total de Faltes</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (alumne of assitenciesRanking(); track alumne.nomAlumne + alumne.nomAssignatura) {
-            <tr>
-              <td class="nom-alumne">{{ alumne.nomAlumne }}</td>
-              <td class="nom-assignatura">{{ alumne.nomAssignatura }}</td>
-              <td class="celda-assistencia">
-                <div class="badge-faltes">
-                  {{ alumne.totalFaltes }}
-                </div>
-              </td>
-            </tr>
-            }
-            <!-- Si no hi ha cap falta registrada, ensenyem aquest avís -->
-            @empty {
-            <tr>
-              <td colspan="3" style="text-align: center; padding: 20px; color: #64748b;">
-                No hi ha cap falta registrada al sistema encara.
-              </td>
-            </tr>
-            }
-          </tbody>
-        </table>
-      </div>
+      @if (isLoading) {
+        <div class="admin-loading-container">
+          <div class="admin-spinner"></div>
+          <p>Calculant rànquing d'absències...</p>
+        </div>
+      } @else {
+        <!-- Botó per fer proves al generar l'informe de faltes -->
+        <button class="boto-informe" (click)="generarInformeFaltes(3,1,30)">
+          <ng-icon name="heroDocumentText"></ng-icon> Generar Informe de Faltes
+        </button>
+
+        <!-- La taula on es veu qui ha faltat més a cada classe -->
+        <div class="contenedor-taula">
+          <table class="taula-assistencia">
+            <thead>
+              <tr>
+                <th class="col-nom">Nom de l'alumne</th>
+                <th class="col-assignatura">Assignatura</th>
+                <th class="col-faltes">Total de Faltes</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (alumne of assitenciesRanking(); track alumne.nomAlumne + alumne.nomAssignatura) {
+              <tr>
+                <td class="nom-alumne">
+                  <div class="user-cell-mini">
+                    <div class="avatar-circle-mini"><ng-icon name="heroUser"></ng-icon></div>
+                    <span>{{ alumne.nomAlumne }}</span>
+                  </div>
+                </td>
+                <td class="nom-assignatura">{{ alumne.nomAssignatura }}</td>
+                <td class="celda-assistencia">
+                  <div class="badge-faltes">
+                    {{ alumne.totalFaltes }}
+                  </div>
+                </td>
+              </tr>
+              }
+              <!-- Si no hi ha cap falta registrada, ensenyem aquest avís -->
+              @empty {
+              <tr>
+                <td colspan="3" style="text-align: center; padding: 20px; color: #64748b;">
+                  No hi ha cap falta registrada al sistema encara.
+                </td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
     </div>
   </div>
 </div>

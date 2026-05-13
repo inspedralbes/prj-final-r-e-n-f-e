@@ -3,10 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { AssignaturesManagerService } from '../../../shared/services/assignatures/assignatures-manager.service';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroTrash, heroPlus, heroBookOpen } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-llista-assignatures',
-  imports: [CommonModule, FormsModule, SidebarComponent],
+  standalone: true,
+  imports: [CommonModule, FormsModule, SidebarComponent, NgIconComponent],
+  providers: [provideIcons({ heroTrash, heroPlus, heroBookOpen })],
   templateUrl: './llista-assignatures.component.html',
   styleUrl: './llista-assignatures.component.css',
 })
@@ -18,6 +22,10 @@ export class LlistaAssignaturesComponent implements OnInit {
   novaAssignaturaDataInici = signal<string>('');
   novaAssignaturaDataFi = signal<string>('');
   novaAssignaturaExempcio = signal<boolean>(false);
+  novaAssignaturaHores1 = signal<number | null>(null);
+  novaAssignaturaHores2 = signal<number | null>(null);
+  novaAssignaturaHores3 = signal<number | null>(null);
+  isSaving = signal<boolean>(false);
 
   ngOnInit(): void {
     // Carreguem les dades només entrar a la pantalla
@@ -49,33 +57,49 @@ export class LlistaAssignaturesComponent implements OnInit {
     const inici = this.novaAssignaturaDataInici();
     const fi = this.novaAssignaturaDataFi();
     const exempcio = this.novaAssignaturaExempcio();
+    const h1 = this.novaAssignaturaHores1();
+    const h2 = this.novaAssignaturaHores2();
+    const h3 = this.novaAssignaturaHores3();
 
     if (!nom) {
       alert("El nom de l'assignatura és obligatori.");
       return;
     }
 
-    const requestData: any = { nom, exempcio };
+    const requestData: any = { 
+      nom, 
+      exempcio,
+      hores_1r_trimestre: h1,
+      hores_2n_trimestre: h2,
+      hores_3r_trimestre: h3
+    };
 
-    // Si hi ha dates, creem el format JSON que espera el seeder/base de dades
+    // Formatem les dates a JSON per a la BBDD
     if (inici && fi) {
       requestData.interval = JSON.stringify([{ data_ini: inici, data_fi: fi }]);
     }
 
+    this.isSaving.set(true);
     this.assignaturesManager.afegirAssignatura(requestData)
       .then(() => {
         this.novaAssignaturaNom.set('');
         this.novaAssignaturaDataInici.set('');
         this.novaAssignaturaDataFi.set('');
         this.novaAssignaturaExempcio.set(false);
+        this.novaAssignaturaHores1.set(null);
+        this.novaAssignaturaHores2.set(null);
+        this.novaAssignaturaHores3.set(null);
       })
       .catch(err => {
         console.error('Error al crear l\'assignatura', err);
         alert('No s\'ha pogut crear l\'assignatura.');
+      })
+      .finally(() => {
+        this.isSaving.set(false);
       });
   }
 
-  // Converteix el format JSON de la base de dades a un text llegible (DD/MM/YYYY)
+  // Converteix el JSON a format llegible (DD/MM/YYYY)
   formatarInterval(intervalRaw: any): string {
     if (!intervalRaw) return 'No definit';
 

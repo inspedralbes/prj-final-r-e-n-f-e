@@ -1,4 +1,33 @@
-<div class="contenidor">
-    <h2>Portal d'Administració</h2>
-    <p>Benvingut a l'àrea d'administració.</p>
+<div class="pagina-admin">
+  <app-sidebaradmin></app-sidebaradmin>
+
+  <div class="contingut-admin">
+    <h1 class="titol-dashboard">Dashboard d'Administració</h1>
+
+    <!-- Fila de gràfics: els dos un al costat de l'altre -->
+    <div class="fila-grafics">
+
+      <!-- GRÀFIC 1: Usuaris per rol -->
+      <div class="targeta-grafic">
+        <h2 class="titol-grafic">Usuaris per Rol</h2>
+        <div class="contenidor-canvas">
+          <canvas baseChart [data]="barData()" [options]="barOptions" [type]="'bar'"></canvas>
+        </div>
+      </div>
+
+      <!-- GRÀFIC 2: Inscrits per assignatura -->
+      <div class="targeta-grafic">
+        <h2 class="titol-grafic">Inscrits per Assignatura</h2>
+        <div class="contenidor-canvas">
+          <canvas
+            baseChart
+            [data]="barDataAssignatures()"
+            [options]="barOptionsAssignatures"
+            [type]="'line'"
+          ></canvas>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>

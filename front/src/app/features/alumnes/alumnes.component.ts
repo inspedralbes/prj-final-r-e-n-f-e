@@ -5,9 +5,10 @@ import { SidebarAlumneComponent } from '../../shared/components/sidebar/alumnes/
 
 export interface assistenciaPerUsuari {
   nom_assignatura: { nom: string }[];
-  retards: string;
-  faltes: string;
-  justificades: string;
+  retards: number;
+  faltes: number;
+  justificades: number;
+  percentatge: number;
 }
 
 @Component({
@@ -23,6 +24,7 @@ export class AlumnesComponent implements OnInit {
   indexActual = signal(0);
   showDespegable = signal(false);
   inscritsPerUsuari = this.inscritsManager.inscritsPerUsuari;
+  isLoading = this.inscritsManager.isLoading;
 
   setIndex(index: number) {
     this.indexActual.set(index);

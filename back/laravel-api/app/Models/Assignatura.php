@@ -16,6 +16,9 @@ class Assignatura extends Model
         'id_classe_projecte',
         'interval',
         'exempcio',
+        'hores_1r_trimestre',
+        'hores_2n_trimestre',
+        'hores_3r_trimestre',
     ];
 
     public function imparteix()
@@ -33,17 +36,8 @@ class Assignatura extends Model
         return $this->hasMany(Horari::class, 'id_assig');
     }
 
-    public function justificantsInici()
-    {
-        return $this->hasMany(Justificant::class, 'id_ass_ini');
-    }
-
-    public function justificantsFi()
-    {
-        return $this->hasMany(Justificant::class, 'id_ass_fi');
-    }
-
     public function classeProjecte()
+
     {
         return $this->belongsTo(Classe::class, 'id_classe_projecte');
     }

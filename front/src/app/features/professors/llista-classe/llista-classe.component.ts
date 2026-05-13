@@ -7,11 +7,14 @@ import { AssistenciesManagerService } from '../../../shared/services/assistencie
 import { HorarisManagerService } from '../../../shared/services/horaris/horaris-manager.service';
 import { getSimbolAssistencia } from '../../../shared/utils/assistencia-utils';
 import { Horari } from '../../../shared/models/horaris.model';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroUser } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-llista-classe',
   standalone: true,
-  imports: [CommonModule, SidebarComponent, FormsModule],
+  imports: [CommonModule, SidebarComponent, FormsModule, NgIconComponent],
+  providers: [provideIcons({ heroUser })],
   templateUrl: './llista-classe.component.html',
   styleUrl: './llista-classe.component.css',
 })
@@ -24,51 +27,126 @@ export class LlistaClasseComponent implements OnInit {
   datesSetmana: string[] = []; // Formatat per mostrar (DD/MM)
   datesRealsLaravel: string[] = []; // Formatat per a la BD (YYYY-MM-DD)
 
-  // Sessions del professor: filtrem els horaris per l'usuari loguejat
-  sessionsProfessor = computed(() => {
-    const totsElsHoraris = this.horarisManager.horaris();
-    const usuariLoguejat = JSON.parse(localStorage.getItem('usuari') || '{}');
-    const llistaFiltrada: Horari[] = [];
-
-    // Bucle per trobar només les sessions d'aquest professor
-    for (let i = 0; i < totsElsHoraris.length; i++) {
-      const h = totsElsHoraris[i];
-      if (h.id_professor === usuariLoguejat.id) {
-        llistaFiltrada.push(h);
-      }
-    }
-
-    // Ordenem per hora (exemple: L1, L2, L3...)
-    llistaFiltrada.sort((a: Horari, b: Horari) => a.codi_hora.localeCompare(b.codi_hora));
-
-    return llistaFiltrada;
-  });
-
+  // Noves variables per a la Fase 2 descarregades només sota demanda
+  sessionsProfessorData = signal<Horari[]>([]);
+  alumnesAmbAssistencia = signal<any[]>([]);
   sessioSeleccionadaId = signal<number | null>(null);
+
+  carregantDades = computed(() => this.assistenciesManager.isLoading() || this.horarisManager.isLoading());
+
+  // Ordenem el llistat per a l'HTML
+  sessionsProfessor = computed(() => {
+    const llista = this.sessionsProfessorData();
+    // primitive sort loop? No, sort in string is better.
+    // Lògica bàsica requerida pel client
+    llista.sort((a: Horari, b: Horari) => a.codi_hora.localeCompare(b.codi_hora));
+    return llista;
+  });
 
   // Índex de la columna (0=Dilluns ... 4=Divendres) que correspon a la sessió activa
   diaActivIndex = computed(() => {
     const idSessio = this.sessioSeleccionadaId();
     if (!idSessio) return -1;
-    const sessio = this.sessionsProfessor().find(s => s.id === idSessio);
+    const sessions = this.sessionsProfessor();
+    let sessio = null;
+    for (let i = 0; i < sessions.length; i++) {
+      if (sessions[i].id === idSessio) {
+        sessio = sessions[i];
+        break;
+      }
+    }
     if (!sessio) return -1;
-    const lletraMap: { [key: string]: number } = { 'L': 0, 'M': 1, 'X': 2, 'J': 3, 'V': 4 };
+
+    const lletraMap: { [key: string]: number } = { L: 0, M: 1, X: 2, J: 3, V: 4 };
     return lletraMap[sessio.codi_hora.charAt(0).toUpperCase()] ?? -1;
   });
 
   async ngOnInit() {
-    this.inscritsManager.carregarInscrits();
-    this.assistenciesManager.carregarAssistencies();
-    await this.horarisManager.carregarHoraris();
-
     this.calcularDatesSetmana();
 
-    // Seleccionem la primera sessió si n'hi ha
-    const sessions = this.sessionsProfessor();
-    if (sessions.length > 0) {
-      this.sessioSeleccionadaId.set(sessions[0].id ?? null);
+    // Fase 2: Obtenim l'usuari profe i descarreguem NOMÉS els seus horaris
+    const usuariLoguejat = JSON.parse(localStorage.getItem('usuari') || '{}');
+    if (usuariLoguejat && usuariLoguejat.id) {
+      const sessionsDelBackend = await this.horarisManager.getSessionsProfessor(usuariLoguejat.id);
+      this.sessionsProfessorData.set(sessionsDelBackend);
+
+      if (sessionsDelBackend && sessionsDelBackend.length > 0) {
+        const primeraSessioId = sessionsDelBackend[0].id ?? null;
+        this.sessioSeleccionadaId.set(primeraSessioId);
+        await this.carregarGraellaPerALaSessio(primeraSessioId);
+      }
     }
   }
+
+  async carregarGraellaPerALaSessio(idSessio: number | null) {
+    if (!idSessio) {
+      this.alumnesAmbAssistencia.set([]);
+      return;
+    }
+
+    const dataIniciBD = this.datesRealsLaravel[0];
+    const dataFiBD = this.datesRealsLaravel[4];
+
+    // La nova màgia de Fase 2. Només ens arribaran en un array els inscrits amb l'assistència d'aquella setmana!
+    const llistaDinsBack = await this.assistenciesManager.getAssistenciaSetmanal(
+      idSessio,
+      dataIniciBD,
+      dataFiBD,
+    );
+
+    const resultatFinal = [];
+    if (llistaDinsBack && Array.isArray(llistaDinsBack)) {
+      for (let i = 0; i < llistaDinsBack.length; i++) {
+        const inscrit = llistaDinsBack[i];
+        const alumne = inscrit.alumne;
+
+        // Ara organitzarem les assistències que ens arriben per dies
+        const assistenciaNativa: any = {};
+        // Posem tots els dies buits per defecte
+        for (let j = 0; j < this.datesSetmana.length; j++) {
+          assistenciaNativa[this.datesSetmana[j]] = '';
+        }
+
+        // Omplim si n'hi ha. Les assistencies ja venen filtrades de Backend!
+        const assistenciesDades = inscrit.assistencies;
+        if (assistenciesDades && Array.isArray(assistenciesDades)) {
+          for (let a = 0; a < assistenciesDades.length; a++) {
+            const assisInfo = assistenciesDades[a];
+            const dataFormatCurta = assisInfo.data.substring(0, 10);
+
+            // Quin dia setmana toca (0..4) ?
+            let indexDia = -1;
+            for (let k = 0; k < this.datesRealsLaravel.length; k++) {
+              if (this.datesRealsLaravel[k] === dataFormatCurta) {
+                indexDia = k;
+                break;
+              }
+            }
+            if (indexDia >= 0) {
+              const diaVisible = this.datesSetmana[indexDia];
+              assistenciaNativa[diaVisible] = getSimbolAssistencia(
+                assisInfo.estat,
+                !!assisInfo.justificat,
+              );
+            }
+          }
+        }
+
+        resultatFinal.push({
+          id: alumne.id,
+          id_inscripcio_db: inscrit.id,
+          nom: (alumne.nom || '') + ' ' + (alumne.cognom || ''),
+          avatar: this.obtenirInicialsAlumne(alumne),
+          assistencia: assistenciaNativa,
+        });
+      }
+    }
+
+    this.alumnesAmbAssistencia.set(resultatFinal);
+  }
+
+  // Compatibilitat Html actual
+  alumnesFiltrats = computed(() => this.alumnesAmbAssistencia());
 
   // Calcula els 5 dies de la setmana laboral actual (Dilluns-Divendres)
   calcularDatesSetmana() {
@@ -82,7 +160,10 @@ export class LlistaClasseComponent implements OnInit {
       dia.setDate(dilluns.getDate() + i);
 
       // Formatem per a la UI (Exemple: 15/03)
-      const diaFormatat = dia.getDate().toString().padStart(2, '0') + '/' + (dia.getMonth() + 1).toString().padStart(2, '0');
+      const diaFormatat =
+        dia.getDate().toString().padStart(2, '0') +
+        '/' +
+        (dia.getMonth() + 1).toString().padStart(2, '0');
       this.datesSetmana.push(diaFormatat);
 
       // Formatem per a la Base de Dades (Exemple: 2024-03-15)
@@ -93,55 +174,6 @@ export class LlistaClasseComponent implements OnInit {
     }
   }
 
-  // Obté els alumnes de la sessió escollida i el seu estat per a cada dia de la setmana
-  alumnesFiltrats = computed(() => {
-    const idSessio = this.sessioSeleccionadaId();
-    if (!idSessio) return [];
-
-    const totsElsInscrits = this.inscritsManager.inscrits();
-    const totesAssistencies = this.assistenciesManager.assistencies();
-    const resultat = [];
-
-    // 1. Busquem quins alumnes estan inscrits en aquesta sessió (Horari)
-    for (let i = 0; i < totsElsInscrits.length; i++) {
-      const inscripcio = totsElsInscrits[i];
-
-      if (inscripcio.id_horari === idSessio) {
-        const assistenciaSetmanal: any = {};
-
-        // 2. Per a cada alumne trobat, mirem la seva falta per a cada dia de la setmana (Dilluns a Divendres)
-        for (let j = 0; j < this.datesSetmana.length; j++) {
-          const diaVisible = this.datesSetmana[j];
-          const dataBD = this.datesRealsLaravel[j];
-
-          // 3. Busquem si hi ha un registre de falta per a aquest Alumne + Dia concrete
-          let asis = null;
-          for (let k = 0; k < totesAssistencies.length; k++) {
-            const a = totesAssistencies[k];
-            if (a.id_inscripcio === inscripcio.id && a.data && a.data.substring(0, 10) === dataBD) {
-              asis = a;
-              break; // Aturem la cerca al primer que trobem
-            }
-          }
-
-          // Guardem el símbol (., F, R) o es queda buit si no hi ha dades
-          assistenciaSetmanal[diaVisible] = asis ? getSimbolAssistencia(asis.estat, !!asis.justificat) : '';
-        }
-
-        // 4. Afegim tota la informació de l'alumne procesat a la llista final
-        resultat.push({
-          id: inscripcio.id_alumne,
-          id_inscripcio_db: inscripcio.id,
-          nom: (inscripcio.alumne?.nom || '') + ' ' + (inscripcio.alumne?.cognom || ''),
-          avatar: this.obtenirInicialsAlumne(inscripcio.alumne),
-          assistencia: assistenciaSetmanal
-        });
-      }
-    }
-
-    return resultat;
-  });
-
   obtenirInicialsAlumne(alumne: any): string {
     if (!alumne) return '??';
     const nom = alumne.nom?.charAt(0) || '';
@@ -150,7 +182,9 @@ export class LlistaClasseComponent implements OnInit {
   }
 
   canviarSessio(event: any) {
-    this.sessioSeleccionadaId.set(Number(event.target.value));
+    const nouId = Number(event.target.value);
+    this.sessioSeleccionadaId.set(nouId);
+    this.carregarGraellaPerALaSessio(nouId);
   }
 
   // Guarda o actualitza l'estat d'assistència a la Base de Dades
@@ -165,7 +199,7 @@ export class LlistaClasseComponent implements OnInit {
       id_inscripcio: alumne.id_inscripcio_db,
       data: dataBD,
       estat: this.mapejarSimbolAEstat(nouEstat),
-      id_profe: JSON.parse(localStorage.getItem('usuari') || '{}').id
+      id_profe: JSON.parse(localStorage.getItem('usuari') || '{}').id,
     };
 
     const llistaAssistencies = this.assistenciesManager.assistencies();
@@ -174,7 +208,11 @@ export class LlistaClasseComponent implements OnInit {
     // Bucle per trobar si l'assistència d'aquest dia ja es va crear abans
     for (let i = 0; i < llistaAssistencies.length; i++) {
       const a = llistaAssistencies[i];
-      if (a.id_inscripcio === alumne.id_inscripcio_db && a.data && a.data.substring(0, 10) === dataBD) {
+      if (
+        a.id_inscripcio === alumne.id_inscripcio_db &&
+        a.data &&
+        a.data.substring(0, 10) === dataBD
+      ) {
         existent = a;
         break;
       }

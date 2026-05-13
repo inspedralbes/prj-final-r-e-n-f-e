@@ -30,6 +30,9 @@ class AssignaturaController extends Controller
             'nom' => 'required|string|max:255',
             'interval' => 'nullable|string',
             'exempcio' => 'nullable|boolean',
+            'hores_1r_trimestre' => 'nullable|integer|min:0',
+            'hores_2n_trimestre' => 'nullable|integer|min:0',
+            'hores_3r_trimestre' => 'nullable|integer|min:0',
         ]);
 
         $assignatura = Assignatura::create($validated);
@@ -80,6 +83,9 @@ class AssignaturaController extends Controller
             'nom' => 'sometimes|required|string|max:255',
             'interval' => 'nullable|string',
             'exempcio' => 'nullable|boolean',
+            'hores_1r_trimestre' => 'nullable|integer|min:0',
+            'hores_2n_trimestre' => 'nullable|integer|min:0',
+            'hores_3r_trimestre' => 'nullable|integer|min:0',
         ]);
 
         $assignatura->update($validated);

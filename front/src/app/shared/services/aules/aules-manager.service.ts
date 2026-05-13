@@ -9,7 +9,7 @@ export class AulesManagerService {
   private apiManager = inject(ApiManagerService);
 
   aules = signal<Aula[]>([]);
-  isLoading = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
 
   /**
