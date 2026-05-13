@@ -2,7 +2,7 @@ name: Run Full Test Suite
 
 on:
   pull_request:
-    branches: [dev, pre-prod]
+    branches: [dev, pre-prod, feature-tests]
 
 jobs:
   test:
