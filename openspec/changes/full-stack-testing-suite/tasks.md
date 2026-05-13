@@ -30,6 +30,11 @@
 
 ## 5. CI/CD Integration
 
-- [ ] 5.1 Update `.github/workflows/tests.yml` to run `npm test` in the `front` directory.
-- [ ] 5.2 Ensure the CI environment properly handles the SQLite in-memory database and Sanctum.
-- [ ] 5.3 Verify the entire pipeline passes on a sample pull request.
+- [x] 5.1 Update `.github/workflows/tests.yml` to run `npm test` in the `front` directory.
+- [x] 5.2 Ensure the CI environment properly handles the SQLite in-memory database and Sanctum. (FIXED: Migration foreign key issue resolved)
+- [x] 5.3 Verify the entire pipeline passes on a sample pull request.
+
+**Summary of Fixes during Implementation:**
+- Fixed SQLite migration `justificants_add_fechas.php` to drop foreign keys before dropping columns.
+- Updated Cypress mocks to match `back/api/v1/` URL structure and `Fase 2` data schemas.
+- Verified all 10 Laravel tests and 4 Cypress tests pass.
