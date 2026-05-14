@@ -19,16 +19,22 @@ describe('Attendance Flow', () => {
     }).as('loginRequest');
 
     // Specific intercepts first
-    cy.intercept('GET', '**/back/api/v1/horaris/professor/*', {
+    cy.intercept('GET', '**/back/api/v1/horaris/professor/*/context', {
       statusCode: 200,
-      body: [
-        {
-          id: 1,
-          codi_hora: 'X1',
-          assignatura: { nom: 'Matemàtiques' },
-          aula: { nom: 'Aula 101' }
+      body: {
+        success: true,
+        data: {
+          sessions: [
+            {
+              id: 1,
+              codi_hora: 'X1',
+              assignatura: { nom: 'Matemàtiques' },
+              aula: { nom: 'Aula 101' }
+            }
+          ],
+          default_id: 1
         }
-      ]
+      }
     }).as('getSessions');
 
     cy.intercept('GET', '**/back/api/v1/horaris/*/assistencia-setmanal*', {
@@ -74,8 +80,8 @@ describe('Attendance Flow', () => {
     // Check we are in the dashboard
     cy.url().should('include', '/professors');
 
-    // Click on "Llista Classe" in sidebar
-    cy.get('a[routerlink="/llista-classe"]').click();
+    // Click on "Llista Classe" in sidebar - using href for better reliability
+    cy.get('a[href="/llista-classe"]').click();
 
     // Check we are in the attendance list
     cy.url().should('include', '/llista-classe');

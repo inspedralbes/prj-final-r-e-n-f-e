@@ -26,8 +26,8 @@ describe('Tutor Mode Visibility', () => {
 
     // Verify tutor icons are visible in the sidebar
     // Academic Cap (Gestió Inscrits) and Calendar Days (Horari Alumnes)
-    cy.get('a[routerlink="/gestio-inscrits"]').should('be.visible');
-    cy.get('a[routerlink="/horari-alumnes"]').should('be.visible');
+    cy.get('a[href="/gestio-inscrits"]').should('be.visible');
+    cy.get('a[href="/horari-alumnes"]').should('be.visible');
   });
 
   // Since the code currently has 'public esTutor = true' hardcoded, 
