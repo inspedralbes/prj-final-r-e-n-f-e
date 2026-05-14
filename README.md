@@ -76,6 +76,10 @@ Aplicació web per a la gestió d'assistència d'un centre educatiu de formació
 
 ---
 
+## Documentació i Tests
+
+Per a més detalls sobre la infraestructura de tests i com executar-los, consulta la [Documentació de Tests](doc/TESTING.md).
+
 ## Estat del projecte
 
 El projecte es troba en fase **MVP (Minimum Viable Product)**. Les funcionalitats principals del backend estan implementades (API REST completa), però el projecte **no està finalitzat**.
