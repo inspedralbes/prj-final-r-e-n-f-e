@@ -78,6 +78,7 @@ Route::prefix('v1')->group(function (): void {
 
         // Rutes de Justificants
         Route::apiResource('justificants', JustificantController::class);
+        Route::get('justificants/tutoria/pendents' , [JustificantController::class, 'justificacioPerTutoria'])->middleware('auth:sanctum');
         Route::get('justificants/alumne/{alumneId}', [JustificantController::class, 'getByAlumne']);
         Route::post('justificants/acceptar/{id}', [JustificantController::class, 'acceptar']);
         // Rutes de Carta de Faltes
