@@ -71,8 +71,8 @@ export class LlistaClasseComponent implements OnInit {
     console.log('[INIT] Dates de la setmana (UI):', this.datesSetmana);
     console.log('[INIT] Dates per a la BD (Laravel):', this.datesRealsLaravel);
 
-    const usuariLoguejat = JSON.parse(localStorage.getItem('usuari') || '{}');
-    console.log('[INIT] Usuari del localStorage (clau "usuari"):', usuariLoguejat);
+    const usuariLoguejat = JSON.parse(localStorage.getItem('user') || '{}');
+    console.log('[INIT] Usuari del localStorage (clau "user"):', usuariLoguejat);
 
     // Escoltador del Socket
     this.socketService.listenToEvent('assistencia_updated').subscribe((data: any) => {
@@ -284,7 +284,7 @@ export class LlistaClasseComponent implements OnInit {
       id_inscripcio: alumne.id_inscripcio_db,
       data: dataBD,
       estat: estatBD,
-      id_profe: JSON.parse(localStorage.getItem('usuari') || '{}').id,
+      id_profe: JSON.parse(localStorage.getItem('user') || '{}').id,
     };
 
     console.log(`[GUARDAR] Dades a enviar:`, dades);

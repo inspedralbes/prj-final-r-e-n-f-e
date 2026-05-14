@@ -30,6 +30,7 @@ import{
       heroUserPlus,
       heroChevronDown,
       heroCheck,
+      heroArrowLeftOnRectangle,
     } from '@ng-icons/heroicons/outline';
 
 export const appConfig: ApplicationConfig = {
@@ -62,6 +63,7 @@ export const appConfig: ApplicationConfig = {
       heroUserPlus,
       heroChevronDown,
       heroCheck,
+      heroArrowLeftOnRectangle,
     }),
   ],
 };

@@ -1,15 +1,11 @@
-<!--
-    Aquí fem servir el Control Flow modern d'Angular:
-     - @for: Es per fer la llista (el bucle), més net que l'antic ngFor.
-     - @empty: Això es ho que es mostra si la llista no té res (està buida).
--->
 <div class="disseny-principal">
   <app-sidebar></app-sidebar>
 
-  <div class="contingut relative-container">
+  <div class="contingut">
     <div class="targeta-llista">
-      <div class="capçalera-llista flex-header">
-        <div>
+
+      <div class="capçalera-llista">
+        <div class="titol-seccio">
           <h1>Rànquing de Faltes</h1>
           <p class="setmana-info">
             {{
@@ -20,7 +16,6 @@
           </p>
         </div>
 
-        <!-- Toggle Mode Tutor (només si és tutor) -->
         @if (isTutor()) {
           <div class="tutor-toggle-container">
             <button
@@ -28,14 +23,16 @@
               [class.actiu]="!modeTutor()"
               (click)="!modeTutor() ? null : toggleModeTutor()"
             >
-              <ng-icon name="heroAcademicCap"></ng-icon> Ranking Profe
+              <ng-icon name="heroAcademicCap"></ng-icon>
+              Ranking Profe
             </button>
             <button
               class="boto-toggle"
               [class.actiu]="modeTutor()"
               (click)="modeTutor() ? null : toggleModeTutor()"
             >
-              <ng-icon name="heroUserGroup"></ng-icon> Mode Tutor
+              <ng-icon name="heroUserGroup"></ng-icon>
+              Mode Tutor
             </button>
           </div>
         }
@@ -47,7 +44,8 @@
           <p>Calculant rànquing d'absències...</p>
         </div>
       } @else {
-        <!-- Ranking Professor (Vista original) -->
+
+        <!-- Ranking Professor -->
         @if (!modeTutor()) {
           <div class="contenedor-taula">
             <table class="taula-assistencia">
@@ -59,10 +57,7 @@
                 </tr>
               </thead>
               <tbody>
-                @for (
-                  alumne of assitenciesRanking();
-                  track alumne.nomAlumne + alumne.nomAssignatura
-                ) {
+                @for (alumne of assitenciesRanking(); track alumne.nomAlumne + alumne.nomAssignatura) {
                   <tr>
                     <td class="nom-alumne">
                       <div class="user-cell-mini">
@@ -82,10 +77,7 @@
                 }
                 @empty {
                   <tr>
-                    <td
-                      colspan="3"
-                      style="text-align: center; padding: 20px; color: #64748b;"
-                    >
+                    <td colspan="3" class="empty-state">
                       No hi ha cap falta registrada a les teves assignatures.
                     </td>
                   </tr>
@@ -95,7 +87,7 @@
           </div>
         }
 
-        <!-- Mode Tutor (Vista nova) -->
+        <!-- Mode Tutor -->
         @if (modeTutor()) {
           <div class="contenedor-taula">
             <table class="taula-assistencia">
@@ -122,9 +114,9 @@
                         {{ alumne.total_faltes }}
                       </div>
                     </td>
-                    <td class="celda-accions" style="display: flex; gap: 10px; justify-content: center;">
+                    <td class="celda-accions">
                       <button
-                        class="boto-carta"
+                        class="btn btn-carta"
                         (click)="openThresholdPopup(alumne.id)"
                         title="Generar Carta"
                       >
@@ -132,8 +124,7 @@
                         Carta
                       </button>
                       <button
-                        class="boto-carta"
-                        style="background: #64748b;"
+                        class="btn btn-perfil"
                         (click)="anarAPerfil(alumne.id)"
                         title="Veure Perfil"
                       >
@@ -145,10 +136,7 @@
                 }
                 @empty {
                   <tr>
-                    <td
-                      colspan="3"
-                      style="text-align: center; padding: 20px; color: #64748b;"
-                    >
+                    <td colspan="3" class="empty-state">
                       No hi ha alumnes amb faltes a la teva classe.
                     </td>
                   </tr>
@@ -161,7 +149,7 @@
     </div>
   </div>
 
-  <!-- Popup Selecció Faltes (Opcional, si encara es vol fer servir des d'un altre lloc) -->
+  <!-- Modal Generar Carta -->
   @if (showThresholdPopup()) {
     <div class="modal-overlay" (click)="closeThresholdPopup()">
       <div class="modal-content" (click)="$event.stopPropagation()">

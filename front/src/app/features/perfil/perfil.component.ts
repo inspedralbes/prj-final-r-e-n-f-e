@@ -2,12 +2,13 @@ import { Component, inject, signal, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PerfilService, InfoAdicional } from '../../shared/services/perfil/perfil.service';
+import { AuthService } from '../../services/auth.service';
 import { Usuari } from '../../shared/models/usuaris.model';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { AlumnesComponent } from '../alumnes/alumnes.component';
 import { SidebarAlumneComponent } from '../../shared/components/sidebar/alumnes/sidebarAlumne.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroCog8Tooth, heroXMark } from '@ng-icons/heroicons/outline';
+import { heroCog8Tooth, heroXMark, heroArrowLeftOnRectangle } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-perfil',
@@ -15,10 +16,11 @@ import { heroCog8Tooth, heroXMark } from '@ng-icons/heroicons/outline';
   imports: [CommonModule, FormsModule, SidebarComponent, SidebarAlumneComponent, NgIconComponent],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css',
-  viewProviders: [provideIcons({ heroCog8Tooth, heroXMark })],
+  viewProviders: [provideIcons({ heroCog8Tooth, heroXMark, heroArrowLeftOnRectangle })],
 })
 export class PerfilComponent implements OnInit {
   private perfilService = inject(PerfilService);
+  private authService = inject(AuthService);
 
   @Input() id?: string;
 
@@ -99,5 +101,9 @@ export class PerfilComponent implements OnInit {
     if (!userLogueado) return false;
 
     return userLogueado.rol === 'Profe' || userLogueado.rol === 'Admin';
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }
