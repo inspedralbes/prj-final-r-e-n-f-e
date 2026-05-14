@@ -18,26 +18,34 @@ import { AdminUsuarisComponent } from './features/administracio/admin-usuaris/ad
 import { AdminPeriodesComponent } from './features/administracio/admin-periodes/admin-periodes.component';
 import { CompletarPerfilComponent } from './features/completar-perfil/completar-perfil.component';
 import { JustificantsComponents } from './features/professors/justificants/justificants.component';
+import { authGuard } from './guards/auth.guard';
+import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent },
-  { path: 'alumnes', component: AlumnesComponent },
-  { path: 'alumnes/horaris', component: Horaris },
-  { path: 'alumnes/justificants', component: JustificantsComponent },
-  { path: 'professors', component: ProfessorsComponent },
-  { path: 'administracio', component: AdministracioComponent },
-  { path: 'llista-classe', component: LlistaClasseComponent },
-  { path: 'llista-assignatures', component: LlistaAssignaturesComponent },
-  { path: 'llista-faltes', component: LlistaFaltesComponent },
-  { path: 'gestio-inscrits', component: GestioInscritsComponent },
-  { path: 'horari-alumnes', component: HorariAlumnesComponent },
-  { path: 'admin-assignatures', component: AdminAssignaturesComponent },
-  { path: 'admin-classes', component: AdminClassesComponent },
-  { path: 'admin-usuaris', component: AdminUsuarisComponent },
-  { path: 'admin-periodes', component: AdminPeriodesComponent },
   { path: 'auth/callback', component: AuthCallbackComponent },
-  { path: 'profile', component: PerfilComponent },
-  { path: 'profile/:id', component: PerfilComponent },
-  { path: 'completar-perfil', component: CompletarPerfilComponent },
+  { path: 'completar-perfil', component: CompletarPerfilComponent, canActivate: [authGuard] },
+  { path: 'profile', component: PerfilComponent, canActivate: [authGuard] },
+  { path: 'profile/:id', component: PerfilComponent, canActivate: [authGuard] },
+
+  // Alumne routes
+  { path: 'alumnes', component: AlumnesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['alumne'] } },
+  { path: 'alumnes/horaris', component: Horaris, canActivate: [authGuard, roleGuard], data: { roles: ['alumne'] } },
+  { path: 'alumnes/justificants', component: JustificantsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['alumne'] } },
+
+  // Profe routes
+  { path: 'professors', component: ProfessorsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['profe'] } },
+  { path: 'llista-classe', component: LlistaClasseComponent, canActivate: [authGuard, roleGuard], data: { roles: ['profe'] } },
+  { path: 'llista-assignatures', component: LlistaAssignaturesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['profe'] } },
+  { path: 'llista-faltes', component: LlistaFaltesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['profe'] } },
+  { path: 'gestio-inscrits', component: GestioInscritsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['profe'] } },
+  { path: 'horari-alumnes', component: HorariAlumnesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['profe'] } },
   { path: 'gestio-justificants', component: JustificantsComponents },
+
+  // Admin routes
+  { path: 'administracio', component: AdministracioComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
+  { path: 'admin-assignatures', component: AdminAssignaturesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
+  { path: 'admin-classes', component: AdminClassesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
+  { path: 'admin-usuaris', component: AdminUsuarisComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
+  { path: 'admin-periodes', component: AdminPeriodesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
 ];

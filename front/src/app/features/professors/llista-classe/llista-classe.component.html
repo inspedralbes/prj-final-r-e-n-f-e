@@ -27,8 +27,8 @@
             <select
               id="sessioSelect"
               class="select-modern"
-              (change)="canviarSessio($event)"
-              [value]="sessioSeleccionadaId()"
+              [ngModel]="sessioSeleccionadaId()"
+              (ngModelChange)="canviarSessioManualDirecte($event)"
             >
               @for (sessio of sessionsProfessor(); track sessio.id) {
                 <option [value]="sessio.id">
@@ -39,6 +39,16 @@
                 <option value="">No tens sessions configurades</option>
               }
             </select>
+            
+            @if (sessioSeleccionadaId()) {
+              <button class="btn-guardar-llista" [class.boto-loading]="isSaving()" [disabled]="isSaving()" (click)="guardarTotaAssistencia()">
+                @if (isSaving()) {
+                  <div class="spinner-circle"></div>
+                } @else {
+                  <span class="btn-text">Guardar Assistència</span>
+                }
+              </button>
+            }
           </div>
         </div>
 
@@ -85,9 +95,6 @@
                           class="estat-input"
                           [attr.data-estat]="alumne.assistencia[diaVisible]"
                           [(ngModel)]="alumne.assistencia[diaVisible]"
-                          (blur)="
-                            guardarAssistencia(alumne, diaVisible, alumne.assistencia[diaVisible])
-                          "
                           (keydown.enter)="moureFocus(filaIndex, colIndex)"
                           maxlength="2"
                           placeholder="."

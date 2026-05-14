@@ -69,10 +69,13 @@ export class AssistenciesManagerService {
   async getAssistenciaSetmanal(idHorari: number, dataIni: string, dataFi: string) {
     this.isLoading.set(true);
     try {
-      const resp = await this.apiManager.get<any>(`/horaris/${idHorari}/assistencia-setmanal?data_ini=${dataIni}&data_fi=${dataFi}`);
+      const url = `/horaris/${idHorari}/assistencia-setmanal?data_ini=${dataIni}&data_fi=${dataFi}`;
+      console.log('[SERVICE getAssistenciaSetmanal] GET:', url);
+      const resp = await this.apiManager.get<any>(url);
+      console.log('[SERVICE getAssistenciaSetmanal] Resposta:', resp);
       return resp.data || resp;
     } catch (err) {
-      console.error('Error obtenint l\'assistència setmanal de l\'horari', err);
+      console.error('[SERVICE getAssistenciaSetmanal] ❌ Error:', err);
       return [];
     } finally {
       this.isLoading.set(false);
@@ -84,7 +87,9 @@ export class AssistenciesManagerService {
    */
   async afegirAssistencia(novaAssistencia: Partial<Assistencia>) {
     try {
+      console.log('[SERVICE afegirAssistencia] POST /assistencies amb dades:', novaAssistencia);
       const resposta = await this.apiManager.post<any>('/assistencies', novaAssistencia);
+      console.log('[SERVICE afegirAssistencia] ✅ Resposta del servidor:', resposta);
       const creat = resposta.data || resposta;
 
       // Lògica primitiva: obtenir, copiar, afegir, guardar
@@ -109,10 +114,12 @@ export class AssistenciesManagerService {
    */
   async actualitzarAssistencia(id: number, dadesActualitzades: Partial<Assistencia>) {
     try {
+      console.log(`[SERVICE actualitzarAssistencia] PUT /assistencies/${id} amb dades:`, dadesActualitzades);
       const resposta = await this.apiManager.put<any>(
         `/assistencies/${id}`,
         dadesActualitzades,
       );
+      console.log(`[SERVICE actualitzarAssistencia] ✅ Resposta del servidor:`, resposta);
       const actualitzacio = resposta.data || resposta;
 
       // Lògica primitiva: bucle manual per actualitzar la llista

@@ -18,7 +18,8 @@
         <p>Carregant classes...</p>
       </div>
     } @else {
-      <div class="table-container glass-panel">
+      <!-- TABLE VIEW (Desktop) -->
+      <div class="table-container glass-panel desktop-only">
         <table class="premium-table">
           <thead>
             <tr>
@@ -64,6 +65,39 @@
             }
           </tbody>
         </table>
+      </div>
+
+      <!-- CARD VIEW (Mobile) -->
+      <div class="cards-container mobile-only">
+        @for (classe of classes(); track classe.id) {
+          <div class="user-card">
+            <div class="card-header">
+              <div class="avatar-placeholder">
+                <ng-icon name="heroAcademicCap"></ng-icon>
+              </div>
+              <div class="name-details">
+                <span class="user-name">{{ classe.nom }}</span>
+                <span class="user-email">{{ obtenirNomCurs(classe.id_curs) }}</span>
+              </div>
+            </div>
+            <div class="card-info">
+              <span class="badge-role p-role" style="font-size: 10px;">{{ obtenirNomTutor(classe.id_tutor) }}</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn-icon view" (click)="obrirModalAlumnes(classe)" title="Veure">
+                <ng-icon name="heroEye"></ng-icon>
+              </button>
+              <button class="btn-icon edit" (click)="obrirModal(classe)" title="Editar">
+                <ng-icon name="heroPencilSquare"></ng-icon>
+              </button>
+              <button class="btn-icon delete" (click)="esborrarClasse(classe.id)" title="Eliminar">
+                <ng-icon name="heroTrash"></ng-icon>
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state glass-panel">No hi ha classes registrades.</div>
+        }
       </div>
     }
   </div>
