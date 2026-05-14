@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { SidebarService } from '../shared/services/sidebar.service';
 
 interface GoogleUser {
   user: {
@@ -27,6 +28,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private sidebarService: SidebarService
   ) {
     this.verificarToken();
   }
@@ -150,6 +152,7 @@ export class AuthService {
     // Reset de signals
     this.userDataSignal.set(null);
     this.isAuthenticatedSignal.set(false);
+    this.sidebarService.setTutorStatus(null);
 
     // Redirecció
     this.router.navigate(['/']);

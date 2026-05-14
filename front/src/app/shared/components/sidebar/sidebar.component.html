@@ -9,7 +9,7 @@
     </a>
 
     <!-- 2. Gestió Inscrits (Tutor) -->
-    @if (esTutor) {
+    @if (esTutor()) {
     <a routerLink="/gestio-inscrits" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroAcademicCap"></ng-icon>
@@ -43,16 +43,18 @@
       <span>Faltes</span>
     </a>
 
-    <!-- 6. Gestio Justificants -->
+    <!-- 6. Gestio Justificants (Tutor) -->
+    @if (esTutor()) {
     <a routerLink="/gestio-justificants" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroDocumentText"></ng-icon>
       </div>
       <span>Justificants</span>
     </a>
+    }
 
     <!-- 7. Horari Alumnes (Tutor) -->
-    @if (esTutor) {
+    @if (esTutor()) {
     <a routerLink="/horari-alumnes" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroCalendarDays"></ng-icon>

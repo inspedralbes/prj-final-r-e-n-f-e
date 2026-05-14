@@ -151,17 +151,31 @@
 
   <!-- Modal Generar Carta -->
   @if (showThresholdPopup()) {
-    <div class="modal-overlay" (click)="closeThresholdPopup()">
+    <div class="modal-overlay" (click)="!isGenerating() && closeThresholdPopup()">
       <div class="modal-content" (click)="$event.stopPropagation()">
         <h2>Generar Carta de Faltes</h2>
         <p>Selecciona el llindar de faltes per a la carta:</p>
         <div class="options-grid">
-          <button (click)="confirmGenerarInforme(30)">30 Faltes</button>
-          <button (click)="confirmGenerarInforme(60)">60 Faltes</button>
-          <button (click)="confirmGenerarInforme(90)">90 Faltes</button>
+          @for (threshold of [30, 60, 90]; track threshold) {
+            <button
+              class="opcio-btn"
+              [class.boto-loading]="isGenerating() && generatingThreshold() === threshold"
+              [disabled]="isGenerating()"
+              (click)="confirmGenerarInforme(threshold)"
+            >
+              @if (isGenerating() && generatingThreshold() === threshold) {
+                <div class="spinner-circle"></div>
+              } @else {
+                <span class="btn-text">{{ threshold }} Faltes</span>
+              }
+            </button>
+          }
         </div>
-        <button class="boto-cancelar-modal" (click)="closeThresholdPopup()">
-          Cancel·lar
+        <button
+          class="boto-cancelar-modal"
+          (click)="closeThresholdPopup()"
+        >
+          {{ isGenerating() ? 'Cancel·lar descàrrega' : 'Cancel·lar' }}
         </button>
       </div>
     </div>

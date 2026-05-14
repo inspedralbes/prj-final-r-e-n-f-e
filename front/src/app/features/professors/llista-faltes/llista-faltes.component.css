@@ -265,27 +265,37 @@
     font-family: 'Outfit', sans-serif;
 }
 
+.btn ng-icon {
+    font-size: 1.1rem;
+}
+
 .btn-carta {
-    background: linear-gradient(135deg, #6366f1, #818cf8);
-    color: white;
-    box-shadow: 0 4px 10px rgba(99, 102, 241, 0.25);
+    background: rgba(99, 102, 241, 0.08);
+    color: #6366f1;
+    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    border-radius: 999px;
 }
 
 .btn-carta:hover {
-    background: linear-gradient(135deg, #4f46e5, #6366f1);
+    background: rgba(99, 102, 241, 0.15);
+    border-color: #6366f1;
     transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(99, 102, 241, 0.35);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
 }
 
 .btn-perfil {
-    background: #f1f5f9;
-    color: #475569;
+    background: rgba(100, 116, 139, 0.06);
+    color: #64748b;
+    border: 1.5px solid rgba(100, 116, 139, 0.25);
+    border-radius: 999px;
 }
 
 .btn-perfil:hover {
-    background: #e2e8f0;
+    background: rgba(100, 116, 139, 0.12);
+    border-color: #64748b;
     color: #1e293b;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(100, 116, 139, 0.15);
 }
 
 /* ===== EMPTY STATE ===== */
@@ -347,25 +357,71 @@
     margin-bottom: 24px;
 }
 
-.options-grid button {
+.opcio-btn {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
-    padding: 14px;
-    border-radius: 16px;
+    padding: 0;
+    height: 52px;
+    border-radius: 14px;
     font-weight: 700;
     color: #1e293b;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     font-family: 'Outfit', sans-serif;
     font-size: 1rem;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 }
 
-.options-grid button:hover {
+.opcio-btn:hover:not(:disabled) {
     background: #eff6ff;
     border-color: #6366f1;
     color: #4f46e5;
     transform: scale(1.02);
 }
+
+.opcio-btn:disabled:not(.boto-loading) {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Animació de càrrega — igual que el botó de login */
+.opcio-btn.boto-loading {
+    width: 52px !important;
+    border-radius: 50% !important;
+    pointer-events: none;
+    background: linear-gradient(135deg, #6366f1, #818cf8);
+    border-color: transparent;
+    /* Centra el botó que es torna cercle en el grid */
+    justify-self: center;
+}
+
+.btn-text {
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+}
+
+.spinner-circle {
+    width: 22px;
+    height: 22px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin-morph 1s ease-in-out infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@keyframes spin-morph {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 
 .boto-cancelar-modal {
     background: transparent;

@@ -46,6 +46,8 @@ export class LlistaFaltesComponent implements OnInit {
   tutorRanking = signal<any[]>([]);
 
   showThresholdPopup = signal<boolean>(false);
+  isGenerating = signal<boolean>(false);
+  generatingThreshold = signal<number | null>(null);
 
   private selectedAlumneId: number | null = null;
   private idClasseTutor: number | null = null;
@@ -118,10 +120,15 @@ export class LlistaFaltesComponent implements OnInit {
   closeThresholdPopup() {
     this.showThresholdPopup.set(false);
     this.selectedAlumneId = null;
+    this.isGenerating.set(false);
+    this.generatingThreshold.set(null);
   }
 
   async confirmGenerarInforme(threshold: number) {
-    if (!this.selectedAlumneId) return;
+    if (!this.selectedAlumneId || this.isGenerating()) return;
+
+    this.isGenerating.set(true);
+    this.generatingThreshold.set(threshold);
 
     try {
       const pdfBlob = await this.assistenciesManager.generarInformeFaltes(
@@ -141,6 +148,8 @@ export class LlistaFaltesComponent implements OnInit {
       this.closeThresholdPopup();
     } catch (error) {
       console.error('Error al generar informe de faltes:', error);
+      this.isGenerating.set(false);
+      this.generatingThreshold.set(null);
     }
   }
 
