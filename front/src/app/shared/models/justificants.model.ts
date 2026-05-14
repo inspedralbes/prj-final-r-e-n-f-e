@@ -1,3 +1,5 @@
+import { Usuari } from './usuaris.model';
+
 export interface Justificant {
   id: number;
   id_alum: number;
@@ -8,4 +10,9 @@ export interface Justificant {
   estat: 'Pendent' | 'Acceptada' | 'Rebutjada';
   created_at: string;
   updated_at: string;
+}
+
+export interface JustificantNet {
+  alumne: Partial<Usuari>;
+  justificants: Justificant[];
 }

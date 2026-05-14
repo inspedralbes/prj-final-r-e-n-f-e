@@ -1,101 +1,140 @@
 :host {
     display: block;
     width: 100%;
-    height: 100px;
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 100;
 }
 
+/* ===== NAVBAR FLOTANT ESTRETA — PILL GLASS ===== */
 .barra-superior {
-    position: absolute;
-    top: 0px;
+    position: fixed;
+    top: 16px;                      /* Marge superior flotant */
     left: 50%;
-    transform: translateX(-50%);
-    width: auto;
-    min-width: 800px;
-    /* Manté la mida gran en pantalles petites */
-    max-width: 95%;
-    height: 120px;
+    transform: translateX(-50%);    /* Centrat horitzontal */
+    width: fit-content;             /* S'ajusta al contingut */
+    min-width: 480px;
+    max-width: 720px;
+    z-index: 100;
+
+    /* Glassmorphism potent amb to moradillo (diferenciar-lo del de admin) */
+    background: rgba(139, 92, 246, 0.2);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(167, 139, 250, 0.35);
+    box-shadow:
+        0 8px 32px -4px rgba(139, 92, 246, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+    /* Forma de pill */
+    border-radius: 999px;
+
+    /* Layout intern */
     display: flex;
-    justify-content: center;
     align-items: center;
-    padding: 0 60px;
-    background-image: url('/img/menu/menu.png');
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    border: none;
-    border-radius: 24px;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 52px;
+    gap: 8px;
 }
 
 .contenedor-navegacio-centrat {
-    position: relative;
-    z-index: 1;
     display: flex;
     align-items: center;
+    flex: 1;
     justify-content: center;
-    gap: 15px;
-    width: 100%;
-    max-width: 1200px;
+    gap: 4px;
 }
 
+/* Cada botó de navegació */
 .element-navegacio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 999px;
+    padding: 6px 12px;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    gap: 0;                /* Gap 0 per defecte: icona sola, sense espai */
+    white-space: nowrap;
+    overflow: hidden;      /* Amaga el text que surt mentre anima */
 }
 
-.element-navegacio:active {
-    transform: scale(0.9);
+/* Text ocult per defecte */
+.element-navegacio span {
+    max-width: 0;          /* Ocupa 0 amplada → invisible */
+    opacity: 0;
+    overflow: hidden;
+    transition:
+        max-width 0.3s ease,
+        opacity   0.2s ease,
+        margin    0.3s ease;
+    margin-left: 0;        /* Sense marge quan està amagat */
+    display: inline-block;
 }
 
-.element-navegacio.actiu .caixa-icona {
-    background: rgba(255, 255, 255, 0.45);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.6);
+/* Text visible en hover */
+.element-navegacio:hover span,
+.element-navegacio.actiu span {
+    max-width: 100px;      /* Suficient per qualsevol etiqueta */
+    opacity: 1;
+    margin-left: 6px;      /* Espai entre icona i text quan apareix */
 }
 
+.element-navegacio:hover {
+    background: rgba(99, 102, 241, 0.12);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+/* Estat actiu */
+.element-navegacio.actiu {
+    background: rgba(99, 102, 241, 0.18);
+    color: var(--primary-color);
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.2);
+}
+
+
+
+/* Icona */
 .caixa-icona {
-    width: 72px;
-    /* Un pelín més grans */
-    height: 72px;
+    width: 20px;
+    height: 20px;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background: transparent;
-    /* Icona "nua" per defecte */
-    border: 1px solid transparent;
-    border-radius: 20px;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.element-navegacio:hover .caixa-icona {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(10px);
+    justify-content: center;
 }
 
 .caixa-icona ng-icon {
-    font-size: 38px;
-    color: #2d3748;
-    transition: color 0.3s ease;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.7);
+    transition: color 0.2s ease;
 }
 
+/* En hover i actiu: to violeta (--primary-color: #6366f1) */
+.element-navegacio:hover .caixa-icona ng-icon,
 .element-navegacio.actiu .caixa-icona ng-icon {
-    color: #6366f1;
+    color: var(--primary-color);
 }
 
+/* Icona Perfil */
 .caixa-icona.perfil {
-    width: 60px;
-    /* L'icona de perfil es manté igual */
-    height: 60px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    overflow: hidden;
-    padding: 2px;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .caixa-icona.perfil ng-icon {
@@ -107,4 +146,87 @@
     height: 60px;
     object-fit: cover;
     border-radius: 50%;
+}
+
+.caixa-icona.perfil:hover {
+    background: rgba(99, 102, 241, 0.22);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .barra-superior {
+        min-width: unset;
+        max-width: calc(100vw - 32px);
+        width: calc(100vw - 32px);
+        padding: 0 12px;
+        height: 48px;
+        top: 8px;
+        border-radius: 24px;
+    }
+
+    .element-navegacio {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+    }
+
+    .element-navegacio span {
+        display: none;
+    }
+
+    .caixa-icona {
+        width: 18px;
+        height: 18px;
+    }
+
+    .caixa-icona ng-icon {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .barra-superior {
+        width: calc(100vw - 16px);
+        max-width: calc(100vw - 16px);
+        padding: 0 8px;
+        gap: 2px;
+    }
+
+    .contenedor-navegacio-centrat {
+        gap: 2px;
+    }
+
+    .element-navegacio {
+        padding: 6px 6px;
+    }
+}
+
+/* Tema Alumne (Blau) */
+.barra-superior.tema-alumne {
+    background: rgba(14, 165, 233, 0.15);
+    border: 1px solid rgba(14, 165, 233, 0.35);
+    box-shadow:
+        0 8px 32px -4px rgba(14, 165, 233, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.barra-superior.tema-alumne .element-navegacio:hover {
+    background: rgba(14, 165, 233, 0.12);
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
+}
+
+.barra-superior.tema-alumne .element-navegacio.actiu {
+    background: rgba(14, 165, 233, 0.18);
+    box-shadow: 0 2px 10px rgba(14, 165, 233, 0.2);
+}
+
+.barra-superior.tema-alumne .caixa-icona.perfil {
+    background: rgba(14, 165, 233, 0.12);
+    border: 1.5px solid rgba(14, 165, 233, 0.3);
+}
+
+.barra-superior.tema-alumne .caixa-icona.perfil:hover {
+    background: rgba(14, 165, 233, 0.22);
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
 }

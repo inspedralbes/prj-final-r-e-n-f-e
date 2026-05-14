@@ -211,4 +211,20 @@ export class HorarisManagerService {
       this.isLoading.set(false);
     }
   }
+
+  /**
+   * Obté el context complet (sessions + sessió recomanada) per a un professor
+   */
+  async getContextAssistencia(idProfessor: number) {
+    this.isLoading.set(true);
+    try {
+      const resp = await this.apiManager.get<any>(`/horaris/professor/${idProfessor}/context`);
+      return resp.data;
+    } catch (err) {
+      console.error(`Error descarregant context d'assistència per al professor ${idProfessor}`, err);
+      return null;
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
 }

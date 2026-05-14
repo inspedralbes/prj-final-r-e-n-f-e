@@ -1,6 +1,6 @@
-<nav class="barra-superior">
+<nav class="barra-superior tema-alumne" style="--primary-color: #0ea5e9">
   <div class="contenedor-navegacio-centrat">
-    <!-- Icona Inici -->
+    <!-- 1. Inici (Alumnes Dashboard) -->
     <a
       routerLink="/alumnes"
       routerLinkActive="actiu"
@@ -8,33 +8,37 @@
       class="element-navegacio"
     >
       <div class="caixa-icona">
-        <img src="/img/menu/iconos/inici-icona.png" alt="Inici" />
+        <ng-icon name="heroHome"></ng-icon>
       </div>
+      <span>Inici</span>
     </a>
 
-    <!-- Icona Horari -->
+    <!-- 2. Horari -->
     <a routerLink="/alumnes/horaris" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona">
-        <img src="/img/menu/iconos/calendari-icona.png" alt="Horari" />
+        <ng-icon name="heroCalendarDays"></ng-icon>
       </div>
+      <span>Horari</span>
     </a>
 
-    <!-- Icona Justificants -->
+    <!-- 3. Justificants -->
     <a routerLink="/alumnes/justificants" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona">
-        <img src="/img/menu/iconos/justif-icona.png" alt="Justificants" />
+        <ng-icon name="heroDocumentCheck"></ng-icon>
       </div>
+      <span>Justificants</span>
     </a>
 
-<!-- Icona Perfil -->
+    <!-- Icona Perfil -->
     <a routerLink="/profile" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona">
         @if (userPhoto()) {
           <img [src]="userPhoto()" alt="Perfil" class="imatge-perfil" />
         } @else {
-          <img src="/img/menu/iconos/usuari-icona.png" alt="Perfil" />
+          <ng-icon name="heroUserCircle"></ng-icon>
         }
       </div>
+      <span>Perfil</span>
     </a>
   </div>
 </nav>

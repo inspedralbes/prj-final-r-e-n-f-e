@@ -17,7 +17,7 @@ class ClassesSeeder extends Seeder
             [
                 'id_curs' => 1,
                 'nom' => '1SMIXA1',
-                'id_tutor' => 1,
+                'id_tutor' => 10,
                 'id_aula' => 1
             ],
             [

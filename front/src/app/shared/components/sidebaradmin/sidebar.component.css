@@ -9,15 +9,15 @@
   max-width: 720px;
   z-index: 100;
 
-  /* Glassmorphism potent */
-  background: rgba(255, 255, 255, 0.25);   /* Molt transparent */
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  /* Glassmorphism potent (Pill Glass) */
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(40px) saturate(220%);
+  -webkit-backdrop-filter: blur(40px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   box-shadow:
-    0 8px 32px -4px rgba(99, 102, 241, 0.18),  /* Ombra violeta */
-    0 2px 8px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);     /* Reflex interior */
+    0 12px 40px -4px rgba(99, 102, 241, 0.22),
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9);
 
   /* Forma de pill */
   border-radius: 999px;
@@ -156,5 +156,66 @@
 .caixa-icona.perfil:hover {
   background: rgba(99, 102, 241, 0.22);
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .barra-superior {
+    min-width: unset;
+    max-width: calc(100vw - 32px);
+    width: calc(100vw - 32px);
+    padding: 0 12px;
+    height: 48px;
+    top: 8px;
+    border-radius: 24px;
+  }
+
+  .element-navegacio {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+
+  .element-navegacio span {
+    display: none;
+  }
+
+  .caixa-icona {
+    width: 18px;
+    height: 18px;
+  }
+
+  .caixa-icona ng-icon {
+    font-size: 16px;
+  }
+
+  .separador {
+    margin: 0 2px;
+  }
+
+  .caixa-icona.perfil {
+    width: 28px;
+    height: 28px;
+  }
+
+  .caixa-icona.perfil ng-icon {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .barra-superior {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+    padding: 0 8px;
+    gap: 2px;
+  }
+
+  .enllacos-navegacio {
+    gap: 2px;
+  }
+
+  .element-navegacio {
+    padding: 6px 6px;
+  }
 }
 

@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, computed } from '@angular/core';
 import { HorarisManagerService } from '../../../shared/services/horaris/horaris-manager.service';
 import { SidebarAlumneComponent } from '../../../shared/components/sidebar/alumnes/sidebarAlumne.component';
+import { SocketService } from '../../../services/socket.service';
 
 @Component({
   selector: 'horaris-alumne',
@@ -10,10 +11,16 @@ import { SidebarAlumneComponent } from '../../../shared/components/sidebar/alumn
 })
 export class Horaris implements OnInit {
   horarisManager = inject(HorarisManagerService);
+  socketService = inject(SocketService);
   calendari = this.horarisManager.horarisAssignaturaNet;
 
   ngOnInit() {
     this.horarisManager.getHorari();
+
+    this.socketService.listenToEvent('horari_updated').subscribe(() => {
+      console.log('[SOCKET] horari_updated rebut, recarregant horari alumne...');
+      this.horarisManager.getHorari();
+    });
   }
 
   // Construïm la graella sempre amb 5 dies × 7 franges (incl. esbarjo),

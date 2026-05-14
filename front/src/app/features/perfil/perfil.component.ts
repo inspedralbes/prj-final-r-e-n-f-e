@@ -6,13 +6,16 @@ import { Usuari } from '../../shared/models/usuaris.model';
 import { SidebarComponent } from '../../shared/components/sidebar/sidebar.component';
 import { AlumnesComponent } from '../alumnes/alumnes.component';
 import { SidebarAlumneComponent } from '../../shared/components/sidebar/alumnes/sidebarAlumne.component';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroCog8Tooth, heroXMark } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent, SidebarAlumneComponent],
+  imports: [CommonModule, FormsModule, SidebarComponent, SidebarAlumneComponent, NgIconComponent],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css',
+  viewProviders: [provideIcons({ heroCog8Tooth, heroXMark })],
 })
 export class PerfilComponent implements OnInit {
   private perfilService = inject(PerfilService);

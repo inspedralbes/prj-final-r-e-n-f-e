@@ -1,4 +1,9 @@
 :host {
+  --primary-color: #0ea5e9;
+  --primary-light: #38bdf8;
+  --glass-bg: rgba(14, 165, 233, 0.05);
+  --glass-border: rgba(14, 165, 233, 0.2);
+  --text-main: #334155;
   --radius-large: 32px;
 }
 
@@ -10,6 +15,32 @@
   font-family: 'Outfit', sans-serif;
   position: relative;
   overflow-x: hidden;
+}
+
+.disseny-principal::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #f4f9ff 0%, #e0f2fe 100%);
+  z-index: -2;
+}
+
+.disseny-principal::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.25), transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.25), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.15), transparent 50%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 .contingut {
@@ -33,16 +64,16 @@
 /* ── Targeta hero ────────────────────────────────────── */
 .targeta-classe-actual {
   margin-top: 20px;
-  background: rgba(255, 255, 255, 0.6);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px);
   border-radius: var(--radius-large);
   padding: 40px;
-  color: var(--text-main, #1e293b);
+  color: var(--text-main);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--glass-border);
+  box-shadow: 0 10px 30px rgba(14, 165, 233, 0.1);
 }
 
 .contingut-targeta {
@@ -86,13 +117,13 @@
 
 /* ── Contenidor de justificants ──────────────────────── */
 .contenidor-faltes {
-  background: var(--glass-bg, rgba(255, 255, 255, 0.45));
+  background: var(--glass-bg);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
   border-radius: 28px;
   padding: 30px;
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.05);
-  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.6));
+  box-shadow: 0 10px 40px -10px rgba(14, 165, 233, 0.1);
+  border: 1px solid var(--glass-border);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -100,7 +131,7 @@
 
 .capçalera-faltes h2 {
   font-size: 1.5rem;
-  color: var(--text-main, #1e293b);
+  color: var(--text-main);
   font-weight: 800;
   margin: 0;
 }
@@ -298,7 +329,39 @@
 }
 
 /* ── Responsive ──────────────────────────────────────── */
+@media (max-width: 1024px) {
+  .contingut {
+    padding: 20px 30px;
+    margin-top: 160px;
+  }
+}
+
 @media (max-width: 768px) {
+  .contingut {
+    padding: 15px;
+    margin-top: 130px;
+  }
+  
+  .targeta-classe-actual {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 25px;
+  }
+
+  .contingut-targeta {
+    max-width: 100%;
+  }
+
+  .targeta-classe-actual h1 {
+    font-size: 2rem;
+  }
+  
+  .contenidor-faltes {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
   .fila-detall {
     grid-template-columns: 1fr 1fr;
     gap: 8px;
@@ -306,6 +369,84 @@
   }
   .capçalera-taula { display: none; }
   .col-comentari { grid-column: span 2; }
+  
+  .modal-contingut {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contingut {
+    padding: 12px;
+    margin-top: 110px;
+  }
+
+  .targeta-classe-actual {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .targeta-classe-actual h1 {
+    font-size: 1.6rem;
+  }
+
+  .targeta-classe-actual p {
+    font-size: 0.9rem;
+  }
+
+  .boto-accio {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .contenidor-faltes {
+    padding: 15px;
+    border-radius: 16px;
+  }
+  
+  .capçalera-faltes h2 {
+    font-size: 1.3rem;
+  }
+  
+  .col-data, .col-rang, .col-comentari {
+    font-size: 0.85rem;
+  }
+
+  .fila-detall {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  
+  .col-comentari {
+    white-space: normal;
+  }
+
+  .modal-contingut {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .modal-capçalera h3 {
+    font-size: 1.2rem;
+  }
+  
+  .boto-cancelar, .boto-enviar {
+    padding: 10px 16px;
+    font-size: 0.85rem;
+    flex: 1;
+    text-align: center;
+  }
+  
+  .modal-accions {
+    flex-direction: row;
+    gap: 10px;
+    width: 100%;
+  }
 }
 
 

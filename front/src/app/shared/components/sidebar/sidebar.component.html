@@ -5,6 +5,7 @@
       <div class="caixa-icona">
         <ng-icon name="heroBookOpen"></ng-icon>
       </div>
+      <span>Assignatures</span>
     </a>
 
     <!-- 2. Gestió Inscrits (Tutor) -->
@@ -13,6 +14,7 @@
       <div class="caixa-icona">
         <ng-icon name="heroAcademicCap"></ng-icon>
       </div>
+      <span>Alumnes</span>
     </a>
     }
 
@@ -21,6 +23,7 @@
       <div class="caixa-icona">
         <ng-icon name="heroClipboardDocumentList"></ng-icon>
       </div>
+      <span>Classe</span>
     </a>
 
     <!-- 4. CENTRE: Professors (Inici) -->
@@ -29,6 +32,7 @@
       <div class="caixa-icona">
         <ng-icon name="heroHome"></ng-icon>
       </div>
+      <span>Inici</span>
     </a>
 
     <!-- 5. Llista Faltes -->
@@ -36,22 +40,32 @@
       <div class="caixa-icona">
         <ng-icon name="heroClock"></ng-icon>
       </div>
+      <span>Faltes</span>
     </a>
 
-    <!-- 6. Horari Alumnes (Tutor) -->
+    <!-- 6. Gestio Justificants -->
+    <a routerLink="/gestio-justificants" routerLinkActive="actiu" class="element-navegacio">
+      <div class="caixa-icona">
+        <ng-icon name="heroDocumentText"></ng-icon>
+      </div>
+    </a>
+
+    <!-- 7. Horari Alumnes (Tutor) -->
     @if (esTutor) {
     <a routerLink="/horari-alumnes" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroCalendarDays"></ng-icon>
       </div>
+      <span>Horari</span>
     </a>
     }
 
-    <!-- 7. Icona Perfil -->
+    <!-- 8. Icona Perfil -->
     <a routerLink="/profile" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona perfil">
         <ng-icon name="heroUserCircle"></ng-icon>
       </div>
+      <span>Perfil</span>
     </a>
   </div>
 </nav>

@@ -11,8 +11,12 @@ return new class extends Migration
         Schema::table('justificants', function (Blueprint $table) {
             $table->date('data_inici')->after('id_alum');
             $table->date('data_fi')->after('data_inici');
-            $table->dropColumn('id_assistencia_ini');
-            $table->dropColumn('id_assistencia_fi');
+        });
+
+        Schema::table('justificants', function (Blueprint $table) {
+            $table->dropForeign(['id_assistencia_ini']);
+            $table->dropForeign(['id_assistencia_fi']);
+            $table->dropColumn(['id_assistencia_ini', 'id_assistencia_fi']);
         });
     }
 
@@ -20,8 +24,8 @@ return new class extends Migration
     {
         Schema::table('justificants', function (Blueprint $table) {
             $table->dropColumn(['data_inici', 'data_fi']);
-            $table->unsignedBigInteger('id_assistencia_ini')->nullable()->after('id_alum');
-            $table->unsignedBigInteger('id_assistencia_fi')->nullable()->after('id_assistencia_ini');
+            $table->foreignId('id_assistencia_ini')->nullable()->after('id_alum')->constrained('assistencies');
+            $table->foreignId('id_assistencia_fi')->nullable()->after('id_assistencia_ini')->constrained('assistencies');
         });
     }
 };

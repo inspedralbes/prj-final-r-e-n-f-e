@@ -18,7 +18,8 @@
         <p>Carregant usuaris...</p>
       </div>
     } @else {
-      <div class="table-container glass-panel">
+      <!-- TABLE VIEW (Desktop) -->
+      <div class="table-container glass-panel desktop-only">
         <table class="premium-table">
           <thead>
             <tr>
@@ -65,6 +66,36 @@
             }
           </tbody>
         </table>
+      </div>
+
+      <!-- CARD VIEW (Mobile) -->
+      <div class="cards-container mobile-only">
+        @for (usuari of usuaris(); track usuari.id) {
+          <div class="user-card">
+            <div class="card-header">
+              <div class="avatar-placeholder">
+                <ng-icon name="heroUser"></ng-icon>
+              </div>
+              <div class="name-details">
+                <span class="user-name">{{ usuari.nom }} {{ usuari.cognom }}</span>
+                <span class="user-email">{{ usuari.email }}</span>
+              </div>
+            </div>
+            <div class="card-info">
+              <span class="badge-role" [ngClass]="usuari.rol.toLowerCase()">{{ usuari.rol }}</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn-icon edit" (click)="obrirModal(usuari)" title="Editar">
+                <ng-icon name="heroPencilSquare"></ng-icon>
+              </button>
+              <button class="btn-icon delete" (click)="esborrarUsuari(usuari.id)" title="Eliminar">
+                <ng-icon name="heroTrash"></ng-icon>
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state glass-panel">No hi ha usuaris registrats al sistema.</div>
+        }
       </div>
     }
   </div>
