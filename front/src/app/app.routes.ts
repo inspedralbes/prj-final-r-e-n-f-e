@@ -46,4 +46,7 @@ export const routes: Routes = [
   { path: 'admin-classes', component: AdminClassesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
   { path: 'admin-usuaris', component: AdminUsuarisComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
   { path: 'admin-periodes', component: AdminPeriodesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
+  
+  // Wildcard route per rutes no trobades
+  { path: '**', redirectTo: '' }
 ];
