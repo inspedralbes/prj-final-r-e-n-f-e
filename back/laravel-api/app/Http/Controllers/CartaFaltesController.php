@@ -25,13 +25,23 @@ class CartaFaltesController extends Controller
         // Dades per la generació de la carta
         $validated = $peticio->validate([
             'id_alumne' => 'required|exists:usuaris,id',
-            'id_tutor' => 'required|exists:usuaris,id',
             'faltes' => 'required|integer|in:30,60,90',
         ]);
 
         $alumne = Usuari::findOrFail($validated['id_alumne']);
-        $tutor = Usuari::findOrFail($validated['id_tutor']);
-        $CursCicleGrup = Classe::find($alumne->id_classe)->nom;
+        
+        // Resoldre el tutor automàticament
+        $classe = Classe::find($alumne->id_classe);
+        
+        if (!$classe || !$classe->id_tutor) {
+            return response()->json([
+                'success' => false,
+                'message' => 'L\'alumne no té una classe o un tutor assignat',
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        $tutor = Usuari::findOrFail($classe->id_tutor);
+        $CursCicleGrup = $classe->nom;
         $pathJsonFile = base_path('templates-word/info-words.json');
         $jsonFile = json_decode(file_get_contents($pathJsonFile), true);
         $NomCognomDireccio = $jsonFile['NomCognomDireccio'] ?? 'Nom Cognom Direcció';

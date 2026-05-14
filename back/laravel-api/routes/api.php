@@ -70,6 +70,8 @@ Route::prefix('v1')->group(function (): void {
         Route::apiResource('imparteix', ImparteixController::class);
 
         // Rutes d'Assistència
+        Route::get('assistencies/ranking-profe', [AssistenciaController::class, 'rankingFaltesProfessor']);
+        Route::get('assistencies/classe/{idClasse}/ranking', [AssistenciaController::class, 'rankingFaltesClasse']);
         Route::get('horaris/{idHorari}/assistencia-setmanal', [AssistenciaController::class, 'assistenciaSetmanalHorari']);
         Route::apiResource('assistencies', AssistenciaController::class);
         Route::get('assistencies/alumne/{alumneId}', action: [AssistenciaController::class, 'assistenciaPerAlumne']);
