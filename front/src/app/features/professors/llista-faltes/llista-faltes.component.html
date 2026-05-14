@@ -3,7 +3,6 @@
 
   <div class="contingut">
     <div class="targeta-llista">
-
       <div class="capçalera-llista">
         <div class="titol-seccio">
           <h1>Rànquing de Faltes</h1>
@@ -24,7 +23,7 @@
               (click)="!modeTutor() ? null : toggleModeTutor()"
             >
               <ng-icon name="heroAcademicCap"></ng-icon>
-              Ranking Profe
+              Profe
             </button>
             <button
               class="boto-toggle"
@@ -32,7 +31,7 @@
               (click)="modeTutor() ? null : toggleModeTutor()"
             >
               <ng-icon name="heroUserGroup"></ng-icon>
-              Mode Tutor
+              Tutor
             </button>
           </div>
         }
@@ -44,7 +43,6 @@
           <p>Calculant rànquing d'absències...</p>
         </div>
       } @else {
-
         <!-- Ranking Professor -->
         @if (!modeTutor()) {
           <div class="contenedor-taula">
@@ -57,9 +55,12 @@
                 </tr>
               </thead>
               <tbody>
-                @for (alumne of assitenciesRanking(); track alumne.nomAlumne + alumne.nomAssignatura) {
+                @for (
+                  alumne of assitenciesRanking();
+                  track alumne.nomAlumne + alumne.nomAssignatura
+                ) {
                   <tr>
-                    <td class="nom-alumne">
+                    <td class="nom-alumne" data-label="Alumne">
                       <div class="user-cell-mini">
                         <div class="avatar-circle-mini">
                           <ng-icon name="heroUser"></ng-icon>
@@ -67,15 +68,16 @@
                         <span>{{ alumne.nomAlumne }}</span>
                       </div>
                     </td>
-                    <td class="nom-assignatura">{{ alumne.nomAssignatura }}</td>
-                    <td class="celda-assistencia">
+                    <td class="nom-assignatura" data-label="Assignatura">
+                      {{ alumne.nomAssignatura }}
+                    </td>
+                    <td class="celda-assistencia" data-label="Total Faltes">
                       <div class="badge-faltes">
                         {{ alumne.totalFaltes }}
                       </div>
                     </td>
                   </tr>
-                }
-                @empty {
+                } @empty {
                   <tr>
                     <td colspan="3" class="empty-state">
                       No hi ha cap falta registrada a les teves assignatures.
@@ -95,13 +97,13 @@
                 <tr>
                   <th class="col-nom">Nom de l'alumne</th>
                   <th class="col-faltes">Faltes Totals</th>
-                  <th class="col-accions" style="text-align: center;">Accions</th>
+                  <th class="col-accions" style="text-align: center">Accions</th>
                 </tr>
               </thead>
               <tbody>
                 @for (alumne of tutorRanking(); track alumne.id) {
                   <tr>
-                    <td class="nom-alumne">
+                    <td class="nom-alumne" data-label="Alumne">
                       <div class="user-cell-mini">
                         <div class="avatar-circle-mini">
                           <ng-icon name="heroUser"></ng-icon>
@@ -109,12 +111,12 @@
                         <span>{{ alumne.nom }} {{ alumne.cognom }}</span>
                       </div>
                     </td>
-                    <td class="celda-assistencia">
+                    <td class="celda-assistencia" data-label="Faltes Totals">
                       <div class="badge-faltes tutor-badge">
                         {{ alumne.total_faltes }}
                       </div>
                     </td>
-                    <td class="celda-accions">
+                    <td class="celda-accions" data-label="Accions">
                       <button
                         class="btn btn-carta"
                         (click)="openThresholdPopup(alumne.id)"
@@ -133,8 +135,7 @@
                       </button>
                     </td>
                   </tr>
-                }
-                @empty {
+                } @empty {
                   <tr>
                     <td colspan="3" class="empty-state">
                       No hi ha alumnes amb faltes a la teva classe.
@@ -171,10 +172,7 @@
             </button>
           }
         </div>
-        <button
-          class="boto-cancelar-modal"
-          (click)="closeThresholdPopup()"
-        >
+        <button class="boto-cancelar-modal" (click)="closeThresholdPopup()">
           {{ isGenerating() ? 'Cancel·lar descàrrega' : 'Cancel·lar' }}
         </button>
       </div>
