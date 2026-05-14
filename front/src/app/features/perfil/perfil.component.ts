@@ -90,7 +90,7 @@ export class PerfilComponent implements OnInit {
   }
 
   get isProfeOrAdmin(): boolean {
-    const rol = this.user()?.rol;
+    const rol = this.currentUser()?.rol;
     return rol === 'Profe' || rol === 'Admin';
   }
 

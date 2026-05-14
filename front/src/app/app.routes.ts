@@ -17,6 +17,7 @@ import { AdminClassesComponent } from './features/administracio/admin-classes/ad
 import { AdminUsuarisComponent } from './features/administracio/admin-usuaris/admin-usuaris.component';
 import { AdminPeriodesComponent } from './features/administracio/admin-periodes/admin-periodes.component';
 import { CompletarPerfilComponent } from './features/completar-perfil/completar-perfil.component';
+import { JustificantsComponents } from './features/professors/justificants/justificants.component';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
 
@@ -39,6 +40,7 @@ export const routes: Routes = [
   { path: 'llista-faltes', component: LlistaFaltesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['profe'] } },
   { path: 'gestio-inscrits', component: GestioInscritsComponent, canActivate: [authGuard, roleGuard], data: { roles: ['profe'] } },
   { path: 'horari-alumnes', component: HorariAlumnesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['profe'] } },
+  { path: 'gestio-justificants', component: JustificantsComponents },
 
   // Admin routes
   { path: 'administracio', component: AdministracioComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
