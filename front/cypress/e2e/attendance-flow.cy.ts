@@ -90,11 +90,14 @@ describe('Attendance Flow', () => {
     cy.wait(['@getSessions', '@getAttendance']);
 
     // Find the input for the first student and Wednesday (colIndex 2)
-    // Based on the HTML we saw: [id]="'input-' + filaIndex + '-' + colIndex"
-    cy.get('#input-0-2').should('be.visible');
+    // We use Wednesday because the mock data has 'X1' (Dimecres 1a hora)
+    cy.get('#input-0-2').should('be.visible').and('not.be.disabled');
 
     // Mark as "F" (Falta)
-    cy.get('#input-0-2').clear().type('F').blur();
+    cy.get('#input-0-2').clear().type('F');
+
+    // Click on "Guardar Assistència" button
+    cy.get('.btn-guardar-llista').click();
 
     // Verify the API call was made
     cy.wait('@saveAttendance').its('request.body').should('deep.include', {
