@@ -101,3 +101,10 @@
 .caixa-icona.perfil ng-icon {
     font-size: 42px;
 }
+
+.imatge-perfil {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+}

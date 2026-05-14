@@ -26,10 +26,14 @@
       </div>
     </a>
 
-    <!-- Icona Perfil -->
+<!-- Icona Perfil -->
     <a routerLink="/profile" routerLinkActive="actiu" class="element-navegacio">
       <div class="caixa-icona">
-        <img src="/img/menu/iconos/usuari-icona.png" alt="Perfil" />
+        @if (userPhoto()) {
+          <img [src]="userPhoto()" alt="Perfil" class="imatge-perfil" />
+        } @else {
+          <img src="/img/menu/iconos/usuari-icona.png" alt="Perfil" />
+        }
       </div>
     </a>
   </div>
