@@ -1,4 +1,4 @@
-﻿# Estructura de la Base de Datos (estado real según migraciones)
+﻿# Estructura de la base de dades
 
 ## Tablas
 

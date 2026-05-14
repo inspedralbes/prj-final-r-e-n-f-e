@@ -1,7 +1,12 @@
-<nav class="barra-superior tema-alumne" style="--primary-color: #0ea5e9;">
+<nav class="barra-superior tema-alumne" style="--primary-color: #0ea5e9">
   <div class="contenedor-navegacio-centrat">
     <!-- 1. Inici (Alumnes Dashboard) -->
-    <a routerLink="/alumnes" routerLinkActive="actiu" [routerLinkActiveOptions]="{ exact: true }" class="element-navegacio">
+    <a
+      routerLink="/alumnes"
+      routerLinkActive="actiu"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="element-navegacio"
+    >
       <div class="caixa-icona">
         <ng-icon name="heroHome"></ng-icon>
       </div>
@@ -24,10 +29,14 @@
       <span>Justificants</span>
     </a>
 
-    <!-- 4. Icona Perfil -->
+    <!-- Icona Perfil -->
     <a routerLink="/profile" routerLinkActive="actiu" class="element-navegacio">
-      <div class="caixa-icona perfil">
-        <ng-icon name="heroUserCircle"></ng-icon>
+      <div class="caixa-icona">
+        @if (userPhoto()) {
+          <img [src]="userPhoto()" alt="Perfil" class="imatge-perfil" />
+        } @else {
+          <ng-icon name="heroUserCircle"></ng-icon>
+        }
       </div>
       <span>Perfil</span>
     </a>

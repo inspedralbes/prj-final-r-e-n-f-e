@@ -56,7 +56,11 @@
   <div class="seccio-perfil">
     <a routerLink="/profile" class="element-navegacio">
       <div class="caixa-icona perfil">
-        <ng-icon name="heroUserCircle"></ng-icon>
+        @if (userPhoto()) {
+          <img [src]="userPhoto()" alt="Perfil" class="imatge-perfil" />
+        } @else {
+          <ng-icon name="heroUserCircle"></ng-icon>
+        }
       </div>
     </a>
   </div>

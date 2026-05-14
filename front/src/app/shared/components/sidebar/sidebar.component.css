@@ -138,7 +138,14 @@
 }
 
 .caixa-icona.perfil ng-icon {
-    font-size: 20px;
+    font-size: 42px;
+}
+
+.imatge-perfil {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
 .caixa-icona.perfil:hover {
