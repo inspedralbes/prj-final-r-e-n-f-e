@@ -8,8 +8,9 @@ export default defineConfig({
       // implement node event listeners here
     },
     env: {
-      devUrl: "http://localhost:4200",
-      prodUrl: "https://tenfe.cat",
+      apiUrl: "http://localhost:8000/api",
     },
+    viewportWidth: 1280,
+    viewportHeight: 720,
   },
 });
