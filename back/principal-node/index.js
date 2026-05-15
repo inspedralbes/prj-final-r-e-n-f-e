@@ -26,6 +26,7 @@ const io = new Server(httpServer, {
       const allowedOrigins = [
         "http://localhost:4200",
         "https://renfe.daw.inspedralbes.com",
+        "https://tenfe.cat",
       ];
 
       if (!origin || allowedOrigins.includes(origin)) {
@@ -51,7 +52,13 @@ io.on("connection", (socket) => {
 
 // Ruta per els sockets
 app.post("/api/broadcast", (req, res) => {
-  // Sockets
+  const { event, data } = req.body;
+  if (!event) {
+    return res.status(400).json({ error: "Falta l'esdeveniment (event)" });
+  }
+  console.log(`[SOCKET] Emetent esdeveniment: ${event}`);
+  io.emit(event, data);
+  res.json({ success: true, message: `Esdeveniment ${event} emès` });
 });
 
 // Endpoint per convertir Word a PDF (version per base64)
@@ -77,8 +84,9 @@ app.post("/api/convert/word-to-pdf", async (req, res) => {
     console.log("Temp file:", tempPath);
     fs.writeFileSync(tempPath, wordBuffer);
 
-    // Convertir a PDF
+    console.log("Iniciant conversió a PDF per:", fileName);
     const pdfBuffer = await libre.convertAsync(fs.readFileSync(tempPath), ".pdf", undefined);
+    console.log("Conversió finalitzada amb èxit:", fileName);
 
     // Esborrar fitxer temporal
     fs.unlinkSync(tempPath);

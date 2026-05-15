@@ -9,7 +9,7 @@
     <p>Carregant perfil...</p>
   </div>
 } @else if (u) {
-  <div class="perfil-container">
+  <div class="perfil-container" [class.tema-alumne]="isAlumne">
     <!-- Header amb foto i info bàsica -->
     <div class="perfil-header">
       <div class="foto-container">
@@ -20,15 +20,21 @@
         <p class="email">{{ u.email }}</p>
         <span class="rol-badge">{{ u.rol }}</span>
       </div>
-      @if (mostarRueda) {
-        <button
-          class="btn-settings"
-          (click)="toggleMode()"
-          [title]="mode() === 'read' ? 'Editar perfil' : 'Cancel·lar edició'"
-        >
-          <span>⚙️</span>
-        </button>
-      }
+      <div class="header-actions">
+        @if (mostarRueda) {
+          <button
+            class="btn-settings"
+            (click)="toggleMode()"
+            [title]="mode() === 'read' ? 'Editar perfil' : 'Cancel·lar edició'"
+          >
+            @if (mode() === 'read') {
+              <ng-icon name="heroCog8Tooth" class="icona-roda"></ng-icon>
+            } @else {
+              <ng-icon name="heroXMark" class="icona-roda"></ng-icon>
+            }
+          </button>
+        }
+      </div>
     </div>
 
     <!-- Mode Lectura -->
@@ -141,6 +147,14 @@
         </section>
       </div>
     }
+    <!-- Secció Tancar Sessió -->
+    <div class="logout-section">
+      <button class="btn-logout-perfil" (click)="logout()">
+        <ng-icon name="heroArrowLeftOnRectangle"></ng-icon>
+        Tancar sessió
+      </button>
+    </div>
+
   </div>
 } @else {
   <div class="error">

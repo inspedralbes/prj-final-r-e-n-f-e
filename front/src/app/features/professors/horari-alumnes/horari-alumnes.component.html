@@ -10,7 +10,7 @@
   <div class="contingut">
     <!-- Aquesta es la targeta gran que aguanta tot l'horari -->
     <div class="targeta-horari-premium">
-      @if (isLoading()) {
+      @if (estaCarregant()) {
         <div class="admin-loading-container">
           <div class="admin-spinner"></div>
           <p>Muntant la quadrícula de l'horari...</p>
@@ -25,52 +25,54 @@
         </div>
 
         <!-- Aquí es on es munta la quadrícula de l'horari -->
-        <div class="grid-horari">
-          <!-- Headers de dies -->
-          <div></div>
-          <div class="dia-header">Dilluns</div>
-          <div class="dia-header">Dimarts</div>
-          <div class="dia-header">Dimecres</div>
-          <div class="dia-header">Dijous</div>
-          <div class="dia-header">Divendres</div>
+        <div class="scroll-wrapper">
+          <div class="grid-horari">
+            <!-- Headers de dies -->
+            <div></div>
+            <div class="dia-header">Dilluns</div>
+            <div class="dia-header">Dimarts</div>
+            <div class="dia-header">Dimecres</div>
+            <div class="dia-header">Dijous</div>
+            <div class="dia-header">Divendres</div>
 
-          <!-- Recorrem cada fila de l'horari (08:00, 09:00...) -->
-          <ng-container *ngFor="let fila of quadreHorari(); trackBy: trackByHora; let fIdx = index">
-            <!-- La columna de l'esquerra amb l'hora -->
-            <div class="col-temps">{{ fila.hora }}</div>
+            <!-- Recorrem cada fila de l'horari (08:00, 09:00...) -->
+            <ng-container *ngFor="let fila of quadreHorari(); trackBy: trackByHora; let fIdx = index">
+              <!-- La columna de l'esquerra amb l'hora -->
+              <div class="col-temps">{{ fila.hora }}</div>
 
-            <!-- Franja d'esbarjo: un sol bloc que creua tots els dies -->
-            <div *ngIf="fila.esEsbarjo" class="slot-sessio esbarjo">ESBARJO</div>
+              <!-- Franja d'esbarjo: un sol bloc que creua tots els dies -->
+              <div *ngIf="fila.esEsbarjo" class="slot-sessio esbarjo">ESBARJO</div>
 
-            <!-- Files normals: sempre 5 cel·les (plenes o buides en blanc) -->
-            <ng-container *ngIf="!fila.esEsbarjo">
-              <div
-                *ngFor="let cell of fila.sessions; trackBy: trackByDiaIndex; let dIdx = index"
-                class="slot-sessio"
-                [class.buit]="!cell"
-                (click)="obrirModalEdicio(dIdx, fila.hora)"
-              >
-                <div class="icona-afegir" *ngIf="!cell">
-                  <ng-icon name="heroPlus"></ng-icon>
-                </div>
-
-                <!-- Si hi ha una classe ja configurada, posem el nom i el profe -->
-                <ng-container *ngIf="cell">
-                  <div class="info-sessio">
-                    <span class="assignatura">{{ obtenirNomAssig(cell) }}</span>
-                    <span class="aula">{{ obtenirNomAula(cell) }}</span>
+              <!-- Files normals: sempre 5 cel·les (plenes o buides en blanc) -->
+              <ng-container *ngIf="!fila.esEsbarjo">
+                <div
+                  *ngFor="let cell of fila.sessions; trackBy: trackByDiaIndex; let dIdx = index"
+                  class="slot-sessio"
+                  [class.buit]="!cell"
+                  (click)="obrirModalEdicio(dIdx, fila.hora)"
+                >
+                  <div class="icona-afegir" *ngIf="!cell">
+                    <ng-icon name="heroPlus"></ng-icon>
                   </div>
 
-                  <div class="profe-footer">
-                    <div class="avatar-mini">
-                      <ng-icon name="heroUser"></ng-icon>
+                  <!-- Si hi ha una classe ja configurada, posem el nom i el profe -->
+                  <ng-container *ngIf="cell">
+                    <div class="info-sessio">
+                      <span class="assignatura">{{ obtenirNomAssig(cell) }}</span>
+                      <span class="aula">{{ obtenirNomAula(cell) }}</span>
                     </div>
-                    <span class="nom-profe">{{ obtenirNomProfe(cell) }}</span>
-                  </div>
-                </ng-container>
-              </div>
+
+                    <div class="profe-footer">
+                      <div class="avatar-mini">
+                        <ng-icon name="heroUser"></ng-icon>
+                      </div>
+                      <span class="nom-profe">{{ obtenirNomProfe(cell) }}</span>
+                    </div>
+                  </ng-container>
+                </div>
+              </ng-container>
             </ng-container>
-          </ng-container>
+          </div>
         </div>
       }
     </div>

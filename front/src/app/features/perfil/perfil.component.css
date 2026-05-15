@@ -27,9 +27,13 @@
   align-items: center;
   gap: 20px;
   padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: rgba(124, 58, 237, 0.15);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(124, 58, 237, 0.3);
+  box-shadow: 0 10px 30px rgba(124, 58, 237, 0.1);
   border-radius: 12px;
-  color: white;
+  color: #1e1b4b;
   position: relative;
 }
 
@@ -42,7 +46,7 @@
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid white;
+  border: 3px solid rgba(124, 58, 237, 0.3);
 }
 
 .foto-placeholder {
@@ -72,12 +76,14 @@
   margin: 0 0 10px 0;
   opacity: 0.9;
   font-size: 14px;
+  color: #334155;
 }
 
 .rol-badge {
   display: inline-block;
   padding: 4px 12px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(124, 58, 237, 0.2);
+  color: #6d28d9;
   border-radius: 20px;
   font-size: 12px;
   text-transform: uppercase;
@@ -85,10 +91,7 @@
 }
 
 .btn-settings {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(124, 58, 237, 0.1);
   border: none;
   border-radius: 50%;
   width: 44px;
@@ -97,18 +100,32 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.3s ease;
-  font-size: x-large;
+  transition: all 0.3s ease;
+}
+
+.icona-roda {
+  font-size: 1.5rem;
+  color: #1e1b4b;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .btn-settings:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(124, 58, 237, 0.2);
+}
+
+.btn-settings:hover .icona-roda {
+  transform: rotate(45deg);
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .btn-settings img {
   width: 24px;
   height: 24px;
-  filter: brightness(0) invert(1);
 }
 
 .perfil-content {
@@ -260,4 +277,191 @@
 
 .btn-cancel:hover {
   background: #e0e0e0;
+}
+
+/* Tema Alumne (Blau) */
+.perfil-container.tema-alumne::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #f4f9ff 0%, #e0f2fe 100%);
+  z-index: -2;
+}
+
+.perfil-container.tema-alumne::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.25), transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.25), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.15), transparent 50%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+.perfil-container.tema-alumne .perfil-header {
+  background: rgba(14, 165, 233, 0.15);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(14, 165, 233, 0.3);
+  box-shadow: 0 10px 30px rgba(14, 165, 233, 0.1);
+  color: #334155;
+}
+
+.perfil-container.tema-alumne .perfil-header .email {
+  color: #475569;
+}
+
+.perfil-container.tema-alumne .perfil-header .rol-badge {
+  background: rgba(14, 165, 233, 0.2);
+  color: #0284c7;
+}
+
+.perfil-container.tema-alumne .perfil-header .foto-perfil {
+  border-color: rgba(14, 165, 233, 0.3);
+}
+
+.perfil-container.tema-alumne .perfil-header .btn-settings {
+  background: rgba(14, 165, 233, 0.1);
+}
+
+.perfil-container.tema-alumne .perfil-header .btn-settings:hover {
+  background: rgba(14, 165, 233, 0.2);
+}
+
+.perfil-container.tema-alumne .perfil-header .btn-settings img {
+  filter: none;
+}
+
+.perfil-container.tema-alumne .section {
+  background: rgba(14, 165, 233, 0.05);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(14, 165, 233, 0.2);
+  box-shadow: 0 10px 30px rgba(14, 165, 233, 0.08);
+}
+
+.perfil-container.tema-alumne .section h2 {
+  border-bottom: 2px solid #0ea5e9;
+  color: #334155;
+}
+
+.perfil-container.tema-alumne .info-item p,
+.perfil-container.tema-alumne .form-group input {
+  color: #334155;
+}
+
+.perfil-container.tema-alumne .btn-save {
+  background: #0ea5e9;
+}
+
+.perfil-container.tema-alumne .btn-save:hover {
+  background: #0284c7;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .perfil-container {
+    padding: 140px 16px 20px;
+  }
+  
+  .perfil-header {
+    flex-direction: column;
+    text-align: center;
+    padding: 30px 20px;
+    gap: 15px;
+  }
+
+  .btn-settings {
+    top: 15px;
+    right: 15px;
+  }
+
+  .foto-perfil, .foto-placeholder {
+    width: 90px;
+    height: 90px;
+  }
+
+  .info-basica h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .perfil-container {
+    padding: 110px 12px 15px;
+  }
+
+  .section {
+    padding: 16px;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .button-group {
+    flex-direction: column;
+  }
+  
+  .info-basica h1 {
+    font-size: 1.6rem;
+  }
+  
+  .btn-save, .btn-cancel {
+    width: 100%;
+  }
+}
+
+/* ===== LOGOUT SECTION ===== */
+.logout-section {
+  margin-top: 12px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-logout-perfil {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  background: rgba(239, 68, 68, 0.06);
+  border: 1.5px solid rgba(239, 68, 68, 0.2);
+  border-radius: 999px;
+  color: #ef4444;
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  letter-spacing: 0.01em;
+}
+
+.btn-logout-perfil ng-icon {
+  font-size: 1.25rem;
+  transition: transform 0.25s ease;
+}
+
+.btn-logout-perfil:hover {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);
+}
+
+.btn-logout-perfil:hover ng-icon {
+  transform: translateX(3px);
+}
+
+.btn-logout-perfil:active {
+  transform: translateY(0);
 }

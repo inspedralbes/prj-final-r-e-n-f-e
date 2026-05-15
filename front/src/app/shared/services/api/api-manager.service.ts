@@ -40,6 +40,9 @@ export class ApiManagerService {
     }
   }
 
+  /**
+   * Petició POST genérica
+   */
   async post<T>(endpoint: string, body: any): Promise<T> {
     try {
       const data = await firstValueFrom(

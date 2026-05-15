@@ -18,7 +18,8 @@
         <p>Carregant assignatures...</p>
       </div>
     } @else {
-      <div class="table-container glass-panel">
+      <!-- TABLE VIEW (Desktop) -->
+      <div class="table-container glass-panel desktop-only">
         <table class="premium-table">
           <thead>
             <tr>
@@ -72,11 +73,50 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="5" class="empty-state">No hi ha assignatures registrades al sistema.</td>
+                <td colspan="6" class="empty-state">No hi ha assignatures registrades al sistema.</td>
               </tr>
             }
           </tbody>
         </table>
+      </div>
+
+      <!-- CARD VIEW (Mobile) -->
+      <div class="cards-container mobile-only">
+        @for (assignatura of assignatures(); track assignatura.id) {
+          <div class="user-card">
+            <div class="card-header">
+              <div class="avatar-placeholder">
+                <ng-icon name="heroBookOpen"></ng-icon>
+              </div>
+              <div class="name-details">
+                <span class="user-name">{{ assignatura.nom }}</span>
+                <span class="user-email">Interval: {{ assignatura.interval && assignatura.interval !== '' ? assignatura.interval : 'Sense definir' }}</span>
+              </div>
+            </div>
+            <div class="card-info">
+              <span class="badge-role p-role">Proj {{ assignatura.id_classe_projecte || 1 }}</span>
+              <span class="badge-role" [ngClass]="assignatura.exempcio ? 'administrador' : 'alumne'">{{ assignatura.exempcio ? 'Exe' : 'No' }}</span>
+              <div class="trimestres-row">
+                <span class="badge-trimestre">1T:{{ assignatura.hores_1r_trimestre || 0 }}h</span>
+                <span class="badge-trimestre">2T:{{ assignatura.hores_2n_trimestre || 0 }}h</span>
+                <span class="badge-trimestre">3T:{{ assignatura.hores_3r_trimestre || 0 }}h</span>
+              </div>
+            </div>
+            <div class="card-actions">
+              <button class="btn-icon view" (click)="obrirModalAlumnes(assignatura)" title="Veure">
+                <ng-icon name="heroEye"></ng-icon>
+              </button>
+              <button class="btn-icon edit" (click)="obrirModal(assignatura)" title="Editar">
+                <ng-icon name="heroPencilSquare"></ng-icon>
+              </button>
+              <button class="btn-icon delete" (click)="esborrarAssignatura(assignatura.id)" title="Eliminar">
+                <ng-icon name="heroTrash"></ng-icon>
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state glass-panel">No hi ha assignatures registrades.</div>
+        }
       </div>
     }
   </div>

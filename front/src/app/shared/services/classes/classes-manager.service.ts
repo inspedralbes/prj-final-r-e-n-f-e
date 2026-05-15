@@ -39,8 +39,11 @@ export class ClassesManagerService {
     try {
       const resp = await this.apiManager.get<any>(`/classes/tutor/${idTutor}`);
       return resp.data; // Retorna l'objecte Classe
-    } catch (err) {
-      console.error('Error obtenint la classe del tutor:', err);
+    } catch (err: any) {
+      // Si és un 404, simplement retornem null sense log d'error (és un cas comú si no és tutor)
+      if (err.status !== 404) {
+        console.error('Error obtenint la classe del tutor:', err);
+      }
       return null;
     } finally {
       this.isLoading.set(false);

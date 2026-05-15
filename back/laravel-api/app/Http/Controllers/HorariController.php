@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class HorariController extends Controller
 {
@@ -64,6 +65,15 @@ class HorariController extends Controller
 
         $horari = Horari::create($dadesValidades);
 
+        try {
+            Http::timeout(2)->post(env('NODE_URL', 'http://pfg1-back-node:3000') . '/api/broadcast', [
+                'event' => 'horari_updated',
+                'data' => $horari
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error broadcasting horari_updated: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
             'data' => $horari->load(['assignatura', 'classe', 'aula', 'professor']),
@@ -110,6 +120,15 @@ class HorariController extends Controller
 
         $horari->update($dadesValidades);
 
+        try {
+            Http::timeout(2)->post(env('NODE_URL', 'http://pfg1-back-node:3000') . '/api/broadcast', [
+                'event' => 'horari_updated',
+                'data' => $horari
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error broadcasting horari_updated: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
             'data' => $horari->load(['assignatura', 'classe', 'aula', 'professor']),
@@ -151,8 +170,7 @@ class HorariController extends Controller
         // 2. Gestionem els inscrits (alumnes per franja)
         $idAlumnesNous = $dadesValidades['alumnes_ids'];
 
-        // Eliminem els que ja no hi són (opcionalment, depèn de si volem mantenir historial)
-        // Per simplicitat "primitiva", eliminem els que NO estiguin a la nova llista
+        // Eliminem els que ja no hi són
         \App\Models\Inscrit::where('id_horari', $horari->id)
             ->whereNotIn('id_alumne', $idAlumnesNous)
             ->delete();
@@ -163,6 +181,15 @@ class HorariController extends Controller
                 ['id_horari' => $horari->id, 'id_alumne' => $idAlumne],
                 ['id_assignatura' => $dadesValidades['id_assig']]
             );
+        }
+
+        try {
+            Http::timeout(2)->post(env('NODE_URL', 'http://pfg1-back-node:3000') . '/api/broadcast', [
+                'event' => 'horari_updated',
+                'data' => $horari
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error broadcasting horari_updated: ' . $e->getMessage());
         }
 
         return response()->json([
@@ -185,6 +212,15 @@ class HorariController extends Controller
 
         $horari->delete();
 
+        try {
+            Http::timeout(2)->post(env('NODE_URL', 'http://pfg1-back-node:3000') . '/api/broadcast', [
+                'event' => 'horari_updated',
+                'data' => ['id' => $id, 'deleted' => true]
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error broadcasting horari_updated: ' . $e->getMessage());
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'Horari eliminat correctament'
@@ -193,7 +229,6 @@ class HorariController extends Controller
 
     public function getHorari($id)
     {
-
         $user = DB::table('usuaris')
             ->where('id', $id)
             ->select('id', 'rol')
@@ -206,7 +241,6 @@ class HorariController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // 1. Busco a la base de dades els horaris creuant amb la taula assignatures i classes
         if ($user->rol === 'Alumne') {
             $horaris = DB::table('horaris')
                 ->join('inscrits', 'horaris.id', '=', 'inscrits.id_horari')
@@ -223,10 +257,9 @@ class HorariController extends Controller
                 ->select('horaris.codi_hora', 'assignatures.nom as nom_assig', 'classes.nom as nom_classe')
                 ->get();
         } else {
-            $horaris = collect(); // Si sóc Admin o un altre
+            $horaris = collect();
         }
 
-        // 2. Defineixo l'ordre dels dies de la setmana
         $diesOrdre = [
             ['lletra' => 'L', 'nom' => 'dilluns'],
             ['lletra' => 'M', 'nom' => 'dimarts'],
@@ -235,19 +268,15 @@ class HorariController extends Controller
             ['lletra' => 'V', 'nom' => 'divendres'],
         ];
 
-        // 3. Munto un mapa per agrupar les hores de cada dia
         $mapa = ['L' => [], 'M' => [], 'X' => [], 'J' => [], 'V' => []];
 
         foreach ($horaris as $horari) {
             $codi = $horari->codi_hora;
-            if (!$codi)
-                continue;
+            if (!$codi) continue;
 
             $lletra = $codi[0];
             $hora = (int) substr($codi, 1); 
 
-            // Si sóc profe, afegeixo també a quina classe dono l'assignatura 
-            // (Com a alumne no em fa falta perquè ja sé a quina classe estic)
             $textMostrar = $horari->nom_assig;
             if ($user->rol === 'Profe' && $horari->nom_classe) {
                 $textMostrar .= "\n(" . $horari->nom_classe . ")";
@@ -258,16 +287,13 @@ class HorariController extends Controller
             }
         }
 
-        // 4. Formatem amb 12 espais buits (matí i tarda)
         $resultat = [];
         foreach ($diesOrdre as $dia) {
             $entrades = $mapa[$dia['lletra']];
-
-            // Creo un array de 12 hores plenes de 'null' per defecte
             $slots = array_fill(0, 12, null);
 
             foreach ($entrades as $entry) {
-                $idx = $entry['hora'] - 1; // L'hora 1 a Laravel serà la posició 0 al Frontend.
+                $idx = $entry['hora'] - 1;
                 if ($idx >= 0 && $idx < 12) {
                     $slots[$idx] = $entry['assignatura'];
                 }
@@ -284,14 +310,12 @@ class HorariController extends Controller
 
     public function getClasseActual($id)
     {
-        // 1. Busco qui sóc a la base de dades
         $user = DB::table('usuaris')->where('id', $id)->first();
 
         if (!$user) {
             return response()->json(['success' => false, 'message' => 'Usuari no trobat'], 404);
         }
 
-        // 2. Determino quin dia de la setmana és avui respectant la zona horària d'Espanya
         $now = \Carbon\Carbon::now('Europe/Madrid');
         $diaNumerico = $now->dayOfWeekIso; 
         $lletraDia = '';
@@ -301,10 +325,9 @@ class HorariController extends Controller
             case 3: $lletraDia = 'X'; break;
             case 4: $lletraDia = 'J'; break;
             case 5: $lletraDia = 'V'; break;
-            default: return response()->json(['success' => true, 'data' => null]); // Si sóc en cap de setmana
+            default: return response()->json(['success' => true, 'data' => null]);
         }
 
-        // 3. Calculo la franja horària actual basant-me en l'hora correcta local
         $horaActual = $now->hour; 
         $minutActual = $now->minute;
         
@@ -312,14 +335,12 @@ class HorariController extends Controller
         if ($horaActual == 8) $franja = 1;
         else if ($horaActual == 9) $franja = 2;
         else if ($horaActual == 10) $franja = 3;
-        // Si són les 11:30 ja compta com a 4a hora després de l'esbarjo
         else if ($horaActual == 11 && $minutActual >= 30) $franja = 4;
         else if ($horaActual == 12) $franja = 5;
         else if ($horaActual == 13) $franja = 6;
         else if ($horaActual == 15) $franja = 7;
         else if ($horaActual == 16) $franja = 8;
         else if ($horaActual == 17) $franja = 9;
-        // Si són les 18:30 ja compta com a franja 10 després de l'esbarjo de tarda
         else if ($horaActual == 18 && $minutActual >= 30) $franja = 10;
         else if ($horaActual == 19) $franja = 11;
         else if ($horaActual == 20 || ($horaActual == 21 && $minutActual <= 30)) $franja = 12;
@@ -328,10 +349,8 @@ class HorariController extends Controller
            return response()->json(['success' => true, 'data' => null]);
         }
 
-        // Creem el format de BBDD, ex: "L3", "X5"
         $codiHoraActual = $lletraDia . $franja;
 
-        // 4. Busco quin horari tinc en aquesta hora i dia concrets
         if ($user->rol === 'Profe') {
             $horari = DB::table('horaris')
                 ->join('assignatures', 'horaris.id_assig', '=', 'assignatures.id')
@@ -339,10 +358,9 @@ class HorariController extends Controller
                 ->leftJoin('aules', 'horaris.id_aula', '=', 'aules.id')
                 ->where('horaris.id_professor', $user->id)
                 ->where('horaris.codi_hora', $codiHoraActual)
-                ->select('assignatures.nom as nom_assig', 'classes.nom as nom_classe', 'aules.nom as nom_aula')
+                ->select('horaris.id', 'assignatures.nom as nom_assig', 'classes.nom as nom_classe', 'aules.nom as nom_aula')
                 ->first();
         } else {
-            // Per alumne
             $horari = DB::table('horaris')
                 ->join('inscrits', 'horaris.id', '=', 'inscrits.id_horari')
                 ->join('assignatures', 'horaris.id_assig', '=', 'assignatures.id')
@@ -350,18 +368,17 @@ class HorariController extends Controller
                 ->leftJoin('aules', 'horaris.id_aula', '=', 'aules.id')
                 ->where('inscrits.id_alumne', $user->id)
                 ->where('horaris.codi_hora', $codiHoraActual)
-                ->select('assignatures.nom as nom_assig', 'classes.nom as nom_classe', 'aules.nom as nom_aula')
+                ->select('horaris.id', 'assignatures.nom as nom_assig', 'classes.nom as nom_classe', 'aules.nom as nom_aula')
                 ->first();
         }
 
-        // 5. Preparem la resposta per al frontend
         if ($horari) {
              return response()->json(['success' => true, 'data' => [
+                 'id' => $horari->id,
                  'nom' => $horari->nom_assig,
                  'estat' => 'EN CURS ARA',
                  'classe' => $horari->nom_classe,
                  'aula' => $horari->nom_aula ?? 'TBD',
-                 // Format 08:00 segons la franja
                  'horaInici' => str_pad($horaActual, 2, '0', STR_PAD_LEFT) . ':00', 
                  'horaFi' => str_pad($horaActual + 1, 2, '0', STR_PAD_LEFT) . ':00'
              ]]);
@@ -370,5 +387,56 @@ class HorariController extends Controller
         return response()->json(['success' => true, 'data' => null]);
     }
 
+    /**
+     * Retorna el context complet per a la pantalla de passar llista.
+     * Inclou les sessions i quina és la sessió 'recomanada' (actual o propera).
+     */
+    public function getContextAssistencia($idProfessor)
+    {
+        $horaris = Horari::with(['assignatura', 'classe', 'aula'])
+            ->where('id_professor', $idProfessor)
+            ->get();
 
+        $ordreDies = ['L' => 1, 'M' => 2, 'X' => 3, 'J' => 4, 'V' => 5];
+        $sessions = $horaris->sort(function ($a, $b) use ($ordreDies) {
+            $diaA = substr($a->codi_hora, 0, 1);
+            $diaB = substr($b->codi_hora, 0, 1);
+            $horaA = (int)substr($a->codi_hora, 1);
+            $horaB = (int)substr($b->codi_hora, 1);
+            if ($diaA !== $diaB) return ($ordreDies[$diaA] ?? 99) <=> ($ordreDies[$diaB] ?? 99);
+            return $horaA <=> $horaB;
+        })->values();
+
+        $now = \Carbon\Carbon::now('Europe/Madrid');
+        $diaNumerico = $now->dayOfWeekIso;
+        $lletres = [1 => 'L', 2 => 'M', 3 => 'X', 4 => 'J', 5 => 'V'];
+        $lletraDia = $lletres[$diaNumerico] ?? null;
+        
+        $horaActual = $now->hour;
+        $minutActual = $now->minute;
+        $franja = 0;
+        if ($horaActual == 8) $franja = 1;
+        else if ($horaActual == 9) $franja = 2;
+        else if ($horaActual == 10) $franja = 3;
+        else if ($horaActual == 11 && $minutActual >= 30) $franja = 4;
+        else if ($horaActual == 12) $franja = 5;
+        else if ($horaActual == 13) $franja = 6;
+        else if ($horaActual == 15) $franja = 7;
+        else if ($horaActual == 16) $franja = 8;
+        else if ($horaActual == 17) $franja = 9;
+        else if ($horaActual == 18 && $minutActual >= 30) $franja = 10;
+        else if ($horaActual == 19) $franja = 11;
+        else if ($horaActual == 20 || ($horaActual == 21 && $minutActual <= 30)) $franja = 12;
+
+        $codiBuscat = $lletraDia . $franja;
+        $sessioActual = $sessions->firstWhere('codi_hora', $codiBuscat);
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'sessions' => $sessions,
+                'default_id' => $sessioActual ? $sessioActual->id : ($sessions->first()->id ?? null)
+            ]
+        ]);
+    }
 }

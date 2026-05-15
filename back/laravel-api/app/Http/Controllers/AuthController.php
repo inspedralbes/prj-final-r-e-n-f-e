@@ -222,4 +222,30 @@ class AuthController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    /**
+     * Tanca la sessió de l'usuari (revoca tokens)
+     */
+    public function logout(Request $request)
+    {
+        try {
+            // Revocar el token actual
+            if ($request->user()) {
+                $request->user()->currentAccessToken()->delete();
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Sessió tancada correctament'
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::error('Error en logout: ' . $e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error en tancar la sessió',
+                'error' => $e->getMessage()
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

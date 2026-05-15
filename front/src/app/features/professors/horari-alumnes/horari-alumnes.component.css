@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :host {
-  --primary: #6366f1;
-  --primary-light: #818cf8;
-  --secondary: #a78bfa;
+  --primary: #7c3aed;
+  --primary-light: #a78bfa;
+  --secondary: #c084fc;
   --accent: #f472b6;
   --bg-main: #f0f2f5;
-  --glass: rgba(255, 255, 255, 0.7);
-  --glass-border: rgba(255, 255, 255, 0.4);
+  --glass: rgba(139, 92, 246, 0.08);
+  --glass-border: rgba(139, 92, 246, 0.2);
   --text-dark: #1e293b;
   --text-muted: #64748b;
   --shadow-premium: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
@@ -16,19 +16,18 @@
 .disseny-principal {
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-main);
-  height: 100vh;
+  background-color: transparent;
+  min-height: 100vh;
   font-family: 'Outfit', sans-serif;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 .contingut {
   flex-grow: 1;
-  margin-top: 200px;
   padding: 30px;
+  padding-top: 100px;
   z-index: 1;
-  overflow-y: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -49,16 +48,52 @@
 }
 
 .targeta-horari-premium {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(139, 92, 246, 0.06);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(139, 92, 246, 0.15);
   border-radius: 40px;
   padding: 50px;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 25px 60px rgba(139, 92, 246, 0.06);
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.targeta-horari-premium::before {
+  content: '';
+  position: absolute;
+  top: -120px;
+  right: -80px;
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(167, 139, 250, 0.06), transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* -- Scroll wrapper */
+.scroll-wrapper {
+  overflow-x: auto;
+  padding-bottom: 20px;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.scroll-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scroll-wrapper::-webkit-scrollbar-track {
+  background: rgba(139, 92, 246, 0.05);
+  border-radius: 10px;
+}
+
+.scroll-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.3);
+  border-radius: 10px;
 }
 
 .grid-horari {
@@ -89,8 +124,8 @@
 }
 
 .slot-sessio {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+  border: 1px solid rgba(139, 92, 246, 0.08);
   border-radius: 24px;
   min-height: 100px;
   padding: 20px;
@@ -101,26 +136,26 @@
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  box-shadow: 0 4px 15px rgba(139, 92, 246, 0.03);
 }
 
 .slot-sessio:hover {
   transform: translateY(-5px) scale(1.03);
   background: white;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
-  border-color: var(--primary-light);
+  box-shadow: 0 15px 30px rgba(139, 92, 246, 0.1);
+  border-color: var(--primary-light, #a78bfa);
   z-index: 2;
 }
 
 .slot-sessio.buit {
-  background: rgba(255, 255, 255, 0.6);
-  border: 2px dashed rgba(99, 102, 241, 0.2);
+  background: rgba(139, 92, 246, 0.04);
+  border: 2px dashed rgba(139, 92, 246, 0.2);
 }
 
 .slot-sessio.buit:hover {
   border-style: solid;
   background: white;
-  border-color: var(--primary-light);
+  border-color: var(--primary-light, #a78bfa);
 }
 
 .icona-afegir {
@@ -177,7 +212,7 @@
 .avatar-mini {
   width: 24px;
   height: 24px;
-  background: var(--secondary);
+  background: var(--secondary, #c084fc);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -372,9 +407,9 @@
 }
 
 .alumne-card.selected {
-  border-color: var(--primary);
-  background: rgba(99, 102, 241, 0.03);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.1);
+  border-color: var(--primary, #7c3aed);
+  background: rgba(124, 58, 237, 0.04);
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.1);
 }
 
 .alumne-avatar {
@@ -420,8 +455,8 @@
 }
 
 .selected .check-indicator {
-  border-color: var(--primary);
-  background: var(--primary);
+  border-color: var(--primary, #7c3aed);
+  background: var(--primary, #7c3aed);
 }
 
 .check-dot {
@@ -461,14 +496,14 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  background: linear-gradient(135deg, var(--primary, #7c3aed), var(--primary-light, #a78bfa));
   color: white;
-  box-shadow: 0 12px 24px -8px rgba(99, 102, 241, 0.5);
+  box-shadow: 0 12px 24px -8px rgba(124, 58, 237, 0.4);
 }
 
 .btn-primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 30px -10px rgba(99, 102, 241, 0.6);
+  box-shadow: 0 15px 30px -10px rgba(124, 58, 237, 0.5);
 }
 
 .btn-secondary {
@@ -489,7 +524,7 @@
 
 .avatar-mini ng-icon {
     font-size: 16px;
-    color: #6366f1;
+    color: var(--primary, #7c3aed);
 }
 
 .btn-close ng-icon {
@@ -498,4 +533,182 @@
 
 .alumne-avatar ng-icon {
     font-size: 18px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    .contingut {
+        padding: 20px;
+        padding-top: 90px;
+    }
+
+    .targeta-horari-premium {
+        padding: 40px;
+    }
+
+    .capçalera-moderna h1 {
+        font-size: 2.2rem;
+    }
+
+    .grid-horari {
+        gap: 12px;
+    }
+
+    .slot-sessio {
+        padding: 16px;
+        min-height: 90px;
+    }
+
+    .modal-card {
+        width: 90%;
+        max-width: 600px;
+        padding: 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contingut {
+        padding: 16px;
+        padding-top: 80px;
+    }
+
+    .targeta-horari-premium {
+        padding: 20px;
+        border-radius: 24px;
+    }
+
+    .capçalera-moderna {
+        margin-bottom: 20px;
+    }
+
+    .capçalera-moderna h1 {
+        font-size: 1.8rem;
+    }
+
+    .badge-classe {
+        font-size: 0.9rem;
+    }
+
+    .grid-horari {
+        grid-template-columns: 50px repeat(5, 1fr);
+        gap: 8px;
+        min-width: 550px;
+    }
+
+    .dia-header {
+        font-size: 0.75rem;
+        padding: 8px 0 15px 0;
+    }
+
+    .col-temps {
+        font-size: 0.75rem;
+    }
+
+    .slot-sessio {
+        min-height: 80px;
+        padding: 12px;
+        border-radius: 16px;
+    }
+
+    .info-sessio .assignatura {
+        font-size: 0.9rem;
+    }
+
+    .info-sessio .aula {
+        font-size: 0.75rem;
+    }
+
+    .profe-footer {
+        margin-top: 6px;
+        padding-top: 6px;
+    }
+
+    .modal-card {
+        padding: 24px;
+        border-radius: 24px;
+        max-height: 85vh;
+    }
+
+    .modal-header h2 {
+        font-size: 1.6rem;
+    }
+
+    .dual-inputs {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .selector-alumnes {
+        max-height: 200px;
+    }
+
+    .modal-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .contingut {
+        padding: 12px;
+        padding-top: 70px;
+    }
+
+    .targeta-horari-premium {
+        padding: 12px;
+        border-radius: 20px;
+    }
+
+    .capçalera-moderna h1 {
+        font-size: 1.5rem;
+    }
+
+    .grid-horari {
+        grid-template-columns: 40px repeat(5, 70px);
+        gap: 6px;
+        min-width: 420px;
+    }
+
+    .slot-sessio {
+        min-height: 70px;
+        padding: 8px;
+        border-radius: 12px;
+    }
+
+    .slot-sessio.esbarjo {
+        min-height: 40px;
+        font-size: 0.65rem;
+    }
+
+    .profe-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .modal-card {
+        padding: 16px;
+        border-radius: 20px;
+        max-height: 85vh;
+        width: 95%;
+    }
+
+    .modal-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .alumne-card {
+        padding: 10px 12px;
+        gap: 10px;
+    }
+
+    .alumne-avatar {
+        width: 32px;
+        height: 32px;
+        font-size: 0.8rem;
+    }
 }

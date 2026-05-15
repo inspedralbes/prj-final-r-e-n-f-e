@@ -6,8 +6,9 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-auth-callback',
   standalone: true,
   template: `
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-      <img src="/loading.gif" alt="loading">
+    <div class="admin-loading-container" style="height: 100vh;">
+      <div class="admin-spinner"></div>
+      <p style="font-weight: 500; color: #1e1b4b; font-family: 'Outfit', sans-serif;">Autenticant amb Google...</p>
     </div>
   `
 })

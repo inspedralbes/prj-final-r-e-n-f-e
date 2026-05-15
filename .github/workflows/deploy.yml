@@ -80,6 +80,7 @@ jobs:
             echo "MAIL_ENCRYPTION=tls" >> .env
             echo "MAIL_FROM_ADDRESS=info@tenfe.cat" >> .env
             echo 'MAIL_FROM_NAME=${APP_NAME}' >> .env
+            NODE_PRINCIPAL_API_URL=https://tenfe.cat/back-node
             cd ../..
 
             # Crear .env BACK Principal-node

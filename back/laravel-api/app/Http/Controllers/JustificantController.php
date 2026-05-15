@@ -6,6 +6,7 @@ use App\Models\Justificant;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class JustificantController extends Controller
 {
@@ -19,7 +20,7 @@ class JustificantController extends Controller
     }
 
     // Acceptar un justificant i marcar assistències com a Justificada
-    public function acceptar($id)
+    public function acceptar(Request $request, $id)
     {
         $justificant = Justificant::find($id);
         if (!$justificant) {
@@ -29,8 +30,14 @@ class JustificantController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-        // Marcar justificante com acceptat
-        $justificant->estat = 'Acceptada';
+        if($request->acceptat){
+            $justificant->estat = 'Acceptada';
+        }
+
+        if($request->acceptat == false) {
+            $justificant->estat = 'Rebutjada';
+        }
+
         $justificant->save();
 
         // Cerca l'id_inscripcio de l'alumne
@@ -204,6 +211,72 @@ class JustificantController extends Controller
         ], Response::HTTP_OK);
     }
 
+    public function justificacioPerTutoria(Request $request) {
+        $user = $request->user();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No hi ha un usuari'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Busquem si aquest usuari és tutor de alguna classe a la taula 'classes'
+        $user_tutor_class = DB::table('classes')->where('id_tutor', $user->id)->value('id');
+
+        if ($user->rol !== 'Profe' || $user_tutor_class == null){
+            return response()->json([
+                'success' => false,
+                'message' => 'No tens una classe assignada com a tutor'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        $alumnes = DB::table('usuaris')->where('id_classe', $user_tutor_class)->where('rol', 'Alumne')->get(['id', 'email', 'nom', 'cognom','photo']);
+        $llistaJustificants = [];
+
+        foreach($alumnes as $alumne) {
+            $justificants = DB::table('justificants')->where('id_alum', $alumne->id)->get(['id', 'data_inici', 'data_fi', 'comentari', 'document', 'estat']);
+            
+            foreach($justificants as $j) {
+                if ($j->document) {
+                    $relativePath = str_replace('storage/', '', $j->document);
+                    $filepath = storage_path('app/' . $relativePath);
+                    if (file_exists($filepath)) {
+                        $content = file_get_contents($filepath);
+                        $mime = mime_content_type($filepath);
+                        $j->document = 'data:' . $mime . ';base64,' . base64_encode($content);
+                    } else {
+                        $j->document = null;
+                    }
+                }
+            }
+            
+            if ($justificants->isNotEmpty()) {
+                $llistaJustificants[] = (object) [
+                    'alumne' => (object) [
+                        'id' => $alumne->id,
+                        'email' => $alumne->email,
+                        'nom' => $alumne->nom, 
+                        'cognom' => $alumne->cognom,
+                        'photo' => $alumne->photo
+                    ],
+                    'justificants' => $justificants
+                ];
+            } 
+        }
+
+        if (count($llistaJustificants) > 0) {
+            return response()->json([
+                'success' => true,
+                'data' => $llistaJustificants
+            ], Response::HTTP_OK);
+        }
+        return response()->json([
+            'success' => false,
+            'message' => 'No hi ha resposta'
+        ], Response::HTTP_OK);
+    }
+    
     public function getByAlumne($alumneId)
     {
         $justificants = Justificant::where('id_alum', $alumneId)
