@@ -6,7 +6,7 @@ describe('Tutor Mode Visibility', () => {
       body: {
         success: true,
         data: {
-          user: { id: 1, nom: 'Tutor Test', rol: 'profe' },
+          user: { id: 1, nom: 'Tutor Test', rol: 'Profe' },
           token: 'fake-jwt'
         }
       }
@@ -16,6 +16,7 @@ describe('Tutor Mode Visibility', () => {
     cy.intercept('GET', '**/back/api/v1/horaris/professor/*', { body: [] });
     cy.intercept('GET', '**/back/api/v1/horaris/usuari/*', { body: [] });
     cy.intercept('GET', '**/back/api/v1/usuaris/*/classe-actual', { body: { data: null } });
+    cy.intercept('GET', '**/back/api/v1/classes/tutor/1', { body: { data: { id: 1, nom: 'Classe Test' } } });
 
     cy.visit('/');
     cy.get('#usuari').type('tutor@example.com');

@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class CartaFaltesController extends Controller
 {
-    private string $nodeApiUrl;
+    private ?string $nodeApiUrl;
 
     public function __construct()
     {
@@ -22,6 +22,7 @@ class CartaFaltesController extends Controller
 
     public function generar(Request $peticio)
     {
+        set_time_limit(300);
         // Dades per la generació de la carta
         $validated = $peticio->validate([
             'id_alumne' => 'required|exists:usuaris,id',
@@ -117,7 +118,7 @@ class CartaFaltesController extends Controller
             $wordBase64 = base64_encode($wordFileContent);
 
             error_log('Enviant fitxer a Node API per conversió a PDF: ' . $fileName);
-            $response = Http::timeout(60)->post($this->nodeApiUrl . '/api/convert/word-to-pdf', [
+            $response = Http::timeout(120)->post($this->nodeApiUrl . '/api/convert/word-to-pdf', [
                 'fileBase64' => $wordBase64,
                 'fileName' => $fileName,
             ]);

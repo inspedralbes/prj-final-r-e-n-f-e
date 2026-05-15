@@ -2,24 +2,31 @@ import { Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarService } from '../../../services/sidebar.service';
 import { PerfilService } from '../../../services/perfil/perfil.service';
+import { AuthService } from '../../../../services/auth.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroHome, heroCalendarDays, heroDocumentCheck, heroUserCircle } from '@ng-icons/heroicons/outline';
+import { heroHome, heroCalendarDays, heroDocumentCheck, heroUserCircle, heroArrowLeftOnRectangle } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'alumne-sidebar',
   imports: [RouterLink, RouterLinkActive, NgIconComponent],
   templateUrl: './sidebarAlumne.component.html',
   styleUrl: '../sidebar.component.css',
-  viewProviders: [provideIcons({ heroHome, heroCalendarDays, heroDocumentCheck, heroUserCircle })],
+  viewProviders: [provideIcons({ heroHome, heroCalendarDays, heroDocumentCheck, heroUserCircle, heroArrowLeftOnRectangle })],
 })
 export class SidebarAlumneComponent {
   public sidebarService = inject(SidebarService);
   private perfilService = inject(PerfilService);
+  private authService = inject(AuthService);
 
+  isMenuOpen = signal(false);
   userPhoto = signal<string | null>(null);
 
   constructor() {
     this.loadUserPhoto();
+  }
+ 
+  toggleMenu() {
+    this.isMenuOpen.update(v => !v);
   }
 
   private async loadUserPhoto() {
@@ -33,5 +40,9 @@ export class SidebarAlumneComponent {
         }
       }
     }
+  }
+
+  logout() {
+    this.authService.logout();
   }
 }

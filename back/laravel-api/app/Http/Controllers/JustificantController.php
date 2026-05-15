@@ -221,14 +221,16 @@ class JustificantController extends Controller
             ], Response::HTTP_BAD_REQUEST);
         }
 
-        if ($user->rol !== 'Profe' || $user->id_classe == null){
+        // Busquem si aquest usuari és tutor de alguna classe a la taula 'classes'
+        $user_tutor_class = DB::table('classes')->where('id_tutor', $user->id)->value('id');
+
+        if ($user->rol !== 'Profe' || $user_tutor_class == null){
             return response()->json([
                 'success' => false,
                 'message' => 'No tens una classe assignada com a tutor'
             ], Response::HTTP_FORBIDDEN);
         }
 
-        $user_tutor_class = $user->id_classe;
         $alumnes = DB::table('usuaris')->where('id_classe', $user_tutor_class)->where('rol', 'Alumne')->get(['id', 'email', 'nom', 'cognom','photo']);
         $llistaJustificants = [];
 

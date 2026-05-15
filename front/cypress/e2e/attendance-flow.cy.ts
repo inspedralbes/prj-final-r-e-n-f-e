@@ -11,7 +11,7 @@ describe('Attendance Flow', () => {
             id: 1,
             nom: 'Professor de Prova',
             email: 'test@example.com',
-            rol: 'profe'
+            rol: 'Profe'
           },
           token: 'fake-jwt-token'
         }

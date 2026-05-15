@@ -2,6 +2,7 @@ import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
+import { SidebarService } from '../shared/services/sidebar.service';
 
 interface GoogleUser {
   user: {
@@ -27,17 +28,28 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private sidebarService: SidebarService
   ) {
     this.verificarToken();
   }
 
   private verificarToken() {
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const user = JSON.parse(storedUser);
-      const token = localStorage.getItem('token') ?? undefined;
-      this.userDataSignal.set({ user, token });
-      this.isAuthenticatedSignal.set(true);
+    const token = localStorage.getItem('token');
+    
+    if (storedUser && token) {
+      try {
+        const user = JSON.parse(storedUser);
+        this.userDataSignal.set({ user, token });
+        this.isAuthenticatedSignal.set(true);
+      } catch (e) {
+        console.error('Error parsing stored user:', e);
+        this.logout();
+      }
+    } else {
+      // Si falta un dels dos, netegem per seguretat
+      this.isAuthenticatedSignal.set(false);
+      this.userDataSignal.set(null);
     }
   }
 
@@ -97,7 +109,8 @@ export class AuthService {
     const token = data.token;
 
     localStorage.setItem('user', JSON.stringify(user));
-    localStorage.setItem('usuari', JSON.stringify(user));
+    // Eliminem 'usuari' si existia d'abans per unificar a 'user'
+    localStorage.removeItem('usuari');
 
     if (token) {
       localStorage.setItem('token', token);
@@ -125,10 +138,23 @@ export class AuthService {
   }
 
   logout() {
+    // Crida al backend (opcional, no bloquegem el front si falla)
+    this.http.post(`${this.apiUrl}/auth/logout`, {}).subscribe({
+      next: () => console.log('Backend logout success'),
+      error: (err) => console.error('Backend logout error:', err)
+    });
+
+    // Neteja de local storage
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    localStorage.removeItem('usuari'); // Per si de cas
+
+    // Reset de signals
     this.userDataSignal.set(null);
     this.isAuthenticatedSignal.set(false);
+    this.sidebarService.setTutorStatus(null);
+
+    // Redirecció
     this.router.navigate(['/']);
   }
 

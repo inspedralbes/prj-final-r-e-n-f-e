@@ -84,8 +84,9 @@ app.post("/api/convert/word-to-pdf", async (req, res) => {
     console.log("Temp file:", tempPath);
     fs.writeFileSync(tempPath, wordBuffer);
 
-    // Convertir a PDF
+    console.log("Iniciant conversió a PDF per:", fileName);
     const pdfBuffer = await libre.convertAsync(fs.readFileSync(tempPath), ".pdf", undefined);
+    console.log("Conversió finalitzada amb èxit:", fileName);
 
     // Esborrar fitxer temporal
     fs.unlinkSync(tempPath);
