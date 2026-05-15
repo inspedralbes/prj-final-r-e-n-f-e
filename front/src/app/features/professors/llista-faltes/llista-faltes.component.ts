@@ -2,115 +2,163 @@ import { Component, signal, computed, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroDocumentText, heroUser } from '@ng-icons/heroicons/outline';
+import {
+  heroDocumentText,
+  heroUser,
+  heroAcademicCap,
+  heroUserGroup,
+  heroIdentification,
+} from '@ng-icons/heroicons/outline';
 import { AssistenciesManagerService } from '../../../shared/services/assistencies/assistencies-manager.service';
+import { ClassesManagerService } from '../../../shared/services/classes/classes-manager.service';
+import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
+import { Inscrit } from '../../../shared/models/inscrits.model';
 
 @Component({
   selector: 'app-llista-faltes',
   standalone: true,
   imports: [CommonModule, SidebarComponent, NgIconComponent],
-  providers: [provideIcons({ heroDocumentText, heroUser })],
+  providers: [
+    provideIcons({
+      heroDocumentText,
+      heroUser,
+      heroAcademicCap,
+      heroUserGroup,
+      heroIdentification,
+    }),
+  ],
   templateUrl: './llista-faltes.component.html',
   styleUrl: './llista-faltes.component.css',
 })
 export class LlistaFaltesComponent implements OnInit {
   private assistenciesManager = inject(AssistenciesManagerService);
+  private classesManager = inject(ClassesManagerService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
-  get isLoading() { return this.assistenciesManager.isLoading(); }
+  // Estats reactius
+  isTutor = signal<boolean>(false);
+  modeTutor = signal<boolean>(false);
 
-  ngOnInit() {
-    this.assistenciesManager.carregarAssistencies();
+  // Rànquings separats
+  professorRanking = signal<any[]>([]);
+  tutorRanking = signal<any[]>([]);
+
+  showThresholdPopup = signal<boolean>(false);
+  isGenerating = signal<boolean>(false);
+  generatingThreshold = signal<number | null>(null);
+
+  private selectedAlumneId: number | null = null;
+  private idClasseTutor: number | null = null;
+
+  get isLoading() {
+    return this.assistenciesManager.isLoading();
   }
 
-  async generarInformeFaltes(id_alumne: number, id_tutor: number, faltes: number) {
+  async ngOnInit() {
+    // 1. Carregar rànquing de professor (optimitzat)
+    this.carregarRankingProfessor();
+
+    // 2. Comprovar si l'usuari és tutor
+    const user = this.authService.usuarioInfo;
+    if (user && user.id) {
+      try {
+        const classe = await this.classesManager.obtenirClasseTutor(user.id);
+        if (classe) {
+          this.isTutor.set(true);
+          this.idClasseTutor = classe.id;
+        }
+      } catch (error) {
+        console.error('Error comprovant estat de tutor:', error);
+      }
+    }
+  }
+
+  async carregarRankingProfessor() {
+    try {
+      const data = await this.assistenciesManager.getRankingProfessor();
+      this.professorRanking.set(data || []);
+    } catch (error) {
+      console.error('Error carregant rànquing de professor:', error);
+    }
+  }
+
+  toggleModeTutor() {
+    this.modeTutor.update((v) => !v);
+    if (this.modeTutor() && this.idClasseTutor) {
+      this.carregarRankingTutor();
+    } else {
+      this.carregarRankingProfessor();
+    }
+  }
+
+  async carregarRankingTutor() {
+    if (!this.idClasseTutor) return;
+    try {
+      const ranking = await this.assistenciesManager.getRankingClasse(this.idClasseTutor);
+      this.tutorRanking.set(ranking || []);
+    } catch (error) {
+      console.error('Error carregant rànquing de tutor:', error);
+    }
+  }
+
+  // Redirecció a la ruta de generació de cartes
+  anarAGenerarCarta(idAlumne: number) {
+    this.router.navigate(['/generar-carta', idAlumne]);
+  }
+
+  anarAPerfil(idAlumne: number) {
+    this.router.navigate(['/profile', idAlumne]);
+  }
+
+  openThresholdPopup(idAlumne: number) {
+    this.selectedAlumneId = idAlumne;
+    this.showThresholdPopup.set(true);
+  }
+
+  closeThresholdPopup() {
+    this.showThresholdPopup.set(false);
+    this.selectedAlumneId = null;
+    this.isGenerating.set(false);
+    this.generatingThreshold.set(null);
+  }
+
+  async confirmGenerarInforme(threshold: number) {
+    if (!this.selectedAlumneId || this.isGenerating()) return;
+
+    this.isGenerating.set(true);
+    this.generatingThreshold.set(threshold);
+
     try {
       const pdfBlob = await this.assistenciesManager.generarInformeFaltes(
-        id_alumne,
-        id_tutor,
-        faltes,
+        this.selectedAlumneId,
+        threshold,
       );
+
       const url = globalThis.URL.createObjectURL(pdfBlob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `carta_faltes_${faltes}_${id_alumne}.pdf`;
+      link.download = `carta_faltes_${threshold}_${this.selectedAlumneId}.pdf`;
       document.body.appendChild(link);
       link.click();
       link.remove();
       globalThis.URL.revokeObjectURL(url);
-      console.log('Informe de faltes generat correctament');
+
+      this.closeThresholdPopup();
     } catch (error) {
       console.error('Error al generar informe de faltes:', error);
+      this.isGenerating.set(false);
+      this.generatingThreshold.set(null);
     }
   }
 
-  faltas = '';
-
+  // Ara fem servir directament el rànquing que ve del backend
   assitenciesRanking = computed(() => {
-    const llistaAssis = this.assistenciesManager.assistencies();
-
-    // Primer de tot, ens quedem només amb els que han faltat
-    const totesLesFaltes = [];
-
-    for (let i = 0; i < llistaAssis.length; i++) {
-      if (llistaAssis[i].estat === 'Falta') {
-        totesLesFaltes.push(llistaAssis[i]);
-      }
-    }
-
-    // Els agruparem per alumne i assignatura: comptem quantes faltes té cada nen per cada assignatura.
-    // Format de la llista:
-    // [ { nomAlumne: 'Joan', nomAssignatura: 'Matemàtiques', totalFaltes: 3 } ]
-
-    const diccionariAlumnesAssignatures: any = {};
-
-    for (let i = 0; i < totesLesFaltes.length; i++) {
-      const assis = totesLesFaltes[i];
-
-      // 1. Obtenim el nom de l'alumne
-      // Si la informació d'inscripció o alumne no existeix, posem un valor per defecte.
-      let nomAlumne = 'Alumne Desconegut';
-      if (assis.inscripcio && assis.inscripcio.alumne) {
-        const nom = assis.inscripcio.alumne.nom || '';
-        const cognom = assis.inscripcio.alumne.cognom || '';
-        nomAlumne = (nom + ' ' + cognom).trim();
-      }
-
-      // 2. Obtenim el nom de l'assignatura
-      let nomAssignatura = 'Assignatura Desconeguda';
-      if (assis.inscripcio && assis.inscripcio.assignatura) {
-        nomAssignatura = assis.inscripcio.assignatura.nom;
-      }
-
-      // 3. Creem una clau única que identifiqui la combinació Alumne-Assignatura
-      // Això ens permetrà agrupar totes les faltes d'un mateix alumne en una mateixa assignatura.
-      const clauUnica = nomAlumne + '|||' + nomAssignatura;
-
-      // 4. Si és la primera vegada que trobem aquesta combinació, inicialitzem l'objecte al diccionari.
-      if (!diccionariAlumnesAssignatures[clauUnica]) {
-        diccionariAlumnesAssignatures[clauUnica] = {
-          alumne: nomAlumne,
-          assignatura: nomAssignatura,
-          faltes: 0 
-        };
-      }
-
-      // 5. Incrementem les faltes de l'alumne a l'assignatura
-      diccionariAlumnesAssignatures[clauUnica].faltes++;
-    }
-
-    // Convertim el diccionari a un array ordenat per a l'HTML
-    const rankingArray = [];
-    for (const clau in diccionariAlumnesAssignatures) {
-      rankingArray.push({
-        nomAlumne: diccionariAlumnesAssignatures[clau].alumne,
-        nomAssignatura: diccionariAlumnesAssignatures[clau].assignatura,
-        totalFaltes: diccionariAlumnesAssignatures[clau].faltes
-      });
-    }
-
-    // Finalment, ho endrecem amb els alumnes amb més faltes primer
-    rankingArray.sort((a, b) => b.totalFaltes - a.totalFaltes);
-
-    return rankingArray;
+    return this.professorRanking().map((item) => ({
+      nomAlumne: `${item.nomAlumne} ${item.cognomAlumne}`.trim(),
+      nomAssignatura: item.nomAssignatura,
+      totalFaltes: item.totalFaltes,
+    }));
   });
 }

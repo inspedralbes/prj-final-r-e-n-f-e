@@ -13,6 +13,7 @@ export class LoginComponent {
   usuari = signal<string>('');
   error = signal<string>('');
   isLoading = signal<boolean>(false);
+  isGoogleLoading = signal<boolean>(false);
 
   constructor(
     private router: Router,
@@ -20,11 +21,13 @@ export class LoginComponent {
   ) { }
 
   loginGoogle() {
+    if (this.isLoading() || this.isGoogleLoading()) return;
+    this.isGoogleLoading.set(true);
     this.authService.loginWithGoogle();
   }
 
   iniciarSessio() {
-    if (this.isLoading()) return;
+    if (this.isLoading() || this.isGoogleLoading()) return;
     const email = this.usuari().toLowerCase().trim();
 
     if (!email.includes('@')) {

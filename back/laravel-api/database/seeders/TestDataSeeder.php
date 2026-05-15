@@ -60,6 +60,22 @@ class TestDataSeeder extends Seeder
                 $inscritId = $inscrit->id;
             }
 
+            // 1.5 Ensure Teacher Assignment (Imparteix)
+            $imparteixExists = DB::table('imparteix')
+                ->where('id_profe', $idProfe)
+                ->where('id_assignatura', $idAssignatura)
+                ->exists();
+
+            if (!$imparteixExists) {
+                DB::table('imparteix')->insert([
+                    'id_profe' => $idProfe,
+                    'id_assignatura' => $idAssignatura,
+                    'titular' => true,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
+
             // 2. Generate Absences (Faltes)
             foreach ($data['absences'] as $date) {
                 $exists = DB::table('assistencies')

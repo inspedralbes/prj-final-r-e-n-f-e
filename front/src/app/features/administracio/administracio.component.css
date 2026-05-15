@@ -10,6 +10,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  background: transparent;
 }
 
 /* Zona de contingut (deixa espai per la navbar flotant: 16px marge + 52px alçada + 16px espai) */
@@ -32,7 +33,7 @@
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
+  box-shadow: var(--glass-shadow), var(--glass-reflection);
   border-radius: var(--radius-m);
   padding: 24px;
   margin-bottom: 24px;
@@ -63,4 +64,67 @@
   flex: 1;
   min-width: 0;    /* Necessari per evitar desbordament en flex */
   max-width: none; /* Cancel·la qualsevol max-width individual */
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .fila-grafics {
+    flex-direction: column;
+  }
+
+  .contingut-admin {
+    padding: 70px 24px 24px 24px;
+  }
+
+  .titol-dashboard {
+    font-size: 1.6rem;
+  }
+
+  .contenidor-canvas {
+    height: 260px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contingut-admin {
+    padding: 70px 16px 16px 16px;
+  }
+
+  .titol-dashboard {
+    font-size: 1.3rem;
+    margin-bottom: 20px;
+  }
+
+  .targeta-grafic {
+    padding: 16px;
+    border-radius: 16px;
+  }
+
+  .titol-grafic {
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+  }
+
+  .contenidor-canvas {
+    height: 220px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contingut-admin {
+    padding: 64px 12px 12px 12px;
+  }
+
+  .titol-dashboard {
+    font-size: 1.1rem;
+  }
+
+  .targeta-grafic {
+    padding: 12px;
+    border-radius: 12px;
+  }
+
+  .contenidor-canvas {
+    height: 180px;
+  }
 }

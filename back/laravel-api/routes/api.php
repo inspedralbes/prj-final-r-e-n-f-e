@@ -24,6 +24,7 @@ Route::prefix('v1')->group(function (): void {
     Route::post('auth/google/redirect', [AuthController::class, 'googleRedirectUrl']);
     Route::post('auth/google/callback', [AuthController::class, 'googleCallback']);
     Route::post('auth/login-temporal', [AuthController::class, 'loginTemporal']);
+    Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::patch('/fullfill-user-profile', [UsuariController::class, 'fullfillUserProfile'])->middleware(('auth:sanctum'));
 
     // Rutes d'Usuaris
@@ -62,6 +63,7 @@ Route::prefix('v1')->group(function (): void {
         Route::post('horaris/granular', [HorariController::class, 'actualitzarHorariGranular']);
         Route::get('classes/{id}/horaris', [HorariController::class, 'getHorarisClasse']);
         Route::get('horaris/professor/{id}', [HorariController::class, 'getSessionsProfessor']);
+        Route::get('horaris/professor/{id}/context', [HorariController::class, 'getContextAssistencia']);
         Route::apiResource('horaris', HorariController::class);
         Route::get('/horaris/usuari/{id}', [HorariController::class, 'getHorari']);
         Route::get('/usuaris/{id}/classe-actual', [HorariController::class, 'getClasseActual']);
@@ -70,6 +72,8 @@ Route::prefix('v1')->group(function (): void {
         Route::apiResource('imparteix', ImparteixController::class);
 
         // Rutes d'Assistència
+        Route::get('assistencies/ranking-profe', [AssistenciaController::class, 'rankingFaltesProfessor']);
+        Route::get('assistencies/classe/{idClasse}/ranking', [AssistenciaController::class, 'rankingFaltesClasse']);
         Route::get('horaris/{idHorari}/assistencia-setmanal', [AssistenciaController::class, 'assistenciaSetmanalHorari']);
         Route::apiResource('assistencies', AssistenciaController::class);
         Route::get('assistencies/alumne/{alumneId}', action: [AssistenciaController::class, 'assistenciaPerAlumne']);
@@ -78,6 +82,7 @@ Route::prefix('v1')->group(function (): void {
 
         // Rutes de Justificants
         Route::apiResource('justificants', JustificantController::class);
+        Route::get('justificants/tutoria/pendents' , [JustificantController::class, 'justificacioPerTutoria'])->middleware('auth:sanctum');
         Route::get('justificants/alumne/{alumneId}', [JustificantController::class, 'getByAlumne']);
         Route::post('justificants/acceptar/{id}', [JustificantController::class, 'acceptar']);
         // Rutes de Carta de Faltes

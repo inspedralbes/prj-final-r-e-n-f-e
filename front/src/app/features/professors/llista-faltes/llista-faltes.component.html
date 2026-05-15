@@ -1,17 +1,40 @@
-<!--
-    Aquí fem servir el Control Flow modern d'Angular:
-     - @for: Es per fer la llista (el bucle), més net que l'antic ngFor.
-     - @empty: Això es ho que es mostra si la llista no té res (està buida).
--->
 <div class="disseny-principal">
   <app-sidebar></app-sidebar>
 
-
-  <div class="contingut relative-container">
+  <div class="contingut">
     <div class="targeta-llista">
       <div class="capçalera-llista">
-        <h1>Rànquing de Faltes</h1>
-        <p class="setmana-info">Alumnes amb més absències acumulades</p>
+        <div class="titol-seccio">
+          <h1>Rànquing de Faltes</h1>
+          <p class="setmana-info">
+            {{
+              modeTutor()
+                ? 'Alumnes de la teva tutoria (totes les assignatures)'
+                : 'Alumnes amb més absències acumulades (les teves assignatures)'
+            }}
+          </p>
+        </div>
+
+        @if (isTutor()) {
+          <div class="tutor-toggle-container">
+            <button
+              class="boto-toggle"
+              [class.actiu]="!modeTutor()"
+              (click)="!modeTutor() ? null : toggleModeTutor()"
+            >
+              <ng-icon name="heroAcademicCap"></ng-icon>
+              Profe
+            </button>
+            <button
+              class="boto-toggle"
+              [class.actiu]="modeTutor()"
+              (click)="modeTutor() ? null : toggleModeTutor()"
+            >
+              <ng-icon name="heroUserGroup"></ng-icon>
+              Tutor
+            </button>
+          </div>
+        }
       </div>
 
       @if (isLoading) {
@@ -20,50 +43,139 @@
           <p>Calculant rànquing d'absències...</p>
         </div>
       } @else {
-        <!-- Botó per fer proves al generar l'informe de faltes -->
-        <button class="boto-informe" (click)="generarInformeFaltes(3,1,30)">
-          <ng-icon name="heroDocumentText"></ng-icon> Generar Informe de Faltes
-        </button>
+        <!-- Ranking Professor -->
+        @if (!modeTutor()) {
+          <div class="contenedor-taula">
+            <table class="taula-assistencia">
+              <thead>
+                <tr>
+                  <th class="col-nom">Nom de l'alumne</th>
+                  <th class="col-assignatura">Assignatura</th>
+                  <th class="col-faltes">Total de Faltes</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (
+                  alumne of assitenciesRanking();
+                  track alumne.nomAlumne + alumne.nomAssignatura
+                ) {
+                  <tr>
+                    <td class="nom-alumne" data-label="Alumne">
+                      <div class="user-cell-mini">
+                        <div class="avatar-circle-mini">
+                          <ng-icon name="heroUser"></ng-icon>
+                        </div>
+                        <span>{{ alumne.nomAlumne }}</span>
+                      </div>
+                    </td>
+                    <td class="nom-assignatura" data-label="Assignatura">
+                      {{ alumne.nomAssignatura }}
+                    </td>
+                    <td class="celda-assistencia" data-label="Total Faltes">
+                      <div class="badge-faltes">
+                        {{ alumne.totalFaltes }}
+                      </div>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="3" class="empty-state">
+                      No hi ha cap falta registrada a les teves assignatures.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
 
-        <!-- La taula on es veu qui ha faltat més a cada classe -->
-        <div class="contenedor-taula">
-          <table class="taula-assistencia">
-            <thead>
-              <tr>
-                <th class="col-nom">Nom de l'alumne</th>
-                <th class="col-assignatura">Assignatura</th>
-                <th class="col-faltes">Total de Faltes</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (alumne of assitenciesRanking(); track alumne.nomAlumne + alumne.nomAssignatura) {
-              <tr>
-                <td class="nom-alumne">
-                  <div class="user-cell-mini">
-                    <div class="avatar-circle-mini"><ng-icon name="heroUser"></ng-icon></div>
-                    <span>{{ alumne.nomAlumne }}</span>
-                  </div>
-                </td>
-                <td class="nom-assignatura">{{ alumne.nomAssignatura }}</td>
-                <td class="celda-assistencia">
-                  <div class="badge-faltes">
-                    {{ alumne.totalFaltes }}
-                  </div>
-                </td>
-              </tr>
-              }
-              <!-- Si no hi ha cap falta registrada, ensenyem aquest avís -->
-              @empty {
-              <tr>
-                <td colspan="3" style="text-align: center; padding: 20px; color: #64748b;">
-                  No hi ha cap falta registrada al sistema encara.
-                </td>
-              </tr>
-              }
-            </tbody>
-          </table>
-        </div>
+        <!-- Mode Tutor -->
+        @if (modeTutor()) {
+          <div class="contenedor-taula">
+            <table class="taula-assistencia">
+              <thead>
+                <tr>
+                  <th class="col-nom">Nom de l'alumne</th>
+                  <th class="col-faltes">Faltes Totals</th>
+                  <th class="col-accions" style="text-align: center">Accions</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (alumne of tutorRanking(); track alumne.id) {
+                  <tr>
+                    <td class="nom-alumne" data-label="Alumne">
+                      <div class="user-cell-mini">
+                        <div class="avatar-circle-mini">
+                          <ng-icon name="heroUser"></ng-icon>
+                        </div>
+                        <span>{{ alumne.nom }} {{ alumne.cognom }}</span>
+                      </div>
+                    </td>
+                    <td class="celda-assistencia" data-label="Faltes Totals">
+                      <div class="badge-faltes tutor-badge">
+                        {{ alumne.total_faltes }}
+                      </div>
+                    </td>
+                    <td class="celda-accions" data-label="Accions">
+                      <button
+                        class="btn btn-carta"
+                        (click)="openThresholdPopup(alumne.id)"
+                        title="Generar Carta"
+                      >
+                        <ng-icon name="heroDocumentText"></ng-icon>
+                        Carta
+                      </button>
+                      <button
+                        class="btn btn-perfil"
+                        (click)="anarAPerfil(alumne.id)"
+                        title="Veure Perfil"
+                      >
+                        <ng-icon name="heroIdentification"></ng-icon>
+                        Perfil
+                      </button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="3" class="empty-state">
+                      No hi ha alumnes amb faltes a la teva classe.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
       }
     </div>
   </div>
+
+  <!-- Modal Generar Carta -->
+  @if (showThresholdPopup()) {
+    <div class="modal-overlay" (click)="!isGenerating() && closeThresholdPopup()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <h2>Generar Carta de Faltes</h2>
+        <p>Selecciona el llindar de faltes per a la carta:</p>
+        <div class="options-grid">
+          @for (threshold of [30, 60, 90]; track threshold) {
+            <button
+              class="opcio-btn"
+              [class.boto-loading]="isGenerating() && generatingThreshold() === threshold"
+              [disabled]="isGenerating()"
+              (click)="confirmGenerarInforme(threshold)"
+            >
+              @if (isGenerating() && generatingThreshold() === threshold) {
+                <div class="spinner-circle"></div>
+              } @else {
+                <span class="btn-text">{{ threshold }} Faltes</span>
+              }
+            </button>
+          }
+        </div>
+        <button class="boto-cancelar-modal" (click)="closeThresholdPopup()">
+          {{ isGenerating() ? 'Cancel·lar descàrrega' : 'Cancel·lar' }}
+        </button>
+      </div>
+    </div>
+  }
 </div>

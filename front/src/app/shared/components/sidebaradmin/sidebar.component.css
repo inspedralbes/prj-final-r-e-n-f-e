@@ -9,15 +9,15 @@
   max-width: 720px;
   z-index: 100;
 
-  /* Glassmorphism potent */
-  background: rgba(255, 255, 255, 0.25);   /* Molt transparent */
-  backdrop-filter: blur(32px) saturate(180%);
-  -webkit-backdrop-filter: blur(32px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.55);
+  /* Glassmorphism potent (Pill Glass) */
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(40px) saturate(220%);
+  -webkit-backdrop-filter: blur(40px) saturate(220%);
+  border: 1px solid rgba(255, 255, 255, 0.8);
   box-shadow:
-    0 8px 32px -4px rgba(99, 102, 241, 0.18),  /* Ombra violeta */
-    0 2px 8px rgba(0, 0, 0, 0.06),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);     /* Reflex interior */
+    0 12px 40px -4px rgba(99, 102, 241, 0.22),
+    0 4px 12px rgba(0, 0, 0, 0.08),
+    inset 0 1px 2px rgba(255, 255, 255, 0.9);
 
   /* Forma de pill */
   border-radius: 999px;
@@ -156,5 +156,283 @@
 .caixa-icona.perfil:hover {
   background: rgba(99, 102, 241, 0.22);
   box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .barra-superior {
+    min-width: unset;
+    max-width: calc(100vw - 32px);
+    width: calc(100vw - 32px);
+    padding: 0 12px;
+    height: 48px;
+    top: 8px;
+    border-radius: 24px;
+  }
+
+  .element-navegacio {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+
+  .element-navegacio span {
+    display: none;
+  }
+
+  .caixa-icona {
+    width: 18px;
+    height: 18px;
+  }
+
+  .caixa-icona ng-icon {
+    font-size: 16px;
+  }
+
+  .separador {
+    margin: 0 2px;
+  }
+
+  .caixa-icona.perfil {
+    width: 28px;
+    height: 28px;
+  }
+
+  .caixa-icona.perfil ng-icon {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .barra-superior {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+    padding: 0 8px;
+    gap: 2px;
+  }
+
+  .enllacos-navegacio {
+    gap: 2px;
+  }
+
+  .element-navegacio {
+    padding: 6px 6px;
+  }
+}
+
+/* ===== DROPDOWN PERFIL — PREMIUM ORGANIC ===== */
+.contenedor-perfil {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding-bottom: 10px;
+  margin-bottom: -10px;
+}
+
+.boto-perfil {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  color: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dropdown-perfil {
+  position: absolute;
+  top: 100%;
+  right: -10px;
+  margin-top: 12px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 20px;
+  box-shadow: 
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 10px 15px -3px rgba(0, 0, 0, 0.08),
+    0 20px 25px -5px rgba(0, 0, 0, 0.03),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+  padding: 10px;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(12px) scale(0.95);
+  transform-origin: top right;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 200;
+}
+
+/* Mostrar per hover (desktop) o per classe 'obert' */
+.contenedor-perfil:hover .dropdown-perfil,
+.contenedor-perfil.obert .dropdown-perfil {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0) scale(1);
+}
+
+.usuari-info-dropdown {
+  padding: 8px 16px;
+  margin-bottom: 4px;
+}
+
+.nom-usuari {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.boto-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  width: 100%;
+  border-radius: 14px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-decoration: none;
+  text-align: left;
+}
+
+.boto-dropdown-item:hover {
+  background: rgba(99, 102, 241, 0.08);
+  transform: translateX(4px);
+  color: var(--primary-color);
+}
+
+.boto-dropdown-item.logout {
+  color: #ef4444;
+}
+
+.boto-dropdown-item.logout:hover {
+  background: rgba(239, 68, 68, 0.08);
+  color: #dc2626;
+}
+
+.divisor-dropdown {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.05);
+  margin: 6px 12px;
+}
+
+.backdrop-perfil {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  z-index: 150;
+}
+
+/* ===== RESPONSIVE DROPDOWN (BOTTOM SHEET) ===== */
+@media (max-width: 768px) {
+  /* En mòbil, desactivar hover */
+  .contenedor-perfil:hover .dropdown-perfil {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px) scale(0.95);
+  }
+
+  /* Mostrar NOMÉS quan la classe 'obert' és present */
+  .contenedor-perfil.obert .dropdown-perfil {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+  }
+
+  .contenedor-perfil.obert .backdrop-perfil {
+    display: block;
+  }
+
+  /* El dropdown es converteix en Bottom Sheet */
+  .dropdown-perfil {
+    position: fixed !important;
+    bottom: 0 !important;
+    top: auto !important;
+    left: 0 !important;
+    right: 0 !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    margin: 0 !important;
+
+    border-radius: 28px 28px 0 0 !important;
+    border: none !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.6) !important;
+    padding: 28px 20px calc(28px + env(safe-area-inset-bottom)) !important;
+
+    transform: translateY(100%) !important;
+    transform-origin: bottom center !important;
+
+    box-shadow:
+      0 -8px 40px rgba(0, 0, 0, 0.15),
+      0 -2px 10px rgba(0, 0, 0, 0.05) !important;
+
+    z-index: 9999 !important;
+  }
+
+  .contenedor-perfil.obert .dropdown-perfil {
+    transform: translateY(0) !important;
+  }
+
+  /* Indicador de drag (pill) */
+  .dropdown-perfil::before {
+    content: '';
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 44px;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.12);
+    border-radius: 3px;
+  }
+
+  /* Header del Bottom Sheet */
+  .usuari-info-dropdown {
+    padding: 12px 8px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    margin-bottom: 8px;
+  }
+
+  .nom-usuari {
+    font-size: 0.8rem;
+  }
+
+  /* Botons més grans per a dits */
+  .boto-dropdown-item {
+    padding: 18px 16px;
+    font-size: 1.05rem;
+    border-radius: 16px;
+  }
+
+  /* Backdrop */
+  .backdrop-perfil {
+    z-index: 9998 !important;
+    background: rgba(0, 0, 0, 0.35) !important;
+    backdrop-filter: blur(6px) !important;
+  }
+}
+
+.imatge-perfil {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  border-radius: 50%;
 }
 

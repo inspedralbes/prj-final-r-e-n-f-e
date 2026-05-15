@@ -1,11 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :host {
-  --primary: #6366f1;
-  --primary-light: #818cf8;
-  --secondary: #a78bfa;
-  --accent: #f472b6;
-  --text-dark: #1e293b;
+  --primary: #0ea5e9;
+  --primary-light: #38bdf8;
+  --secondary: #0284c7;
+  --accent: #0284c7;
+  --text-dark: #334155;
   --text-muted: #64748b;
 }
 
@@ -15,6 +15,32 @@
   flex-direction: column;
   min-height: 100vh;
   font-family: 'Outfit', sans-serif;
+}
+
+#horari-alumne-page::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #f4f9ff 0%, #e0f2fe 100%);
+  z-index: -2;
+}
+
+#horari-alumne-page::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(14, 165, 233, 0.25), transparent 40%),
+    radial-gradient(circle at 85% 85%, rgba(56, 189, 248, 0.25), transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.15), transparent 50%);
+  z-index: -1;
+  pointer-events: none;
 }
 
 /* -- Contingut */
@@ -29,10 +55,10 @@
 
 /* -- Targeta gran de vidre */
 .targeta-horari-premium {
-  background: rgba(255, 255, 255, 0.45);
+  background: rgba(14, 165, 233, 0.06);
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(14, 165, 233, 0.2);
   border-radius: 40px;
   padding: 50px;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.05);
@@ -41,17 +67,81 @@
   margin: 0 auto;
 }
 
+@media (max-width: 768px) {
+  .targeta-horari-premium {
+    padding: 20px;
+    border-radius: 24px;
+  }
+  .contingut {
+    padding: 12px;
+    margin-top: 130px;
+  }
+  .titol_pagina {
+    font-size: 2rem;
+  }
+  .grid-horari {
+    gap: 8px;
+    min-width: 550px;
+    grid-template-columns: 60px repeat(5, 1fr);
+  }
+  .slot-sessio {
+    min-height: 70px;
+    padding: 10px;
+    border-radius: 16px;
+  }
+  .slot-sessio.esbarjo {
+    min-height: 40px;
+  }
+  .info-sessio .assignatura-nom {
+    font-size: 0.85rem;
+  }
+  .dia-header {
+    font-size: 0.75rem;
+    padding-bottom: 10px;
+  }
+  .col-temps {
+    min-height: 70px;
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .targeta-horari-premium {
+    padding: 15px;
+  }
+  .titol_pagina {
+    font-size: 1.6rem;
+  }
+  .grid-horari {
+    gap: 6px;
+    min-width: 450px;
+    grid-template-columns: 50px repeat(5, minmax(70px, 1fr));
+  }
+  .slot-sessio {
+    min-height: 60px;
+    padding: 6px;
+    border-radius: 12px;
+  }
+  .info-sessio .assignatura-nom {
+    font-size: 0.7rem;
+  }
+  .col-temps {
+    min-height: 60px;
+    font-size: 0.7rem;
+  }
+}
+
 /* -- Capcalera */
-.cap�alera-moderna {
+.capï¿½alera-moderna {
   width: 100%;
   margin-bottom: 40px;
   text-align: left;
 }
 
 .titol_pagina {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 900;
-  color: var(--primary);
+  color: var(--text-dark);
   margin: 0;
   letter-spacing: -0.02em;
 }
@@ -60,13 +150,29 @@
 .scroll-wrapper {
   overflow-x: auto;
   padding: 10px 4px 24px 4px;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+}
+
+.scroll-wrapper::-webkit-scrollbar {
+  height: 6px;
+}
+
+.scroll-wrapper::-webkit-scrollbar-track {
+  background: rgba(14, 165, 233, 0.05);
+  border-radius: 10px;
+}
+
+.scroll-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(14, 165, 233, 0.3);
+  border-radius: 10px;
 }
 
 /* -- Grid principal */
 .grid-horari {
   display: grid;
   grid-template-columns: 80px repeat(5, 1fr);
-  gap: 15px;
+  gap: 12px;
   min-width: 700px;
   width: 100%;
 }
@@ -94,7 +200,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 100px;
+  min-height: 80px;
   font-weight: 800;
   color: var(--text-muted);
   font-size: 0.85rem;
@@ -108,14 +214,16 @@
 
 /* -- Slot de sessio (tarjeta individual) */
 .slot-sessio {
-  background: rgba(255, 255, 255, 0.9);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 24px;
-  min-height: 100px;
-  padding: 20px;
+  background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.85));
+  border: 1px solid rgba(14, 165, 233, 0.1);
+  border-radius: 20px;
+  min-height: 80px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
+  text-align: center;
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: default;
   position: relative;
@@ -124,15 +232,15 @@
 
 .slot-sessio:hover {
   transform: translateY(-5px) scale(1.03);
-  background: white;
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, white, rgba(14, 165, 233, 0.05));
+  box-shadow: 0 15px 30px rgba(14, 165, 233, 0.15);
   border-color: var(--primary-light);
   z-index: 2;
 }
 
 .slot-sessio.buit {
   background: rgba(255, 255, 255, 0.5);
-  border: 2px dashed rgba(99, 102, 241, 0.15);
+  border: 2px dashed rgba(14, 165, 233, 0.15);
   box-shadow: none;
 }
 
@@ -144,8 +252,8 @@
 /* -- Esbarjo */
 .slot-sessio.esbarjo {
   grid-column: 2 / -1;
-  background: linear-gradient(90deg, rgba(244, 114, 182, 0.1), rgba(167, 139, 250, 0.1));
-  border: none;
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.06), rgba(2, 132, 199, 0.06));
+  border: 2px dashed rgba(56, 189, 248, 0.3);
   min-height: 50px;
   display: flex;
   align-items: center;
@@ -163,7 +271,7 @@
   transform: none;
   box-shadow: none;
   border-color: transparent;
-  background: linear-gradient(90deg, rgba(244, 114, 182, 0.1), rgba(167, 139, 250, 0.1));
+  background: linear-gradient(90deg, rgba(56, 189, 248, 0.06), rgba(2, 132, 199, 0.06));
 }
 
 /* -- Info de la sessio */
@@ -208,3 +316,4 @@
   box-shadow: none;
   transform: none;
 }
+
