@@ -36,7 +36,7 @@ export class SidebarComponent implements OnInit {
     // Si ja sabem si és tutor, no tornem a fer la petició
     if (this.sidebarService.isTutor() !== null) return;
 
-    if (user?.rol === 'Profe' && user.id) {
+    if (user?.rol?.toLowerCase() === 'profe' && user.id) {
       try {
         const classe = await this.classesManager.obtenirClasseTutor(user.id);
         this.sidebarService.setTutorStatus(!!classe);
