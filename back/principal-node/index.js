@@ -26,6 +26,7 @@ const io = new Server(httpServer, {
       const allowedOrigins = [
         "http://localhost:4200",
         "https://renfe.daw.inspedralbes.com",
+        "https://tenfe.cat",
       ];
 
       if (!origin || allowedOrigins.includes(origin)) {
