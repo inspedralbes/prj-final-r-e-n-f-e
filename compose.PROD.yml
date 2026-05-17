@@ -30,7 +30,7 @@ services:
       - ./certbot/conf:/etc/letsencrypt
       - ./certbot/www:/var/www/certbot
     # Loop para comprobar renovación de certificados cada 12h
-    entrypoint: "/bin/sh -c 'trap exit TERM; certbot certonly --webroot --webroot-path /var/www/certbot -d tenfe.cat --email a23cliferadn@inspedralbes.cat --agree-tos --no-eff-email --expand 2>/dev/null || true; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
+    entrypoint: "/bin/sh -c 'trap exit TERM; if [ ! -f /etc/letsencrypt/live/tenfe.cat/fullchain.pem ]; then certbot certonly --webroot --webroot-path /var/www/certbot -d tenfe.cat --email a23cliferadn@inspedralbes.cat --agree-tos --no-eff-email --non-interactive --expand; fi; while :; do certbot renew --non-interactive || true; sleep 12h & wait $${!}; done;'"
 
   # Backend Laravel
   pfg1-back:
