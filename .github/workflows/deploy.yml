@@ -104,6 +104,10 @@ jobs:
             echo " Construint i aixecant contenidors..."
             docker compose -f compose.PROD.yml up --build -d
 
+            # Reiniciar nginx per forçar que carregui nginx-init.conf
+            echo "Reiniciant nginx per aplicar configuració INICIAL..."
+            docker compose -f compose.PROD.yml restart pfg1-nginx
+
             # Esperar que certbot generi els certificats (fins a 60s)
             echo "Esperant certificats SSL..."
             i=0
