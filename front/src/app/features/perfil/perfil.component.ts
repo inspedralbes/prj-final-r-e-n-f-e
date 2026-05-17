@@ -9,11 +9,19 @@ import { AlumnesComponent } from '../alumnes/alumnes.component';
 import { SidebarAlumneComponent } from '../../shared/components/sidebar/alumnes/sidebarAlumne.component';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
 import { heroCog8Tooth, heroXMark, heroArrowLeftOnRectangle } from '@ng-icons/heroicons/outline';
+import { SidebarAdminComponent } from '../../shared/components/sidebaradmin/sidebar.component';
 
 @Component({
   selector: 'app-perfil',
   standalone: true,
-  imports: [CommonModule, FormsModule, SidebarComponent, SidebarAlumneComponent, NgIconComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SidebarComponent,
+    SidebarAlumneComponent,
+    SidebarAdminComponent,
+    NgIconComponent,
+  ],
   templateUrl: './perfil.component.html',
   styleUrl: './perfil.component.css',
   viewProviders: [provideIcons({ heroCog8Tooth, heroXMark, heroArrowLeftOnRectangle })],
@@ -91,9 +99,13 @@ export class PerfilComponent implements OnInit {
     return this.user()?.rol === 'Alumne';
   }
 
-  get isProfeOrAdmin(): boolean {
+  get isProfe(): boolean {
     const rol = this.currentUser()?.rol;
-    return rol === 'Profe' || rol === 'Admin';
+    return rol === 'Profe';
+  }
+
+  get isAdmin(): boolean {
+    return this.currentUser()?.rol === 'Admin';
   }
 
   get mostarRueda(): boolean {
