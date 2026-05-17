@@ -1,6 +1,8 @@
 @let u = user();
-@if (isProfeOrAdmin) {
+@if (isProfe) {
   <app-sidebar></app-sidebar>
+} @else if(isAdmin) {
+  <app-sidebaradmin></app-sidebaradmin>
 } @else {
   <alumne-sidebar></alumne-sidebar>
 }
@@ -154,7 +156,6 @@
         Tancar sessió
       </button>
     </div>
-
   </div>
 } @else {
   <div class="error">
