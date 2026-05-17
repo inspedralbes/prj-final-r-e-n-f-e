@@ -104,35 +104,17 @@ jobs:
             echo " Construint i aixecant contenidors..."
             docker compose -f compose.PROD.yml up --build -d
 
-            # Reiniciar nginx per forçar que carregui nginx-init.conf
-            echo "Reiniciant nginx per aplicar configuració INICIAL..."
-            docker compose -f compose.PROD.yml restart pfg1-nginx
-
-            # Esperar que certbot generi els certificats (fins a 60s)
-            echo "Esperant certificats SSL..."
-            i=0
-            while [ $i -lt 30 ]; do
-              if [ -f certbot/conf/live/tenfe.cat/fullchain.pem ] && [ -f certbot/conf/live/tenfe.cat/privkey.pem ]; then
-                echo "✓ Certificats SSL trobats després de ${i}s"
-                break
-              fi
-              sleep 2
-              i=$((i + 1))
-            done
-
-            # Mostrar logs de certbot
+            # Mostrar logs de certbot després de l'arrencada
             echo "Mostrant logs de certbot..."
             docker compose -f compose.PROD.yml logs certbot
 
-            # Comprovar si existeixen certificats i aplicar configuració final
-            if [ -f certbot/conf/live/tenfe.cat/fullchain.pem ]; then
+            # Comprovar amb ls si existeixen fitxers de certificat i aplicar configuració final
+            if ls certbot/conf/live/tenfe.cat/fullchain.pem certbot/conf/live/tenfe.cat/privkey.pem >/dev/null 2>&1; then
               cp nginx-prod.conf nginx.conf
               echo "✓ Certificats SSL trobats - canviant a configuració de PROD"
-              echo "Reiniciant nginx per aplicar la nova configuració..."
-              docker compose -f compose.PROD.yml restart pfg1-nginx
+              echo "Reiniciant tots els serveis per aplicar la nova configuració..."
+              docker compose -f compose.PROD.yml restart
             else
               echo "⚠ Encara no hi ha certificats SSL - es manté configuració INICIAL"
-              echo "⚠ Pots executar manualment:"
-              echo "  cd /prj-final-r-e-n-f-e && docker compose -f compose.PROD.yml run --rm certbot certonly --webroot --webroot-path /var/www/certbot -d tenfe.cat"
             fi
           EOF
