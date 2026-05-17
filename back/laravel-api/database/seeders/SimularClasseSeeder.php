@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Faker\Factory as Faker;
 
 class SimularClasseSeeder extends Seeder
 {
@@ -14,19 +13,23 @@ class SimularClasseSeeder extends Seeder
             return;
         }
 
-        $faker = Faker::create('es_ES');
-
         DB::table('classes')
             ->where('id', 14)
             ->update(['id_tutor' => 6]);
+
+        $noms = ['Marc', 'Alex', 'Pau', 'Jordi', 'Laura', 'Marta', 'Clara', 'Erik', 'Jan', 'Arnau', 'Pol', 'Ona', 'Nil', 'Berta', 'Ivan', 'Laia', 'Hugo', 'Carla', 'Lucas', 'Aina'];
+        $cognoms = ['Garcia', 'Martínez', 'López', 'Sánchez', 'Pérez', 'González', 'Fernández', 'Rodríguez', 'Ruiz', 'Vidal', 'Serra', 'Puig', 'Camps', 'Font', 'Soler', 'Roca', 'Vila', 'Rovira', 'Grau', 'Costa'];
+
+        $dataStart = strtotime('1995-01-01');
+        $dataEnd = strtotime('2007-12-31');
 
         $alumnes = [];
         $emailsUsats = [];
 
         for ($i = 0; $i < 25; $i++) {
-            $nom = $faker->firstName();
-            $cognom1 = $faker->lastName();
-            $cognom2 = $faker->lastName();
+            $nom = $noms[array_rand($noms)];
+            $cognom1 = $cognoms[array_rand($cognoms)];
+            $cognom2 = $cognoms[array_rand($cognoms)];
 
             $prefix = strtolower(substr($nom, 0, 3) . substr($cognom1, 0, 3) . substr($cognom2, 0, 3));
             $numero = str_pad(random_int(20, 25), 2, '0', STR_PAD_LEFT);
@@ -50,7 +53,7 @@ class SimularClasseSeeder extends Seeder
                 'nfc_id' => null,
                 'id_classe' => 14,
                 'horari_guardies' => null,
-                'data_naixement' => $faker->date('Y-m-d', '2007-12-31', '1995-01-01'),
+                'data_naixement' => date('Y-m-d', mt_rand($dataStart, $dataEnd)),
                 'created_at' => now(),
                 'updated_at' => now(),
             ];
