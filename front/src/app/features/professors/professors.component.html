@@ -5,73 +5,76 @@
      - (click) : Esdeveniment per executar una funció quan l'usuari clica.
 -->
 <div class="disseny-principal">
-    <app-sidebar></app-sidebar>
+  <app-sidebar></app-sidebar>
 
+  <div class="contingut relative-container">
+    @if (carregantDades()) {
+      <div class="admin-loading-container" style="height: 100%; min-height: 400px;">
+        <div class="admin-spinner"></div>
+        <p>Sincronitzant horaris i sessions...</p>
+      </div>
+    } @else {
+      <!-- Contenidor principal -->
+      <div class="graella-tauler">
+        <!-- Targeta de la classe que toca ara mateix -->
+        <div class="targeta-classe-actual">
+          <div class="contingut-targeta">
+            <!-- El puntet de color i si la classe està activa o no -->
+            <div class="insignia-estat"><span class="punt"></span> {{ classeActual().estat }}</div>
 
-    <div class="contingut">
+            <!-- El nom de l'assignatura o el curs en gran -->
+            <h1>{{ classeActual().nom }}</h1>
 
-        <!-- Contenidor principal -->
-        <div class="graella-tauler">
-
-            <!-- Targeta de la classe que toca ara mateix -->
-            <div class="targeta-classe-actual">
-                <div class="contingut-targeta">
-                    <!-- El puntet de color i si la classe està activa o no -->
-                    <div class="insignia-estat">
-                        <span class="punt"></span> {{ classeActual().estat }}
-
-                    </div>
-
-                    <!-- El nom de l'assignatura o el curs en gran -->
-                    <h1>{{ classeActual().nom }}</h1>
-
-                    <!-- El botó per anar directe a passar llista -->
-                    <div class="accions">
-                        <button class="boto-accio">
-                            Passar llista ara
-                            <span class="icona-fletxa">→</span>
-                        </button>
-                    </div>
-                </div>
-
-
+            <!-- El botó per anar directe a passar llista -->
+            <div class="accions">
+              <button class="boto-accio" (click)="anarAPassarLlista()">
+                Passar llista ara
+                <ng-icon name="heroArrowRight" class="icona-fletxa"></ng-icon>
+              </button>
             </div>
-
-            <!-- Aquí tenim l'horari de tota la setmana -->
-            <div class="contenidor-horari">
-                <div class="capçalera-horari">
-                    <h2>Horari Setmanal</h2>
-                    <div class="controls-horari">
-                        <!-- Botó per canviar entre el que fas tu i el que fan els altres (franja) -->
-                        <button class="insignia-hora punter" (click)="commutarFranja()" title="Canviar Franja Horària">
-                            {{ franjaHoraria() }}
-                            <span class="icona-commutador">⇅</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- La graella on es veuen els dies i les hores -->
-                <div class="graella-horari">
-                    <!-- Els noms de la setmana (Dilluns, Dimarts...) -->
-                    <div class="cel-la-capçalera buida"></div>
-                    @for (dia of diesSetmana; track dia) {
-                    <div class="cel-la-capçalera">{{ dia }}</div>
-                    }
-
-                    <!-- Aquí és on es pinten les hores i el que toca a cada hora -->
-                    @for (franja of horariActual(); track franja.hora) {
-                    <div class="cel-la-hora">{{ franja.hora }}</div>
-                    @for (assignatura of franja.assignatures; track $index) {
-                    <!-- Si és l'esbarjo, li posem un color diferent -->
-                    <div class="cel-la-assignatura" [class.esbarjo]="assignatura === 'ESBARJO'">
-                        <span class="text-assignatura">{{ assignatura }}</span>
-                    </div>
-                    }
-                    }
-                </div>
-            </div>
-
+          </div>
         </div>
 
-    </div>
+        <!-- Aquí tenim l'horari de tota la setmana -->
+        <div class="contenidor-horari">
+          <div class="capçalera-horari">
+            <h2>Horari Setmanal</h2>
+            <div class="controls-horari">
+              <!-- Botó per canviar entre el que fas tu i el que fan els altres (franja) -->
+              <button
+                class="insignia-hora punter"
+                (click)="commutarFranja()"
+                title="Canviar Franja Horària"
+              >
+                {{ franjaHoraria() }}
+                <ng-icon name="heroArrowsUpDown" class="icona-commutador"></ng-icon>
+              </button>
+            </div>
+          </div>
+
+          <!-- La graella on es veuen els dies i les hores -->
+          <div class="scroll-wrapper">
+            <div class="graella-horari">
+              <!-- Els noms de la setmana (Dilluns, Dimarts...) -->
+              <div class="cel-la-capçalera buida"></div>
+              @for (dia of diesSetmana; track dia) {
+                <div class="cel-la-capçalera">{{ dia }}</div>
+              }
+
+              <!-- Aquí és on es pinten les hores i el que toca a cada hora -->
+              @for (franja of horariActual(); track franja.hora) {
+                <div class="cel-la-hora">{{ franja.hora }}</div>
+                @for (assignatura of franja.assignatures; track $index) {
+                  <!-- Si és l'esbarjo, li posem un color diferent -->
+                  <div class="cel-la-assignatura" [class.esbarjo]="assignatura === 'ESBARJO'">
+                    <span class="text-assignatura">{{ assignatura }}</span>
+                  </div>
+                }
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
 </div>

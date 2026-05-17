@@ -1,19 +1,11 @@
 # Documentació
-Llistat d'alguns dels punts que han de quedar explicats en aquesta carpeta. Poden ser tots en aquest fitxer o en diversos fitxers enllaçats.
 
-És obligatori modificar aquest document!!
+Aquest document recull la informació essencial per a desenvolupar i mantenir el projecte. Aquí trobaràs:
 
-## Documentació bàsica MÍNIMA
- * Objectius
- * Arquitectura bàsica
-   * Tecnologies utilitzades
-   * Interrelació entre els diversos components
- * Com crees l'entorn de desenvolupament
- * Com desplegues l'aplicació a producció
- * Llistat d'endpoints de l'API de backend
-    * Rutes
-   * Exemples de JSON de peticó
-   * Exemples de JSON de resposta i els seus codis d'estat 200? 404?
- * Aplicació Android
- * Altres elements importants.
- * ...
+- [Documentació del Front-end](frontend/README.md)
+- [Documentació del Back-end](backend/README.md)
+- [Documentació de la Base de Dades](db/README.md)
+- [Documentació de l'Arquitectura](architecture/README.md)
+- [Documentació de Tests](testing/README.md)
+- [Documentació de Desplegament](prod/README.md)
+- [Proves d'usuari](prova_usuari/README.md)

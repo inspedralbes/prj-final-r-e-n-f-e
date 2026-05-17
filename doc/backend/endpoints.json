@@ -1,0 +1,121 @@
+{
+    "endpoints": [
+        {
+            "method": "GET",
+            "path": "/v1/health",
+            "description": "Retorna l'estat del servidor per verificar que està actiu."
+        },
+        {
+            "method": "POST",
+            "path": "/v1/auth/google/redirect",
+            "description": "Genera la URL de redirecció per a l'autenticació amb Google OAuth."
+        },
+        {
+            "method": "POST",
+            "path": "/v1/auth/google/callback",
+            "description": "Gestiona el retorn de Google OAuth i autentica l'usuari.",
+            "body": {
+                "code": "string"
+            }
+        },
+        {
+            "method": "POST",
+            "path": "/v1/auth/login-temporal",
+            "description": "Login temporal utilitzant només el correu electrònic (per a proves).",
+            "body": {
+                "email": "string"
+            }
+        },
+        {
+            "method": "PATCH",
+            "path": "/v1/fullfill-user-profile",
+            "description": "Completa el perfil de l'usuari amb dades addicionals.",
+            "body": {
+                "email_pares": "string (email)",
+                "data_naixement": "string (YYYY-MM-DD)",
+                "photo": "file (opcional)"
+            }
+        },
+        {
+            "method": "GET",
+            "path": "/v1/perfil/{id}",
+            "description": "Obté la informació detallada del perfil d'un usuari."
+        },
+        {
+            "method": "GET",
+            "path": "/v1/usuaris",
+            "description": "Llista tots els usuaris del sistema."
+        },
+        {
+            "method": "POST",
+            "path": "/v1/usuaris",
+            "description": "Crea un nou usuari manualment.",
+            "body": {
+                "nom": "string",
+                "cognom": "string",
+                "email": "string",
+                "rol": "string (Administrador|Profe|Alumne)",
+                "password": "string",
+                "nfc_id": "string (opcional)",
+                "id_classe": "integer (opcional)"
+            }
+        },
+        {
+            "method": "GET",
+            "path": "/v1/classes",
+            "description": "Llista totes les classes amb la seva informació de curs i tutor."
+        },
+        {
+            "method": "POST",
+            "path": "/v1/classes/assignarAlumnes",
+            "description": "Assigna un grup d'alumnes a una classe mitjançant els seus emails i els inscriu a les assignatures.",
+            "body": {
+                "classe_id": "integer",
+                "emails": "array of strings"
+            }
+        },
+        {
+            "method": "POST",
+            "path": "/v1/assistencies/generar",
+            "description": "Genera automàticament els registres d'assistència per a un interval de dates.",
+            "body": {
+                "data_ini": "string (YYYY-MM-DD)",
+                "data_fi": "string (YYYY-MM-DD)"
+            }
+        },
+        {
+            "method": "POST",
+            "path": "/v1/justificants",
+            "description": "Puja un nou justificant de falta.",
+            "body": {
+                "id_alum": "integer",
+                "data_inici": "string (YYYY-MM-DD)",
+                "data_fi": "string (YYYY-MM-DD)",
+                "comentari": "string (opcional)",
+                "document": "file (opcional)"
+            }
+        },
+        {
+            "method": "POST",
+            "path": "/v1/justificants/acceptar/{id}",
+            "description": "Accepta o rebutja un justificant pendent.",
+            "body": {
+                "acceptat": "boolean"
+            }
+        },
+        {
+            "method": "GET",
+            "path": "/v1/horaris/usuari/{id}",
+            "description": "Obté l'horari setmanal complet d'un usuari (alumne o professor)."
+        },
+        {
+            "method": "POST",
+            "path": "/v1/carta-faltes/generar",
+            "description": "Genera i retorna un PDF amb la carta de faltes per a un alumne.",
+            "body": {
+                "id_alumne": "integer",
+                "faltes": "integer (30|60|90)"
+            }
+        }
+    ]
+}

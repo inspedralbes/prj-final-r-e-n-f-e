@@ -6,16 +6,20 @@ import { HorarisManagerService } from '../../../shared/services/horaris/horaris-
 import { AssignaturesManagerService } from '../../../shared/services/assignatures/assignatures-manager.service';
 import { AulesManagerService } from '../../../shared/services/aules/aules-manager.service';
 import { AuthService } from '../../../services/auth.service';
+import { SocketService } from '../../../services/socket.service';
 import { FormsModule } from '@angular/forms';
 import { Classe } from '../../../shared/models/classe.model';
 import { UsuarisManagerService } from '../../../shared/services/usuaris/usuaris-manager.service';
 import { Usuari } from '../../../shared/models/usuaris.model';
 import { Horari } from '../../../shared/models/horaris.model';
+import { NgIconComponent, provideIcons } from '@ng-icons/core';
+import { heroPlus, heroUser, heroXMark } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-horari-alumnes',
   standalone: true,
-  imports: [SidebarComponent, CommonModule, FormsModule],
+  imports: [SidebarComponent, CommonModule, FormsModule, NgIconComponent],
+  providers: [provideIcons({ heroPlus, heroUser, heroXMark })],
   templateUrl: './horari-alumnes.component.html',
   styleUrl: './horari-alumnes.component.css',
 })
@@ -27,83 +31,70 @@ export class HorariAlumnesComponent implements OnInit {
   serveiAules = inject(AulesManagerService);
   serveiAuth = inject(AuthService);
   serveiUsuaris = inject(UsuarisManagerService);
+  socketService = inject(SocketService);
 
-  ngOnInit() {
-    // Carreguem totes les dades necessàries quan entrem a la pantalla
-    this.serveiClasses.carregarClasses();
-    this.serveiHoraris.carregarHoraris();
-    this.serveiAssignatures.carregarAssignatures();
-    this.serveiAules.carregarAules();
-    this.serveiUsuaris.carregarUsuaris();
+  // Nou estat segur (Fase 2) carregat exclusivament del backend
+  laMevaClasse = signal<Classe | null>(null);
+  alumnesDelaClasseSegur = signal<Usuari[]>([]);
+  professorsDisponiblesSegur = signal<Usuari[]>([]);
+  horarisDelaClasseSegur = signal<Horari[]>([]);
+
+  // Mètode per saber si algun servei està carregant dades
+  estaCarregant(): boolean {
+    if (this.serveiHoraris.isLoading()) return true;
+    if (this.serveiClasses.isLoading()) return true;
+    if (this.serveiUsuaris.isLoading()) return true;
+    return false;
   }
 
-  // Obtenim la classe on el professor loguejat és tutor
-  laMevaClasse = computed(() => {
+  async ngOnInit() {
+    // 1. Obtenim la classe on és tutor
     const usuariLoguejat = this.serveiAuth.usuarioInfo;
-    if (!usuariLoguejat || !usuariLoguejat.id) return null;
+    if (usuariLoguejat && usuariLoguejat.id) {
+        const classe = await this.serveiClasses.obtenirClasseTutor(usuariLoguejat.id);
+        this.laMevaClasse.set(classe);
 
-    const llistaClasses = this.serveiClasses.classes();
-    if (llistaClasses && Array.isArray(llistaClasses)) {
-      for (let i = 0; i < llistaClasses.length; i++) {
-        if (Number(llistaClasses[i].id_tutor) === Number(usuariLoguejat.id)) {
-          return llistaClasses[i];
+        if (classe) {
+            // 2. Carreguem nomes els alumnes de la classe, els horaris d'aquesta classe
+            // i tots els usuaris que són profes directament filtrats al Laravel.
+            // Carreguem cada llista de forma seqüencial sense Promise.all
+            const alumnes = await this.serveiClasses.getAlumnesClasse(classe.id);
+            const horaris = await this.serveiHoraris.getHorarisClasse(classe.id);
+            const profes = await this.serveiUsuaris.getUsuarisPerRol('Profe');
+
+            this.alumnesDelaClasseSegur.set(alumnes);
+            this.horarisDelaClasseSegur.set(horaris);
+            this.professorsDisponiblesSegur.set(profes);
         }
-      }
     }
-    return null;
-  });
-
-  // Alumnes que pertanyen a aquesta classe (Llista Maestra)
-  alumnesDelaClasse = computed(() => {
-    const classe = this.laMevaClasse();
-    if (!classe) return [];
-
-    const usuaris = this.serveiUsuaris.usuaris() as Usuari[];
-    const result: Usuari[] = [];
-    if (usuaris && Array.isArray(usuaris)) {
-      for (let i = 0; i < usuaris.length; i++) {
-        const u = usuaris[i];
-        const rol = u.rol?.toLowerCase() || '';
-        if (rol.includes('alumne') && u.id_classe === classe.id) {
-          result.push(u);
-        }
+    
+    // Carreguem llistats per als modals d'assignatures o aules
+    // d'Assignatures i Aules disponibles al centre per posar-les al <select> del HTML
+    this.serveiAssignatures.carregarAssignatures();
+    this.serveiAules.carregarAules();
+    
+    this.socketService.listenToEvent('horari_updated').subscribe(async () => {
+      console.log('[SOCKET] horari_updated rebut a horari-alumnes, recarregant...');
+      const classe = this.laMevaClasse();
+      if (classe) {
+        const horaris = await this.serveiHoraris.getHorarisClasse(classe.id);
+        this.horarisDelaClasseSegur.set(horaris);
       }
-    }
-    return result;
-  });
+    });
+  }
 
-  // Tots els professors disponibles
-  professorsDisponibles = computed(() => {
-    const usuaris = this.serveiUsuaris.usuaris() as Usuari[];
-    const result: Usuari[] = [];
-    if (usuaris && Array.isArray(usuaris)) {
-      for (let i = 0; i < usuaris.length; i++) {
-        const u = usuaris[i];
-        const rol = u.rol?.toLowerCase() || '';
-        if (rol.includes('profe') || rol.includes('instr')) {
-          result.push(u);
-        }
-      }
-    }
-    return result;
-  });
+  // Mètodes d'accés directe als signals (sense computed)
+  alumnesDelaClasse(): Usuari[] {
+    return this.alumnesDelaClasseSegur();
+  }
 
-  // Filtrem els horaris que pertanyen a aquesta classe
-  horariDelaClasse = computed(() => {
-    const classe = this.laMevaClasse();
-    if (!classe) return [];
+  professorsDisponibles(): Usuari[] {
+    return this.professorsDisponiblesSegur();
+  }
 
-    const totsHoraris = this.serveiHoraris.horaris() as Horari[];
-    const result: Horari[] = [];
-    if (totsHoraris && Array.isArray(totsHoraris)) {
-      for (let i = 0; i < totsHoraris.length; i++) {
-        if (totsHoraris[i].id_classe === classe.id) {
-          result.push(totsHoraris[i]);
-        }
-      }
-    }
-    return result;
-  });
+  horariDelaClasse(): Horari[] {
+    return this.horarisDelaClasseSegur();
+  }
 
   // Graella visual (Estructura de dades per al Grid)
   quadreHorari = computed(() => {
@@ -129,8 +120,13 @@ export class HorariAlumnesComponent implements OnInit {
         const lletraDia = horari.codi_hora.charAt(0).toUpperCase();
         const numeroHora = parseInt(horari.codi_hora.substring(1), 10);
 
-        const dies: { [key: string]: number } = { L: 0, M: 1, X: 2, J: 3, V: 4 };
-        const indexColumna = dies[lletraDia] ?? -1;
+        // Convertim la lletra del dia a l'índex de columna (0=Dll, 1=Dm, 2=Dx, 3=Dj, 4=Dv)
+        let indexColumna = -1;
+        if (lletraDia === 'L') indexColumna = 0;
+        else if (lletraDia === 'M') indexColumna = 1;
+        else if (lletraDia === 'X') indexColumna = 2;
+        else if (lletraDia === 'J') indexColumna = 3;
+        else if (lletraDia === 'V') indexColumna = 4;
 
         if (indexColumna === -1 || isNaN(numeroHora)) continue;
 
@@ -169,21 +165,32 @@ export class HorariAlumnesComponent implements OnInit {
 
   obtenirNomProfe(cell: any): string {
     if (!cell || cell === 'ESBARJO') return '';
-    if (cell.professor) return `${cell.professor.nom ?? ''} ${cell.professor.cognom ?? ''}`.trim();
-    return 'Professor';
+    if (!cell.professor) return 'Professor';
+    // Construïm el nom complet evitant valors nuls
+    let nom = '';
+    let cognom = '';
+    if (cell.professor.nom) nom = cell.professor.nom;
+    if (cell.professor.cognom) cognom = cell.professor.cognom;
+    let nomComplet = nom + ' ' + cognom;
+    // Eliminem espais del principi i del final manualment
+    return nomComplet.trim();
   }
 
   obtenirInicialsProfe(cell: any): string {
     if (!cell || cell === 'ESBARJO' || !cell.professor) return '??';
-    const nom = cell.professor.nom?.charAt(0) || '';
-    const cognom = cell.professor.cognom?.charAt(0) || '';
-    return (nom + cognom).toUpperCase();
+    let inicialNom = '';
+    let inicialCognom = '';
+    if (cell.professor.nom) inicialNom = cell.professor.nom.charAt(0);
+    if (cell.professor.cognom) inicialCognom = cell.professor.cognom.charAt(0);
+    return (inicialNom + inicialCognom).toUpperCase();
   }
 
   obtenirInicialsAlumne(alumne: Usuari): string {
-    const nom = alumne.nom?.charAt(0) || '';
-    const cognom = alumne.cognom?.charAt(0) || '';
-    return (nom + cognom).toUpperCase();
+    let inicialNom = '';
+    let inicialCognom = '';
+    if (alumne.nom) inicialNom = alumne.nom.charAt(0);
+    if (alumne.cognom) inicialCognom = alumne.cognom.charAt(0);
+    return (inicialNom + inicialCognom).toUpperCase();
   }
 
   totsSeleccionats(): boolean {
@@ -214,13 +221,14 @@ export class HorariAlumnesComponent implements OnInit {
   idAulaSeleccionada = signal<number | null>(null);
   idProfeSeleccionat = signal<number | null>(null);
   alumnesSeleccionatsIds = signal<number[]>([]);
+  isSaving = signal<boolean>(false);
 
-  // Funció per obrir el modal de configuració en clicar una cel·la buida o existent
+  // Obre el modal de configuració al clicar una cel·la
   obrirModalEdicio(diaIndex: number, horaLlegible: string) {
     const lletres = ['L', 'M', 'X', 'J', 'V'];
     const lletra = lletres[diaIndex];
 
-    // Calculem el número d'hora segons el text de la fila
+    // Calculem l'hora segons la fila
     let numHora = 1;
     if (horaLlegible === '09:00') numHora = 2;
     if (horaLlegible === '10:00') numHora = 3;
@@ -286,7 +294,7 @@ export class HorariAlumnesComponent implements OnInit {
 
     const novaLlista: number[] = [];
     if (trobat) {
-      // Si ja hi era, el treiem (copiant tots menys ell)
+      // Si ja hi era, el llevem de la llista
       for (let i = 0; i < llista.length; i++) {
         if (llista[i] !== id) {
           novaLlista.push(llista[i]);
@@ -343,6 +351,7 @@ export class HorariAlumnesComponent implements OnInit {
     };
 
     try {
+      this.isSaving.set(true);
       console.log('comienzo');
       await this.serveiHoraris.actualitzarHorariGranular(dadesGranulars);
       console.log('enviao');
@@ -351,6 +360,8 @@ export class HorariAlumnesComponent implements OnInit {
     } catch (error) {
       console.error("Error desar l'horari granular", error);
       alert("S'ha produït un error al desar la configuració.");
+    } finally {
+      this.isSaving.set(false);
     }
   }
 }

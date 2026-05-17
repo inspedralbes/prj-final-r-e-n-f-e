@@ -1,0 +1,164 @@
+@let u = user();
+@if (isProfe) {
+  <app-sidebar></app-sidebar>
+} @else if (isAdmin) {
+  <app-sidebaradmin></app-sidebaradmin>
+} @else {
+  <alumne-sidebar></alumne-sidebar>
+}
+@if (isLoading()) {
+  <div class="loading">
+    <p>Carregant perfil...</p>
+  </div>
+} @else if (u) {
+  <div class="perfil-container" [class.tema-alumne]="isAlumne">
+    <!-- Header amb foto i info bàsica -->
+    <div class="perfil-header">
+      <div class="foto-container">
+        <img src="{{ u.photo }}" alt="Foto de perfil" class="foto-perfil" />
+      </div>
+      <div class="info-basica">
+        <h1>{{ u.nom }} {{ u.cognom }}</h1>
+        <p class="email">{{ u.email }}</p>
+        <span class="rol-badge">{{ u.rol }}</span>
+      </div>
+      <div class="header-actions">
+        @if (mostarRueda) {
+          <button
+            class="btn-settings"
+            (click)="toggleMode()"
+            [title]="mode() === 'read' ? 'Editar perfil' : 'Cancel·lar edició'"
+          >
+            @if (mode() === 'read') {
+              <ng-icon name="heroCog8Tooth" class="icona-roda"></ng-icon>
+            } @else {
+              <ng-icon name="heroXMark" class="icona-roda"></ng-icon>
+            }
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- Mode Lectura -->
+    @if (mode() === 'read') {
+      <div class="perfil-content">
+        <!-- Informació Personal -->
+        <section class="section">
+          <h2>Informació Personal</h2>
+          <div class="info-grid">
+            <div class="info-item">
+              <label>Nom</label>
+              <p>{{ u.nom }}</p>
+            </div>
+            <div class="info-item">
+              <label>Cognom</label>
+              <p>{{ u.cognom }}</p>
+            </div>
+            <div class="info-item">
+              <label>Data de naixement</label>
+              <p>{{ u.data_naixement || 'No especificat' }}</p>
+            </div>
+            <div class="info-item">
+              <label>Email</label>
+              <p>{{ u.email }}</p>
+            </div>
+            @if (u.email_pares) {
+              <div class="info-item">
+                <label>Email pares/represenants</label>
+                <p>{{ u.email_pares }}</p>
+              </div>
+            }
+          </div>
+        </section>
+
+        <!-- Informació Acadèmica segons rol -->
+        <section class="section">
+          <h2>Informació Acadèmica</h2>
+
+          @if (isAlumne && infoAdicional()?.classe) {
+            <div class="info-grid">
+              <div class="info-item">
+                <label>Classe</label>
+                <p>{{ infoAdicional()?.classe }}</p>
+              </div>
+              <div class="info-item">
+                <label>Curs</label>
+                <p>{{ infoAdicional()?.curs }}</p>
+              </div>
+              <div class="info-item">
+                <label>Tutor/a</label>
+                <p>{{ infoAdicional()?.tutor?.nom }} {{ infoAdicional()?.tutor?.cognom }}</p>
+              </div>
+            </div>
+          } @else if (isProfe && infoAdicional()?.classe) {
+            <div class="info-grid">
+              <div class="info-item">
+                <p>{{ infoAdicional()?.classe }}</p>
+              </div>
+            </div>
+          } @else {
+            <p class="no-info">No tens informació acadèmica assignada.</p>
+          }
+        </section>
+      </div>
+    }
+
+    <!-- Mode Edició -->
+    @if (mode() === 'edit') {
+      <div class="perfil-content edit-mode">
+        <section class="section">
+          <h2>Editar Informació Personal</h2>
+          <form class="edit-form">
+            <div class="form-group">
+              <label for="nom">Nom</label>
+              <input type="text" id="nom" [(ngModel)]="editedData()['nom']" name="nom" />
+            </div>
+            <div class="form-group">
+              <label for="cognom">Cognom</label>
+              <input type="text" id="cognom" [(ngModel)]="editedData()['cognom']" name="cognom" />
+            </div>
+            @if (!isProfe && !isAdmin) {
+              <div class="form-group">
+                <label for="email_pares">Email pares/representants</label>
+                <input
+                  type="email"
+                  id="email_pares"
+                  [(ngModel)]="editedData()['email_pares']"
+                  name="email_pares"
+                />
+              </div>
+            }
+            <div class="form-group">
+              <label for="data_naixement">Data de naixement</label>
+              <input
+                type="date"
+                id="data_naixement"
+                [(ngModel)]="editedData()['data_naixement']"
+                name="data_naixement"
+              />
+            </div>
+          </form>
+          <div class="button-group">
+            <button type="button" class="btn-save" [disabled]="isSaving()" (click)="onSubmit()">
+              {{ isSaving() ? 'Guardant...' : 'Guardar' }}
+            </button>
+            <button type="button" class="btn-cancel" [disabled]="isSaving()" (click)="toggleMode()">
+              Cancel·lar
+            </button>
+          </div>
+        </section>
+      </div>
+    }
+    <!-- Secció Tancar Sessió -->
+    <div class="logout-section">
+      <button class="btn-logout-perfil" (click)="logout()">
+        <ng-icon name="heroArrowLeftOnRectangle"></ng-icon>
+        Tancar sessió
+      </button>
+    </div>
+  </div>
+} @else {
+  <div class="error">
+    <p>No s'ha pogut carregar el perfil.</p>
+  </div>
+}

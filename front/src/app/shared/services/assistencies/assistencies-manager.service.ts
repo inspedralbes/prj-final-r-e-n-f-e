@@ -10,7 +10,7 @@ export class AssistenciesManagerService {
   private apiManager = inject(ApiManagerService);
 
   assistencies = signal<Assistencia[]>([]);
-  isLoading = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
 
   /**
@@ -63,13 +63,33 @@ export class AssistenciesManagerService {
     }
   }
 
+  /**
+   * Fase 2: Descarrega assistència intel·ligent directament de Laravel
+   */
+  async getAssistenciaSetmanal(idHorari: number, dataIni: string, dataFi: string) {
+    this.isLoading.set(true);
+    try {
+      const url = `/horaris/${idHorari}/assistencia-setmanal?data_ini=${dataIni}&data_fi=${dataFi}`;
+      console.log('[SERVICE getAssistenciaSetmanal] GET:', url);
+      const resp = await this.apiManager.get<any>(url);
+      console.log('[SERVICE getAssistenciaSetmanal] Resposta:', resp);
+      return resp.data || resp;
+    } catch (err) {
+      console.error('[SERVICE getAssistenciaSetmanal] ❌ Error:', err);
+      return [];
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
 
   /**
    * Afegeix un nou registre d'assistència (POST)
    */
   async afegirAssistencia(novaAssistencia: Partial<Assistencia>) {
     try {
+      console.log('[SERVICE afegirAssistencia] POST /assistencies amb dades:', novaAssistencia);
       const resposta = await this.apiManager.post<any>('/assistencies', novaAssistencia);
+      console.log('[SERVICE afegirAssistencia] ✅ Resposta del servidor:', resposta);
       const creat = resposta.data || resposta;
 
       // Lògica primitiva: obtenir, copiar, afegir, guardar
@@ -94,10 +114,12 @@ export class AssistenciesManagerService {
    */
   async actualitzarAssistencia(id: number, dadesActualitzades: Partial<Assistencia>) {
     try {
+      console.log(`[SERVICE actualitzarAssistencia] PUT /assistencies/${id} amb dades:`, dadesActualitzades);
       const resposta = await this.apiManager.put<any>(
         `/assistencies/${id}`,
         dadesActualitzades,
       );
+      console.log(`[SERVICE actualitzarAssistencia] ✅ Resposta del servidor:`, resposta);
       const actualitzacio = resposta.data || resposta;
 
       // Lògica primitiva: bucle manual per actualitzar la llista
@@ -143,6 +165,53 @@ export class AssistenciesManagerService {
       return true;
     } catch (err) {
       console.error(`Error esborrant assistència ${id}:`, err);
+      throw err;
+    }
+  }
+  /**
+   * Obté el ranking de faltes per a les assignatures del professor actual
+   */
+  async getRankingProfessor() {
+    this.isLoading.set(true);
+    try {
+      const resp = await this.apiManager.get<any>('/assistencies/ranking-profe');
+      return resp.data || resp;
+    } catch (err) {
+      console.error('Error obtenint el ranking de professor:', err);
+      return [];
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
+   * Obté el ranking de faltes per a una classe
+   */
+  async getRankingClasse(idClasse: number) {
+    this.isLoading.set(true);
+    try {
+      const resp = await this.apiManager.get<any>(`/assistencies/classe/${idClasse}/ranking`);
+      return resp.data || resp;
+    } catch (err) {
+      console.error('Error obtenint el ranking de classe:', err);
+      return [];
+    } finally {
+      this.isLoading.set(false);
+    }
+  }
+
+  /**
+   * Genera un informe de faltes en format PDF
+   */
+  async generarInformeFaltes(id_alumne: number, faltes: number) {
+    try {
+      const resp = await this.apiManager.postBlob('/carta-faltes/generar', {
+        id_alumne,
+        faltes,
+      });
+      return resp;
+    } catch (err) {
+      console.error('Error generant informe de faltes:', err);
       throw err;
     }
   }

@@ -1,0 +1,159 @@
+<div id="contenidor">
+  <app-sidebaradmin></app-sidebaradmin>
+  <div class="contingut">
+    
+    <div class="admin-header">
+      <div class="header-titles">
+        <h2>Gestió d'Usuaris</h2>
+        <p class="subtitle">Administra i gestiona els usuaris de l'aplicació.</p>
+      </div>
+      <button class="btn-primary" (click)="obrirModal()">
+        <ng-icon name="heroPlus"></ng-icon> Nou Usuari
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-overlay glass-panel">
+        <div class="spinner"></div>
+        <p>Carregant usuaris...</p>
+      </div>
+    } @else {
+      <!-- TABLE VIEW (Desktop) -->
+      <div class="table-container glass-panel desktop-only">
+        <table class="premium-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nom complet</th>
+              <th>Correu Electrònic</th>
+              <th>Rol</th>
+              <th>Accions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (usuari of usuaris(); track usuari.id) {
+              <tr class="table-row">
+                <td><span class="badge-id">#{{ usuari.id }}</span></td>
+                <td>
+                  <div class="user-info">
+                    <div class="avatar-placeholder">
+                      <ng-icon name="heroUser"></ng-icon>
+                    </div>
+                    <div class="name-details">
+                      <span class="user-name">{{ usuari.nom }} {{ usuari.cognom }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="user-email">{{ usuari.email }}</td>
+                <td>
+                  <span class="badge-role" [ngClass]="usuari.rol.toLowerCase()">
+                    {{ usuari.rol }}
+                  </span>
+                </td>
+                <td class="actions">
+                  <button class="btn-icon edit" (click)="obrirModal(usuari)" title="Editar">
+                    <ng-icon name="heroPencilSquare"></ng-icon>
+                  </button>
+                  <button class="btn-icon delete" (click)="esborrarUsuari(usuari.id)" title="Eliminar">
+                    <ng-icon name="heroTrash"></ng-icon>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-state">No hi ha usuaris registrats al sistema.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CARD VIEW (Mobile) -->
+      <div class="cards-container mobile-only">
+        @for (usuari of usuaris(); track usuari.id) {
+          <div class="user-card">
+            <div class="card-header">
+              <div class="avatar-placeholder">
+                <ng-icon name="heroUser"></ng-icon>
+              </div>
+              <div class="name-details">
+                <span class="user-name">{{ usuari.nom }} {{ usuari.cognom }}</span>
+                <span class="user-email">{{ usuari.email }}</span>
+              </div>
+            </div>
+            <div class="card-info">
+              <span class="badge-role" [ngClass]="usuari.rol.toLowerCase()">{{ usuari.rol }}</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn-icon edit" (click)="obrirModal(usuari)" title="Editar">
+                <ng-icon name="heroPencilSquare"></ng-icon>
+              </button>
+              <button class="btn-icon delete" (click)="esborrarUsuari(usuari.id)" title="Eliminar">
+                <ng-icon name="heroTrash"></ng-icon>
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state glass-panel">No hi ha usuaris registrats al sistema.</div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Premium Glassify Modal -->
+@if (isModalOpen) {
+  <div class="modal-backdrop">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Editar Usuari' : 'Crear Nou Usuari' }}</h3>
+        <button class="btn-close" (click)="tancarModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardarUsuari()" #usuariForm="ngForm" class="premium-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="nom">Nom</label>
+              <input type="text" id="nom" name="nom" [(ngModel)]="usuariActual.nom" required placeholder="Introdueix el nom">
+            </div>
+            <div class="form-group">
+              <label for="cognom">Cognoms</label>
+              <input type="text" id="cognom" name="cognom" [(ngModel)]="usuariActual.cognom" required placeholder="Introdueix els cognoms">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Correu Electrònic</label>
+            <input type="email" id="email" name="email" [(ngModel)]="usuariActual.email" required placeholder="ex: alumne@escola.cat">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="rol">Tipus de Rol</label>
+              <select id="rol" name="rol" [(ngModel)]="usuariActual.rol" required>
+                <option value="Alumne">Alumne</option>
+                <option value="Professor">Professor</option>
+                <option value="Pares">Pares</option>
+                <option value="Administrador">Administrador</option>
+              </select>
+            </div>
+            @if (!isEditing) {
+              <div class="form-group">
+                <label for="password">Contrasenya</label>
+                <input type="password" id="password" name="password" [(ngModel)]="usuariActual.password" required placeholder="Mínim 8 caràcters">
+              </div>
+            }
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="tancarModal()">Cancel·lar</button>
+            <button type="submit" class="btn-primary btn-loading-state" [class.loading]="isSaving()" [disabled]="!usuariForm.form.valid || isLoading() || isSaving()">
+              <div class="btn-spinner"></div>
+              <span>{{ isEditing ? 'Actualitzar Usuari' : 'Guardar Nou Usuari' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

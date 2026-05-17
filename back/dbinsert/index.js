@@ -1,1 +1,0 @@
-console.log("DB Insert service is running...");

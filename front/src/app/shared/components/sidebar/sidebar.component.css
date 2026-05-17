@@ -1,102 +1,444 @@
 :host {
     display: block;
     width: 100%;
-    height: 100px;
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 100;
 }
 
+/* ===== NAVBAR FLOTANT ESTRETA — PILL GLASS ===== */
 .barra-superior {
-    position: absolute;
-    top: 0px;
+    position: fixed;
+    top: 16px;                      /* Marge superior flotant */
     left: 50%;
-    transform: translateX(-50%);
-    width: auto;
-    min-width: 800px;
-    /* Manté la mida gran en pantalles petites */
-    max-width: 95%;
-    height: 120px;
+    transform: translateX(-50%);    /* Centrat horitzontal */
+    width: fit-content;             /* S'ajusta al contingut */
+    min-width: 480px;
+    max-width: 720px;
+    z-index: 100;
+
+    /* Glassmorphism potent amb to moradillo (diferenciar-lo del de admin) */
+    background: rgba(139, 92, 246, 0.2);
+    backdrop-filter: blur(32px) saturate(200%);
+    -webkit-backdrop-filter: blur(32px) saturate(200%);
+    border: 1px solid rgba(167, 139, 250, 0.35);
+    box-shadow:
+        0 8px 32px -4px rgba(139, 92, 246, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+
+    /* Forma de pill */
+    border-radius: 999px;
+
+    /* Layout intern */
     display: flex;
-    justify-content: center;
     align-items: center;
-    padding: 0 60px;
-    background-image: url('/img/menu/menu.png');
-    background-size: 100% 100%;
-    background-position: center;
-    background-repeat: no-repeat;
-    border: none;
-    border-radius: 24px;
+    justify-content: space-between;
+    padding: 0 20px;
+    height: 52px;
+    gap: 8px;
 }
 
 .contenedor-navegacio-centrat {
-    position: relative;
-    z-index: 1;
     display: flex;
     align-items: center;
+    flex: 1;
     justify-content: center;
-    gap: 15px;
-    width: 100%;
-    max-width: 1200px;
+    gap: 4px;
 }
 
+/* Cada botó de navegació */
 .element-navegacio {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border-radius: 999px;
+    padding: 6px 12px;
+    transition: background 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+    color: var(--text-main);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    gap: 0;                /* Gap 0 per defecte: icona sola, sense espai */
+    white-space: nowrap;
+    overflow: hidden;      /* Amaga el text que surt mentre anima */
 }
 
-.element-navegacio:active {
-    transform: scale(0.9);
-}
-
-.element-navegacio.actiu .caixa-icona {
-    background: rgba(255, 255, 255, 0.45);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-}
-
-.caixa-icona {
-    width: 72px;
-    /* Un pelín més grans */
-    height: 72px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: transparent;
-    /* Icona "nua" per defecte */
-    border: 1px solid transparent;
-    border-radius: 20px;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.element-navegacio:hover .caixa-icona {
-    background: rgba(255, 255, 255, 0.3);
-    border-color: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(10px);
-}
-
-.caixa-icona img {
-    width: 38px;
-    /* Proporcionalment més grans */
-    height: 38px;
-    object-fit: contain;
-}
-
-.caixa-icona.perfil {
-    width: 60px;
-    /* L'icona de perfil es manté igual */
-    height: 60px;
-    border-radius: 50%;
+/* Text ocult per defecte */
+.element-navegacio span {
+    max-width: 0;          /* Ocupa 0 amplada → invisible */
+    opacity: 0;
     overflow: hidden;
-    padding: 2px;
+    transition:
+        max-width 0.3s ease,
+        opacity   0.2s ease,
+        margin    0.3s ease;
+    margin-left: 0;        /* Sense marge quan està amagat */
+    display: inline-block;
 }
 
-.caixa-icona.perfil img {
-    width: 100%;
-    height: 100%;
+/* Text visible en hover */
+.element-navegacio:hover span,
+.element-navegacio.actiu span {
+    max-width: 100px;      /* Suficient per qualsevol etiqueta */
+    opacity: 1;
+    margin-left: 6px;      /* Espai entre icona i text quan apareix */
+}
+
+.element-navegacio:hover {
+    background: rgba(99, 102, 241, 0.12);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+/* Estat actiu */
+.element-navegacio.actiu {
+    background: rgba(99, 102, 241, 0.18);
+    color: var(--primary-color);
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(99, 102, 241, 0.2);
+}
+
+
+
+/* Icona */
+.caixa-icona {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.caixa-icona ng-icon {
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(0, 0, 0, 0.7);
+    transition: color 0.2s ease;
+}
+
+/* En hover i actiu: to violeta (--primary-color: #6366f1) */
+.element-navegacio:hover .caixa-icona ng-icon,
+.element-navegacio.actiu .caixa-icona ng-icon {
+    color: var(--primary-color);
+}
+
+/* Icona Perfil */
+.caixa-icona.perfil {
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
+    background: rgba(99, 102, 241, 0.12);
+    border: 1.5px solid rgba(99, 102, 241, 0.3);
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.caixa-icona.perfil ng-icon {
+    font-size: 42px;
+}
+
+.imatge-perfil {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.caixa-icona.perfil:hover {
+    background: rgba(99, 102, 241, 0.22);
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .barra-superior {
+        min-width: unset;
+        max-width: calc(100vw - 32px);
+        width: calc(100vw - 32px);
+        padding: 0 12px;
+        height: 48px;
+        top: 8px;
+        border-radius: 24px;
+    }
+
+    .element-navegacio {
+        padding: 6px 8px;
+        font-size: 0.8rem;
+    }
+
+    .element-navegacio span {
+        display: none;
+    }
+
+    .caixa-icona {
+        width: 18px;
+        height: 18px;
+    }
+
+    .caixa-icona ng-icon {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    .barra-superior {
+        width: calc(100vw - 16px);
+        max-width: calc(100vw - 16px);
+        padding: 0 8px;
+        gap: 2px;
+    }
+
+    .contenedor-navegacio-centrat {
+        gap: 2px;
+    }
+
+    .element-navegacio {
+        padding: 6px 6px;
+    }
+}
+
+/* Tema Alumne (Blau) */
+.barra-superior.tema-alumne {
+    background: rgba(14, 165, 233, 0.15);
+    border: 1px solid rgba(14, 165, 233, 0.35);
+    box-shadow:
+        0 8px 32px -4px rgba(14, 165, 233, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.barra-superior.tema-alumne .element-navegacio:hover {
+    background: rgba(14, 165, 233, 0.12);
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.15);
+}
+
+.barra-superior.tema-alumne .element-navegacio.actiu {
+    background: rgba(14, 165, 233, 0.18);
+    box-shadow: 0 2px 10px rgba(14, 165, 233, 0.2);
+}
+
+.barra-superior.tema-alumne .caixa-icona.perfil {
+    background: rgba(14, 165, 233, 0.12);
+    border: 1.5px solid rgba(14, 165, 233, 0.3);
+}
+
+.barra-superior.tema-alumne .caixa-icona.perfil:hover {
+    background: rgba(14, 165, 233, 0.22);
+    box-shadow: 0 2px 8px rgba(14, 165, 233, 0.2);
+}
+
+/* ===== DROPDOWN PERFIL — PREMIUM ORGANIC ===== */
+.contenedor-perfil {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-bottom: 10px;
+    margin-bottom: -10px;
+}
+
+.boto-perfil {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: inherit;
+    color: inherit;
+}
+
+.dropdown-perfil {
+    position: absolute;
+    top: 100%;
+    right: -10px;
+    margin-top: 12px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    box-shadow: 
+        0 4px 6px -1px rgba(0, 0, 0, 0.05),
+        0 10px 15px -3px rgba(0, 0, 0, 0.08),
+        0 20px 25px -5px rgba(0, 0, 0, 0.03),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.5);
+    padding: 10px;
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(12px) scale(0.95);
+    transform-origin: top right;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 200;
+}
+
+/* Mostrar per hover (desktop) o per classe 'obert' */
+.contenedor-perfil:hover .dropdown-perfil,
+.contenedor-perfil.obert .dropdown-perfil {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0) scale(1);
+}
+
+.usuari-info-dropdown {
+    padding: 8px 16px;
+    margin-bottom: 4px;
+}
+
+.nom-usuari {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: rgba(0, 0, 0, 0.4);
+}
+
+.boto-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: none;
+    background: transparent;
+    color: #4b5563;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    width: 100%;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-decoration: none;
+    text-align: left;
+}
+
+.boto-dropdown-item:hover {
+    background: rgba(99, 102, 241, 0.08);
+    transform: translateX(4px);
+    color: var(--primary-color);
+}
+
+.boto-dropdown-item.logout {
+    color: #ef4444;
+}
+
+.boto-dropdown-item.logout:hover {
+    background: rgba(239, 68, 68, 0.08);
+    color: #dc2626;
+}
+
+.divisor-dropdown {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.05);
+    margin: 6px 12px;
+}
+
+.backdrop-perfil {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(4px);
+    z-index: 150;
+}
+
+/* ===== RESPONSIVE DROPDOWN (BOTTOM SHEET) ===== */
+@media (max-width: 768px) {
+    /* En mòbil, desactivar hover */
+    .contenedor-perfil:hover .dropdown-perfil {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(12px) scale(0.95);
+    }
+
+    /* Mostrar NOMÉS quan la classe 'obert' és present */
+    .contenedor-perfil.obert .dropdown-perfil {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0) scale(1);
+    }
+
+    .contenedor-perfil.obert .backdrop-perfil {
+        display: block;
+    }
+
+    /* El dropdown es converteix en Bottom Sheet */
+    .dropdown-perfil {
+        /* Sortir del flux del navbar */
+        position: fixed !important;
+        bottom: 0 !important;
+        top: auto !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        margin: 0 !important;
+        
+        /* Forma de Bottom Sheet */
+        border-radius: 28px 28px 0 0 !important;
+        border: none !important;
+        border-top: 1px solid rgba(255, 255, 255, 0.6) !important;
+        padding: 28px 20px calc(28px + env(safe-area-inset-bottom)) !important;
+        
+        /* Aparèixer des de baix */
+        transform: translateY(100%) !important;
+        transform-origin: bottom center !important;
+        
+        /* Ombra cap amunt */
+        box-shadow: 
+            0 -8px 40px rgba(0, 0, 0, 0.15),
+            0 -2px 10px rgba(0, 0, 0, 0.05) !important;
+        
+        /* Z-index alt per estar per sobre de tot */
+        z-index: 9999 !important;
+    }
+    
+    .contenedor-perfil.obert .dropdown-perfil {
+        transform: translateY(0) !important;
+    }
+
+    /* Indicador de drag (pill) */
+    .dropdown-perfil::before {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 44px;
+        height: 5px;
+        background: rgba(0, 0, 0, 0.12);
+        border-radius: 3px;
+    }
+
+    /* Header del Bottom Sheet */
+    .usuari-info-dropdown {
+        padding: 12px 8px 16px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        margin-bottom: 8px;
+    }
+
+    .nom-usuari {
+        font-size: 0.8rem;
+    }
+
+    /* Botons més grans per a dits */
+    .boto-dropdown-item {
+        padding: 18px 16px;
+        font-size: 1.05rem;
+        border-radius: 16px;
+    }
+
+    /* Backdrop */
+    .backdrop-perfil {
+        z-index: 9998 !important;
+        background: rgba(0, 0, 0, 0.35) !important;
+        backdrop-filter: blur(6px) !important;
+    }
 }

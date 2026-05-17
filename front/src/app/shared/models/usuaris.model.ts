@@ -11,6 +11,8 @@ export interface Usuari {
   id_classe: number | null;
   horari_guardies: string | null;
   google_id: string | null;
+  photo: string | null;
   created_at: string;
   updated_at: string;
+  data_naixement: Date;
 }

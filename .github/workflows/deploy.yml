@@ -1,37 +1,25 @@
-name: Deploy to Production
+name: Deploy and Update Services
 
 on:
   push:
-    branches:
-      - main
+    branches: [main]
 
 jobs:
   deploy:
-    name: Build & Deploy
+    name: Full Deploy Process
     runs-on: ubuntu-latest
-    steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          GOOGLE_REDIRECT_URI: ${{ secrets.GOOGLE_REDIRECT_URI }}
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          password: ${{ secrets.SERVER_PASSWORD }}
-          port: 22
-          timeout: 1000s
-          command_timeout: 30m
-          envs: DB_PASSWORD, SERVER_USERNAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI
-          script: |
-            set -e
-            # 1. Anar a la carpeta del projecte
-            cd /prj-final-r-e-n-f-e
 
-            # 2. Baixar els últims canvis del codi
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install SSH Key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSHKEY }}
+          known_hosts: unnecessary
+          if_key_exists: replace
+
       - name: Add to Known Hosts
         run: |
           echo "Connecting to server ${{ secrets.SERVER_HOST }}..."
@@ -41,7 +29,7 @@ jobs:
 
       - name: Update, Configure and Deploy
         run: |
-          ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} bash -s << 'EOF'
+          ssh -o ServerAliveCountMax=5 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} bash -s << 'EOF'
             set -euo pipefail
 
             cd /
@@ -56,51 +44,77 @@ jobs:
             echo "Baixant canvis de Git..."
             git pull origin main
 
-            # 3. Crear .env principal
-            echo "Creant .env principal..."
-            echo "MONGO_PASSWORD=$DB_PASSWORD" > .env
-            echo "POSTGRES_PASSWORD=$DB_PASSWORD" >> .env
-            echo "PGADMIN_DEFAULT_PASSWORD=$DB_PASSWORD" >> .env
+            # Crear .env /
+            echo "Crear .env /..."
+            echo "MONGO_PASSWORD=${{ secrets.MONGO_PASSWORD }}" > .env
+            echo "POSTGRES_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "PGADMIN_DEFAULT_PASSWORD=${{ secrets.PGADMIN_DEFAULT_PASSWORD }}" >> .env
 
-            # 3. Crear .env.PROD FRONT
-            # Nota: Fem servir les variables d'entorn ($VAR) en lloc de la interpolació de GitHub
+            # Crear .env.PROD FRONT
             echo "Creant .env.PROD FRONT..."
             cd front
             cp .env.PROD .env
             cd ..
 
-            # 4. Crear .env.PROD BACK Principal
-            echo "Creant .env.PROD BACK Principal..."
-            cd /prj-final-r-e-n-f-e/back/principal
-            echo "Copiant .env.PROD de Back Principal..."
+            # Crear .env.PROD BACK laravel-api
+            cd ./back/laravel-api
+            echo "Copiant .env.PROD de Back laravel-api..."
             cp .env.PROD .env
+            ls -l /prj-final-r-e-n-f-e/back/laravel-api/.env
+            echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
             echo "DB_CONNECTION=pgsql" >> .env
             echo "DB_HOST=pfg1-postgres" >> .env
             echo "DB_PORT=5432" >> .env
             echo "DB_DATABASE=prf-renfe" >> .env
             echo "DB_USERNAME=postgres" >> .env
-            echo "DB_PASSWORD=$DB_PASSWORD" >> .env
-            echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> .env
-            echo "GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET" >> .env
-            echo "GOOGLE_REDIRECT_URI=$GOOGLE_REDIRECT_URI" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
+            echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
+            echo "GOOGLE_REDIRECT_URI=${{ secrets.GOOGLE_REDIRECT_URI }}" >> .env
+            echo "" >> .env
+            echo "MAIL_MAILER=smtp" >> .env
+            echo "MAIL_HOST=smtp.tenfe.cat" >> .env
+            echo "MAIL_PORT=587" >> .env
+            echo "MAIL_USERNAME=info@tenfe.cat" >> .env
+            echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
+            echo "MAIL_ENCRYPTION=tls" >> .env
+            echo "MAIL_FROM_ADDRESS=info@tenfe.cat" >> .env
+            echo 'MAIL_FROM_NAME=${APP_NAME}' >> .env
+            NODE_PRINCIPAL_API_URL=https://tenfe.cat/back-node
+            cd ../..
 
-            # 5. Crear .env.PROD BACK Dbinsert
-            # Crear .env de BACK Dbinsert
-            echo "Creant .env BACK Dbinsert..."
-            cd /prj-final-r-e-n-f-e/back/dbinsert
-            echo "Copiant .env.PROD de Back Dbinsert..."
-            #Per Ara res més
+            # Crear .env BACK Principal-node
+            echo "Creant .env BACK Principal-node..."
+            cd ./back/principal-node
+            cp .env.PROD .env
+            cd ../..
 
-            # 6. Crear .env.PROD BACK Sensor
-            # Crear .env de BACK Sensor
-            echo "Creant .env BACK Sensor..."
-            cd /prj-final-r-e-n-f-e/back/sensor
-            echo "Copiant .env.PROD de Back Sensor..."
-            #Per Ara res més
+            # Crear directorios de Laravel que no existen en git (storage y cache)
+            echo "Creando directorios de Laravel..."
+            mkdir -p back/laravel-api/storage/framework/{cache,sessions,views}
+            mkdir -p back/laravel-api/storage/logs
+            mkdir -p back/laravel-api/bootstrap/cache
+            chmod -R 775 back/laravel-api/storage back/laravel-api/bootstrap/cache
 
-            # 7. Aixecar contenidors reconstruint la imatge
+            # Configuració inicial (abans de validar certificats)
+            cp nginx-init.conf nginx.conf
+            echo "Utilitzant configuració INICIAL abans de validar certificats"
+
+            # Aixecar contenidors reconstruint la imatge
             echo " Construint i aixecant contenidors..."
-            cd /prj-final-r-e-n-f-e
             docker compose -f compose.PROD.yml up --build -d
 
-            echo "Desplegem finalitzat amb èxit!"
+            # Mostrar logs de certbot després de l'arrencada
+            echo "Mostrant logs de certbot..."
+            docker compose -f compose.PROD.yml logs certbot
+
+            # Comprovar amb ls si existeixen fitxers de certificat i aplicar configuració final
+            if ls certbot/conf/live/tenfe.cat/fullchain.pem certbot/conf/live/tenfe.cat/privkey.pem >/dev/null 2>&1; then
+              cp nginx-prod.conf nginx.conf
+              echo "✓ Certificats SSL trobats - canviant a configuració de PROD"
+              echo "Reiniciant tots els serveis per aplicar la nova configuració..."
+              docker compose -f compose.PROD.yml restart
+            else
+              echo "⚠ Encara no hi ha certificats SSL - es manté configuració INICIAL"
+            fi
+          EOF

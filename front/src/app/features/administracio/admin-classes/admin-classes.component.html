@@ -1,0 +1,198 @@
+<div id="contenidor">
+  <app-sidebaradmin></app-sidebaradmin>
+  <div class="contingut">
+    
+    <div class="admin-header">
+      <div class="header-titles">
+        <h2>Gestió de Classes</h2>
+        <p class="subtitle">Administra i gestiona les classes i els seus tutors.</p>
+      </div>
+      <button class="btn-primary" (click)="obrirModal()">
+        <ng-icon name="heroPlus"></ng-icon> Nova Classe
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-overlay glass-panel">
+        <div class="spinner"></div>
+        <p>Carregant classes...</p>
+      </div>
+    } @else {
+      <!-- TABLE VIEW (Desktop) -->
+      <div class="table-container glass-panel desktop-only">
+        <table class="premium-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nom de la Classe</th>
+              <th>Curs</th>
+              <th>Tutor Assignat</th>
+              <th>Accions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (classe of classes(); track classe.id) {
+              <tr class="table-row">
+                <td><span class="badge-id">#{{ classe.id }}</span></td>
+                <td>
+                  <div class="user-info">
+                    <div class="avatar-placeholder">
+                      <ng-icon name="heroAcademicCap"></ng-icon>
+                    </div>
+                    <div class="name-details">
+                      <span class="user-name">{{ classe.nom }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="user-email"><span class="badge-role p-role">{{ obtenirNomCurs(classe.id_curs) }}</span></td>
+                <td class="user-email">{{ obtenirNomTutor(classe.id_tutor) }}</td>
+                <td class="actions">
+                  <button class="btn-icon view" (click)="obrirModalAlumnes(classe)" title="Veure Alumnes d'aquesta classe">
+                    <ng-icon name="heroEye"></ng-icon>
+                  </button>
+                  <button class="btn-icon edit" (click)="obrirModal(classe)" title="Editar">
+                    <ng-icon name="heroPencilSquare"></ng-icon>
+                  </button>
+                  <button class="btn-icon delete" (click)="esborrarClasse(classe.id)" title="Eliminar">
+                    <ng-icon name="heroTrash"></ng-icon>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="5" class="empty-state">No hi ha classes registrades al sistema.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CARD VIEW (Mobile) -->
+      <div class="cards-container mobile-only">
+        @for (classe of classes(); track classe.id) {
+          <div class="user-card">
+            <div class="card-header">
+              <div class="avatar-placeholder">
+                <ng-icon name="heroAcademicCap"></ng-icon>
+              </div>
+              <div class="name-details">
+                <span class="user-name">{{ classe.nom }}</span>
+                <span class="user-email">{{ obtenirNomCurs(classe.id_curs) }}</span>
+              </div>
+            </div>
+            <div class="card-info">
+              <span class="badge-role p-role" style="font-size: 10px;">{{ obtenirNomTutor(classe.id_tutor) }}</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn-icon view" (click)="obrirModalAlumnes(classe)" title="Veure">
+                <ng-icon name="heroEye"></ng-icon>
+              </button>
+              <button class="btn-icon edit" (click)="obrirModal(classe)" title="Editar">
+                <ng-icon name="heroPencilSquare"></ng-icon>
+              </button>
+              <button class="btn-icon delete" (click)="esborrarClasse(classe.id)" title="Eliminar">
+                <ng-icon name="heroTrash"></ng-icon>
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state glass-panel">No hi ha classes registrades.</div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Premium Glassify Modal -->
+@if (isModalOpen) {
+  <div class="modal-backdrop">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Editar Classe' : 'Crear Nova Classe' }}</h3>
+        <button class="btn-close" (click)="tancarModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardarClasse()" #classeForm="ngForm" class="premium-form">
+          
+          <div class="form-group">
+            <label for="nom">Nom de la Classe</label>
+            <input type="text" id="nom" name="nom" [(ngModel)]="classeActual.nom" required placeholder="ex: 1r ESO A">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="id_curs">Curs</label>
+              <select id="id_curs" name="id_curs" [(ngModel)]="classeActual.id_curs" required>
+                <option [ngValue]="0" disabled>Selecciona un Curs</option>
+                @for (curs of cursos(); track curs.id) {
+                  <option [ngValue]="curs.id">{{ curs.nom }}</option>
+                }
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="id_tutor">Tutor Assignat (opcional)</label>
+              <select id="id_tutor" name="id_tutor" [(ngModel)]="classeActual.id_tutor">
+                <option [ngValue]="0">Cap Tutor</option>
+                @for (prof of professors(); track prof.id) {
+                  <option [ngValue]="prof.id">{{ prof.nom }} {{ prof.cognom }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="tancarModal()">Cancel·lar</button>
+            <button type="submit" class="btn-primary btn-loading-state" [class.loading]="isSaving()" [disabled]="!classeForm.form.valid || classeActual.id_curs === 0 || isLoading() || isSaving()">
+              <div class="btn-spinner"></div>
+              <span>{{ isEditing ? 'Actualitzar Classe' : 'Guardar Nova Classe' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal 2: Visualització d'Alumnes Pertanyents a la Classe (Master-Detail) -->
+@if (isAlumnesModalOpen) {
+  <div class="modal-backdrop">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h3>Llistat Complet d'Alumnes</h3>
+        <button class="btn-close" (click)="tancarModalAlumnes()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+           <label>Grup Seleccionat:</label>
+           <!-- Camp de lectura visual per reafirmar selecció ràpidament -->
+           <input type="text" [value]="classeSeleccionada?.nom" disabled style="background:#edf2f7; color:#2d3748; font-weight:bold;">
+        </div>
+
+        <label style="font-size: 13px; font-weight: 600; color: #4a5568; margin-bottom: 8px; display:block;">Estudiants Adjudicats</label>
+        
+        <ul class="inscrits-list">
+            @for (alumne of alumnesClasseLlista; track alumne.id) {
+               <li>
+                   <div class="avatar-placeholder" style="width:28px; height:28px; font-size:12px;">
+                     <ng-icon name="heroUser"></ng-icon>
+                   </div>
+                   <div style="display:flex; flex-direction:column;">
+                       <span style="font-weight:600; color:#2d3748;">{{ alumne.nom }} {{ alumne.cognom }}</span>
+                       <span style="font-size:12px; color:#718096;">ID: #{{ alumne.id }} | {{ alumne.email }}</span>
+                   </div>
+               </li>
+            } @empty {
+               <li style="justify-content:center; padding: 30px; color:#a0aec0; border:none; text-align:center;">
+                  Aquesta classe encara no conté cap alumne.
+               </li>
+            }
+        </ul>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-secondary" (click)="tancarModalAlumnes()">Tornar a Classes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

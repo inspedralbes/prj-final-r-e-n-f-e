@@ -9,7 +9,7 @@ export class AssignaturesManagerService {
   private apiManager = inject(ApiManagerService);
 
   assignatures = signal<Assignatura[]>([]);
-  isLoading = signal<boolean>(false);
+  isLoading = signal<boolean>(true);
   error = signal<string | null>(null);
 
   /**

@@ -1,0 +1,67 @@
+<nav class="barra-superior">
+  <div class="seccio-esquerra">
+    <div class="logo">
+      <!-- Espai per logotip si cal -->
+    </div>
+
+    <div class="enllacos-navegacio">
+      <!-- Inici -->
+      <a
+        routerLink="/administracio"
+        routerLinkActive="actiu"
+        [routerLinkActiveOptions]="{ exact: true }"
+        class="element-navegacio"
+      >
+        <div class="caixa-icona">
+          <ng-icon name="heroHome"></ng-icon>
+        </div>
+        <span>Inici</span>
+      </a>
+
+      <!-- Assignatures → nova icona -->
+      <a routerLink="/admin-assignatures" routerLinkActive="actiu" class="element-navegacio">
+        <div class="caixa-icona">
+          <ng-icon name="heroBookOpen"></ng-icon>
+        </div>
+        <span>Assignatures</span>
+      </a>
+
+      <!-- Usuaris → nova icona -->
+      <a routerLink="/admin-usuaris" routerLinkActive="actiu" class="element-navegacio">
+        <div class="caixa-icona">
+          <ng-icon name="heroUsers"></ng-icon>
+        </div>
+        <span>Usuaris</span>
+      </a>
+
+      <!-- Periodes / Cursos -->
+      <a routerLink="/admin-periodes" routerLinkActive="actiu" class="element-navegacio">
+        <div class="caixa-icona">
+          <ng-icon name="heroCalendarDays"></ng-icon>
+        </div>
+        <span>Periodes</span>
+      </a>
+
+      <!-- Classes -->
+      <a routerLink="/admin-classes" routerLinkActive="actiu" class="element-navegacio">
+        <div class="caixa-icona">
+          <ng-icon name="heroAcademicCap"></ng-icon>
+        </div>
+        <span>Classes</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Icona Perfil -->
+  <div class="seccio-perfil">
+    <a routerLink="/profile" class="element-navegacio">
+      <div class="caixa-icona perfil">
+        @if (userPhoto()) {
+          <img [src]="userPhoto()" alt="Perfil" class="imatge-perfil" />
+        } @else {
+          <ng-icon name="heroUserCircle"></ng-icon>
+        }
+      </div>
+    </a>
+  </div>
+</nav>

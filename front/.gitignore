@@ -44,8 +44,12 @@ __screenshots__/
 Thumbs.db
 
 .env
+<<<<<<< HEAD
+/src/environments/environment.ts
+=======
 
 # Environment files
 src/environments/environment.ts
 src/environments/environment.prod.ts
 
+>>>>>>> ff9d586b29a33533d406216d3f3cd5da84919104

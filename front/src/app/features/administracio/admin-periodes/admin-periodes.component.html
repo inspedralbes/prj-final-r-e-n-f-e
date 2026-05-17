@@ -1,0 +1,257 @@
+<div id="contenidor">
+  <app-sidebaradmin></app-sidebaradmin>
+  <div class="contingut">
+    <div class="admin-header">
+      <div class="header-titles">
+        <h2>Gestió de Períodes / Cursos</h2>
+        <p class="subtitle">Administra les dates d'inici i fi dels trimestres acadèmics.</p>
+      </div>
+      <button class="btn-primary" (click)="obrirModal()">
+        <ng-icon name="heroPlus"></ng-icon> Nou Període
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-overlay glass-panel">
+        <div class="spinner"></div>
+        <p>Carregant períodes...</p>
+      </div>
+    } @else {
+      <!-- TABLE VIEW (Desktop) -->
+      <div class="table-container glass-panel desktop-only">
+        <table class="premium-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nom del Curs</th>
+              <th>Inici (1r Trim)</th>
+              <th>Fi (3r Trim)</th>
+              <th>Estat</th>
+              <th>Accions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (periode of periodes(); track periode.id) {
+              <tr class="table-row">
+                <td>
+                  <span class="badge-id">#{{ periode.id }}</span>
+                </td>
+                <td>
+                  <div class="user-info">
+                    <div class="avatar-placeholder">
+                      <ng-icon name="heroCalendar"></ng-icon>
+                    </div>
+                    <div class="name-details">
+                      <span class="user-name">{{ periode.nom }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="user-email">{{ periode.trimestre_1_ini }}</td>
+                <td class="user-email">{{ periode.trimestre_3_fi }}</td>
+                <td>
+                  @if (periode.actiu) {
+                    <span class="badge-role professor">ACTIU</span>
+                  } @else {
+                    <span class="badge-role">INACTIU</span>
+                  }
+                </td>
+                <td class="actions">
+                  <button
+                    class="btn-icon edit"
+                    (click)="obrirModal(periode)"
+                    title="Editar Període"
+                  >
+                    <ng-icon name="heroPencilSquare"></ng-icon>
+                  </button>
+                  <button
+                    class="btn-icon delete"
+                    (click)="esborrarPeriode(periode.id)"
+                    title="Eliminar Període"
+                  >
+                    <ng-icon name="heroTrash"></ng-icon>
+                  </button>
+                  @if (!periode.actiu) {
+                    <button
+                      class="btn-icon"
+                      (click)="establirActiu(periode.id)"
+                      title="Establir com a període actual"
+                    >
+                      <ng-icon name="heroStar"></ng-icon>
+                    </button>
+                  }
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-state">No hi ha períodes registrats.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CARD VIEW (Mobile) -->
+      <div class="cards-container mobile-only">
+        @for (periode of periodes(); track periode.id) {
+          <div class="user-card">
+            <div class="card-header">
+              <div class="avatar-placeholder">
+                <ng-icon name="heroCalendar"></ng-icon>
+              </div>
+              <div class="name-details">
+                <span class="user-name">{{ periode.nom }}</span>
+                <span class="user-email">{{ periode.trimestre_1_ini }} - {{ periode.trimestre_3_fi }}</span>
+              </div>
+            </div>
+            <div class="card-info">
+              @if (periode.actiu) {
+                <span class="badge-role professor">ACTIU</span>
+              } @else {
+                <span class="badge-role">INACTIU</span>
+              }
+            </div>
+            <div class="card-actions">
+              <button
+                class="btn-icon edit"
+                (click)="obrirModal(periode)"
+                title="Editar"
+              >
+                <ng-icon name="heroPencilSquare"></ng-icon>
+              </button>
+              <button
+                class="btn-icon delete"
+                (click)="esborrarPeriode(periode.id)"
+                title="Eliminar"
+              >
+                <ng-icon name="heroTrash"></ng-icon>
+              </button>
+              @if (!periode.actiu) {
+                <button
+                  class="btn-icon"
+                  (click)="establirActiu(periode.id)"
+                  title="Establir actiu"
+                >
+                  <ng-icon name="heroStar"></ng-icon>
+                </button>
+              }
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state glass-panel">No hi ha períodes registrats.</div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Premium Glassify Modal -->
+@if (isModalOpen) {
+  <div class="modal-backdrop">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Editar Període #' + periodeActual.id : 'Nou Període' }}</h3>
+        <button class="btn-close" (click)="tancarModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardarPeriode()" #periodeForm="ngForm" class="premium-form">
+          <div class="form-group">
+            <label for="nom">Nom del Curs (ex. Curs 2025-2026)</label>
+            <input
+              type="text"
+              id="nom"
+              name="nom"
+              [(ngModel)]="periodeActual.nom"
+              required
+              placeholder="Nom del curs"
+            />
+          </div>
+
+          <h4 class="trimestre-title">Primer Trimestre</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="t1_ini">Data Inici</label>
+              <input
+                type="date"
+                id="t1_ini"
+                name="t1_ini"
+                [(ngModel)]="periodeActual.trimestre_1_ini"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="t1_fi">Data Fi</label>
+              <input
+                type="date"
+                id="t1_fi"
+                name="t1_fi"
+                [(ngModel)]="periodeActual.trimestre_1_fi"
+                required
+              />
+            </div>
+          </div>
+
+          <h4 class="trimestre-title">Segon Trimestre</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="t2_ini">Data Inici</label>
+              <input
+                type="date"
+                id="t2_ini"
+                name="t2_ini"
+                [(ngModel)]="periodeActual.trimestre_2_ini"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="t2_fi">Data Fi</label>
+              <input
+                type="date"
+                id="t2_fi"
+                name="t2_fi"
+                [(ngModel)]="periodeActual.trimestre_2_fi"
+                required
+              />
+            </div>
+          </div>
+
+          <h4 class="trimestre-title">Tercer Trimestre</h4>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="t3_ini">Data Inici</label>
+              <input
+                type="date"
+                id="t3_ini"
+                name="t3_ini"
+                [(ngModel)]="periodeActual.trimestre_3_ini"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="t3_fi">Data Fi</label>
+              <input
+                type="date"
+                id="t3_fi"
+                name="t3_fi"
+                [(ngModel)]="periodeActual.trimestre_3_fi"
+                required
+              />
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="tancarModal()">Cancel·lar</button>
+            <button
+              type="submit"
+              class="btn-primary btn-loading-state"
+              [class.loading]="isSaving()"
+              [disabled]="!periodeForm.form.valid || isLoading() || isSaving()"
+            >
+              <div class="btn-spinner"></div>
+              <span>Desar Canvis</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}

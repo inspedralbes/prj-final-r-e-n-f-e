@@ -8,7 +8,9 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "test:e2e": "cypress run --config baseUrl=http://localhost:4200",
+    "test:e2e:prod": "cypress run --config baseUrl=https://tenfe.cat"
   },
   "prettier": {
     "printWidth": 100,
@@ -31,14 +33,20 @@
     "@angular/forms": "^21.1.0",
     "@angular/platform-browser": "^21.1.0",
     "@angular/router": "^21.1.0",
+    "@ng-icons/core": "^33.2.2",
+    "@ng-icons/heroicons": "^33.2.2",
     "angular-oauth2-oidc": "^20.0.2",
+    "chart.js": "^4.5.1",
+    "ng2-charts": "^10.0.0",
     "rxjs": "~7.8.0",
+    "socket.io-client": "^4.8.3",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
     "@angular/build": "^21.1.4",
     "@angular/cli": "^21.1.4",
     "@angular/compiler-cli": "^21.1.0",
+    "cypress": "^15.14.2",
     "jsdom": "^27.1.0",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8"

@@ -6,8 +6,9 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-auth-callback',
   standalone: true,
   template: `
-    <div style="display: flex; justify-content: center; align-items: center; height: 100vh;">
-      <img src="/loading.gif" alt="loading">
+    <div class="admin-loading-container" style="height: 100vh;">
+      <div class="admin-spinner"></div>
+      <p style="font-weight: 500; color: #1e1b4b; font-family: 'Outfit', sans-serif;">Autenticant amb Google...</p>
     </div>
   `
 })
@@ -19,7 +20,7 @@ export class AuthCallbackComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Extraer el código de los query params
+    // Extreure el codi dels paràmetres URL
     this.route.queryParams.subscribe(params => {
       const code = params['code'];
       const error = params['error'];
@@ -31,7 +32,7 @@ export class AuthCallbackComponent implements OnInit {
       }
 
       if (code) {
-        // Enviar el código al backend
+        // Enviar el codi al backend
         this.authService.handleGoogleCallback(code);
       } else {
         console.error('No se recibió código de Google');

@@ -10,11 +10,12 @@
     --secondary-color: #a78bfa;
     --accent-color: #f472b6;
 
-    /* Ultra Glass Tokens (Molt més clars i transparents) */
-    --glass-bg: rgba(255, 255, 255, 0.45);
-    --glass-border: rgba(255, 255, 255, 0.6);
-    --glass-blur: blur(20px);
-    --glass-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+    /* Ultra Glass Tokens (Molt més evidents i premium) */
+    --glass-bg: rgba(255, 255, 255, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.7);
+    --glass-blur: blur(25px) saturate(200%);
+    --glass-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.15);
+    --glass-reflection: inset 0 1px 1px rgba(255, 255, 255, 0.8);
 
     /* Text - Fosc per a contrast en mode clar */
     --text-main: #1e293b;
@@ -23,6 +24,15 @@
     /* Radius */
     --radius-l: 32px;
     --radius-m: 20px;
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-reflection);
+    border-radius: var(--radius-m);
 }
 
 body {
@@ -62,9 +72,9 @@ body::after {
     width: 100%;
     height: 100%;
     background:
-        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.2), transparent 30%),
-        radial-gradient(circle at 85% 85%, rgba(244, 114, 182, 0.2), transparent 35%),
-        radial-gradient(circle at 50% 50%, rgba(167, 139, 250, 0.1), transparent 40%);
+        radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.35), transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(244, 114, 182, 0.35), transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(167, 139, 250, 0.25), transparent 50%);
     z-index: -1;
     pointer-events: none;
 }
@@ -85,4 +95,156 @@ body::after {
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--primary-color);
+}
+
+/* Loading Blur Overlay - Premium Glass Spinner */
+.loading-blur-overlay {
+    position: relative !important;
+}
+
+.loading-blur-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(240, 244, 255, 0.4); /* match --bg-main softly */
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 50;
+    border-radius: inherit;
+    animation: fadeIn 0.3s ease-out;
+    pointer-events: none; /* Block clicks handled by the wrapper */
+}
+
+/* We prevent clicks on the blurred container */
+.loading-blur-overlay > * {
+    pointer-events: none !important;
+}
+
+.loading-blur-overlay::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 36px;
+    height: 36px;
+    border: 4px solid var(--primary-light);
+    border-radius: 50%;
+    border-top-color: var(--primary-color);
+    animation: spin-morph 1s ease-in-out infinite, fadeIn 0.3s ease-out;
+    z-index: 51;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Animació d'entrada de pàgina: fade + lleuger moviment cap amunt */
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin-morph {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+.relative-container {
+    position: relative !important;
+}
+/* Admin-style Loading Overlay */
+.admin-loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+    gap: 16px;
+    color: #718096;
+    width: 100%;
+}
+
+.admin-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid rgba(99, 102, 241, 0.1);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Button Loading Animation (Login style) */
+.btn-loading-state {
+    position: relative !important;
+    transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
+}
+
+.btn-loading-state.loading {
+    /* Forcem que sigui un quadrat perfecte */
+    width: 52px !important;
+    height: 52px !important;
+    min-width: 52px !important;
+    max-width: 52px !important;
+    min-height: 52px !important;
+    max-height: 52px !important;
+    aspect-ratio: 1 / 1 !important;
+    
+    border-radius: 50% !important;
+    color: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important; /* Evitem que marges externs el deformin en flex */
+    pointer-events: none !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+    overflow: hidden !important;
+}
+
+.btn-loading-state .btn-spinner {
+    display: none;
+    width: 24px;
+    height: 24px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: btn-spin 1s linear infinite;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -12px;
+    margin-left: -12px;
+    z-index: 10;
+}
+
+.btn-loading-state.loading .btn-spinner {
+    display: block !important;
+}
+
+/* Ocultem tot el contingut original (text, icones, etc.) */
+.btn-loading-state.loading ng-icon, 
+.btn-loading-state.loading span,
+.btn-loading-state.loading i,
+.btn-loading-state.loading div:not(.btn-spinner) {
+    display: none !important;
+    opacity: 0 !important;
+}
+
+@keyframes btn-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
