@@ -1,7 +1,7 @@
 @let u = user();
 @if (isProfe) {
   <app-sidebar></app-sidebar>
-} @else if(isAdmin) {
+} @else if (isAdmin) {
   <app-sidebaradmin></app-sidebaradmin>
 } @else {
   <alumne-sidebar></alumne-sidebar>
@@ -90,7 +90,7 @@
                 <p>{{ infoAdicional()?.tutor?.nom }} {{ infoAdicional()?.tutor?.cognom }}</p>
               </div>
             </div>
-          } @else if (isProfeOrAdmin && infoAdicional()?.classe) {
+          } @else if (isProfe && infoAdicional()?.classe) {
             <div class="info-grid">
               <div class="info-item">
                 <p>{{ infoAdicional()?.classe }}</p>
@@ -117,7 +117,7 @@
               <label for="cognom">Cognom</label>
               <input type="text" id="cognom" [(ngModel)]="editedData()['cognom']" name="cognom" />
             </div>
-            @if (!isProfeOrAdmin) {
+            @if (!isProfe && !isAdmin) {
               <div class="form-group">
                 <label for="email_pares">Email pares/representants</label>
                 <input
