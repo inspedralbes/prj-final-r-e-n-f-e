@@ -23,7 +23,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           password: ${{ secrets.SERVER_PASSWORD }}
           port: 22
-          timeout: 600s
+          timeout: 1000s
           command_timeout: 30m
           envs: DB_PASSWORD, SERVER_USERNAME, GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI
           script: |
@@ -36,11 +36,12 @@ jobs:
         run: |
           echo "Connecting to server ${{ secrets.SERVER_HOST }}..."
           mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
           chmod 600 ~/.ssh/known_hosts
 
       - name: Update, Configure and Deploy
         run: |
-          ssh -o ServerAliveCountMax=5 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} bash -s << 'EOF'
+          ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} bash -s << 'EOF'
             set -euo pipefail
 
             cd /
