@@ -42,7 +42,6 @@ jobs:
 
             # Baixar els últims canvis del codi
             echo "Baixant canvis de Git..."
-            git clean -fd
             git pull origin main
 
             # Crear .env /
