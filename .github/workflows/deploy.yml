@@ -32,6 +32,27 @@ jobs:
             cd /prj-final-r-e-n-f-e
 
             # 2. Baixar els últims canvis del codi
+      - name: Add to Known Hosts
+        run: |
+          echo "Connecting to server ${{ secrets.SERVER_HOST }}..."
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Update, Configure and Deploy
+        run: |
+          ssh -o ServerAliveInterval=60 -o ServerAliveCountMax=5 -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} bash -s << 'EOF'
+            set -euo pipefail
+
+            cd /
+            # Anar a la carpeta del projecte (o clonar si no existeix)
+            if [ ! -d "prj-final-r-e-n-f-e/.git" ]; then
+              echo "Projecte no trobat, clonant repositori..."
+              git clone --branch main https://github.com/inspedralbes/prj-final-r-e-n-f-e.git
+            fi
+            cd prj-final-r-e-n-f-e
+
+            # Baixar els últims canvis del codi
             echo "Baixant canvis de Git..."
             git pull origin main
 
