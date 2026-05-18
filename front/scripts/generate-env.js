@@ -37,7 +37,7 @@ export const environment = {
   googleRedirectUri: '${envVars.GOOGLE_REDIRECT_URI || ''}',
   backendUrl: '${envVars.BACKEND_URL || ''}',
   generalBackendUrl: '${envVars.GENERAL_BACKEND_URL || ''}',
-  nodeUrl: '${envVars.NODE_URL || 'http://localhost:3000'}',
+  nodeUrl: '${envVars.NODE_URL || ''}',
 };
 `;
 
