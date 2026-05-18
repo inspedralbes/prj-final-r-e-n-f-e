@@ -42,7 +42,7 @@
                     </div>
                     <div class="name-details">
                       <span class="user-name">{{ assignatura.nom }}</span>
-                      <span style="font-size: 11px; color: #718096;">Interval: {{ assignatura.interval && assignatura.interval !== '' ? assignatura.interval : 'Sense definir' }}</span>
+                      <span style="font-size: 11px; color: #718096;">Interval: {{ formatarInterval(assignatura.interval) }}</span>
                     </div>
                   </div>
                 </td>
@@ -90,7 +90,7 @@
               </div>
               <div class="name-details">
                 <span class="user-name">{{ assignatura.nom }}</span>
-                <span class="user-email">Interval: {{ assignatura.interval && assignatura.interval !== '' ? assignatura.interval : 'Sense definir' }}</span>
+                <span class="user-email">Interval: {{ formatarInterval(assignatura.interval) }}</span>
               </div>
             </div>
             <div class="card-info">
@@ -144,7 +144,7 @@
               <input type="number" id="id_classe_projecte" name="id_classe_projecte" [(ngModel)]="assignaturaActual.id_classe_projecte" required placeholder="ex: 1">
             </div>
             
-            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 25px;">
+            <div class="form-group" style="display: flex; flex-direction: row; align-items: center; gap: 10px; margin-top: 25px;">
               <input type="checkbox" id="exempcio" name="exempcio" [(ngModel)]="assignaturaActual.exempcio" style="width: auto;">
               <label for="exempcio" style="margin-bottom: 0;">Té Exempció?</label>
             </div>
