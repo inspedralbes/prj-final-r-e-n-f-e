@@ -4,15 +4,25 @@ import { environment } from '../../environments/environment';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SocketService {
   private socket: Socket;
 
   constructor() {
+    console.log('Iniciant connexió socket a:', environment.nodeUrl);
     this.socket = io(environment.nodeUrl, {
       transports: ['websocket', 'polling'],
-      withCredentials: true
+      withCredentials: true,
+      secure: environment.production, // Forçar SSL en producció
+    });
+
+    this.socket.on('connect', () => {
+      console.log('[SOCKET] Connectat amb ID:', this.socket.id);
+    });
+
+    this.socket.on('connect_error', (error) => {
+      console.error('[SOCKET] Error de connexió:', error);
     });
   }
 
