@@ -26,9 +26,9 @@ La documentacio completa es troba a la carpeta [`/doc`](doc/).
 
 | Document | Contingut |
 |---|---|
-| [doc/ARQUITECTURA.md](doc/ARQUITECTURA.md) | Visio general del sistema, diagrama de serveis, Docker i posada en marxa |
-| [doc/BACKEND.md](doc/BACKEND.md) | Models de dades, relacions i referencia completa de l'API REST |
-| [doc/FRONTEND.md](doc/FRONTEND.md) | Estructura Angular, rutes, components i serveis |
+| [doc/arquitectura/ARQUITECTURA.md](doc/arquitectura/ARQUITECTURA.md) | Visio general del sistema, diagrama de serveis, Docker i posada en marxa |
+| [doc/backend/BACKEND.md](doc/backend/BACKEND.md) | Models de dades, relacions i referencia completa de l'API REST |
+| [doc/frontend/FRONTEND.md](doc/frontend/FRONTEND.md) | Estructura Angular, rutes, components i serveis |
 | [doc/MANUAL_USUARI.md](doc/MANUAL_USUARI.md) | Guia d'us per a professors, alumnes i administradors |
 
 ---
@@ -51,7 +51,7 @@ docker compose -f compose.DEV.yml exec pfg1-back php artisan migrate
 
 Despres: http://localhost:4200 (Frontend) | http://localhost:8000/api/v1/health (API)
 
-Per als detalls complets, consulta [doc/ARQUITECTURA.md](doc/ARQUITECTURA.md).
+Per als detalls complets, consulta [doc/arquitectura/ARQUITECTURA.md](doc/arquitectura/ARQUITECTURA.md).
 
 ---
 

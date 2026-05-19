@@ -399,5 +399,5 @@ Dos components de sidebar reutilitzables:
 
 ---
 
-*Per a la referencia de l'API i els models de dades, consulta [BACKEND.md](BACKEND.md).*
-*Per a l'arquitectura general i Docker, consulta [ARQUITECTURA.md](ARQUITECTURA.md).*
+*Per a la referencia de l'API i els models de dades, consulta [BACKEND.md](../backend/BACKEND.md).*
+*Per a l'arquitectura general i Docker, consulta [ARQUITECTURA.md](../arquitectura/ARQUITECTURA.md).*

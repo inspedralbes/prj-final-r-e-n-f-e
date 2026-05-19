@@ -414,44 +414,216 @@ El token es desa a `localStorage['token']` i s'inclou automaticament a totes les
 
 ---
 
-## 6. Servei Node.js Auxiliar
+## 6. Servei Node.js Auxiliar i WebSockets
 
 Fitxer principal: `back/principal-node/index.js`
 
-### Endpoints HTTP exposats
+Aquest servei te dues responsabilitats independents que comparteixen el mateix proces Node.js:
+
+1. **Servidor de WebSockets** (Socket.IO): permet que el backend Laravel emeti notificacions en temps real a tots els navegadors connectats.
+2. **Conversor de documents** (LibreOffice): rep fitxers Word des de Laravel, els converteix a PDF i els retorna.
+
+---
+
+### Que son els WebSockets i per que s'usen aqui
+
+HTTP es un protocol de **peticio-resposta**: el client demana, el servidor respon i la connexio es tanca. Aixo vol dir que el servidor **no pot notificar al client** si hi ha un canvi sense que el client ho pregunti primer.
+
+Un **WebSocket** es una connexio permanent i bidireccional entre el client (navegador) i el servidor. Un cop establerta, qualsevol de les dues parts pot enviar un missatge en qualsevol moment sense esperar una peticio.
+
+En aquest projecte s'utilitzen WebSockets per garantir que quan un professor modifica l'assistencia d'un alumne, **tots els altres navegadors que tinguin la mateixa pagina oberta la veuen actualitzada immediatament**, sense haver de recarregar.
+
+---
+
+### Arquitectura del sistema en temps real
+
+El sistema segueix un patro **hub-and-spoke** on el servei Node.js actua de concentrador:
+
+```
+  Professor (navegador A)
+         |
+         |  1. PUT /api/v1/assistencies/{id}   (HTTP REST normal)
+         v
+    pfg1-back (Laravel)
+         |
+         |  2. Guarda a PostgreSQL
+         |  3. POST http://pfg1-back-node:3000/api/broadcast
+         |     { "event": "assistencia_updated", "data": { id, estat, ... } }
+         v
+    pfg1-back-node (Node.js + Socket.IO)
+         |
+         |  4. io.emit("assistencia_updated", data)
+         |     (envia a TOTS els clients connectats)
+         |
+         +----------+-----------+
+         |          |           |
+         v          v           v
+  Alumne A      Alumne B    Profe B
+  (navegador)  (navegador)  (navegador)
+         |          |           |
+         v          v           v
+  Vista actualitzada sense recarregar la pagina
+```
+
+**Per que no fa directament el socket Laravel?**
+PHP-FPM (el servidor de Laravel) crea un proces nou per a cada peticio HTTP i el mata quan acaba. No pot mantenir connexions persistents. El servei Node.js, en canvi, es un servidor d'events dissenyat exactament per a aixo: mantenir milers de connexions obertes de manera eficient.
+
+---
+
+### Endpoints HTTP del servei Node.js
 
 **POST `/api/broadcast`**
-Emes un event de Socket.IO a tots els clients connectats.
-```json
-Body: { "event": "assistencia_updated", "data": { ... } }
+
+Utilitzat internament per Laravel per propagar un event a tots els clients WebSocket. No es accessible des de l'exterior (nomes dins de la xarxa Docker `general`).
+
 ```
-Events possibles: `assistencia_updated`, `horari_updated`.
+Body (JSON):
+{
+  "event": "assistencia_updated",
+  "data": {
+    "id": 42,
+    "estat": "Falta",
+    "id_inscripcio": 17,
+    "data": "2026-05-20"
+  }
+}
+
+Resposta:
+{ "success": true, "message": "Esdeveniment assistencia_updated emes" }
+```
+
+Events possibles que emet Laravel:
+
+| Event | Quan s'emet | Dades que porta |
+|---|---|---|
+| `assistencia_updated` | Crear, actualitzar o eliminar una assistencia | Objecte Assistencia |
+| `horari_updated` | Crear, actualitzar o eliminar un horari | Objecte Horari |
 
 **POST `/api/convert/word-to-pdf`**
-Converteix un document Word a PDF usant LibreOffice.
-```json
-Body: { "fileBase64": "...", "fileName": "carta.docx" }
-Resposta: fitxer PDF binari (Content-Type: application/pdf)
+
+Utilitzat per `CartaFaltesController` per convertir la carta de faltes generada (DOCX) a PDF.
+
+```
+Body (JSON):
+{
+  "fileBase64": "<contingut del .docx codificat en base64>",
+  "fileName": "carta_faltes_42_1716159600.docx"
+}
+
+Resposta:
+  Fitxer PDF binari
+  Content-Type: application/pdf
+  Content-Disposition: attachment; filename=carta_faltes_42_1716159600.pdf
 ```
 
-### Connexio WebSocket des del frontend (Angular)
+Internament, el servei desa el DOCX com a fitxer temporal, executa LibreOffice en mode headless per convertir-lo, llegeix el PDF resultant i l'envia com a resposta binaria.
 
-```typescript
-// socket.service.ts
-import { io } from 'socket.io-client';
+---
 
-const socket = io('http://localhost:3000');
+### Codi del servidor WebSocket (index.js)
 
-socket.on('assistencia_updated', (data) => {
-  // Actualitzar la vista reactiva
+```javascript
+import { Server } from "socket.io";
+import express from "express";
+
+const app = express();
+const httpServer = createServer(app);
+
+// Inicialitzar Socket.IO amb control de CORS
+const io = new Server(httpServer, {
+  cors: {
+    origin: [
+      "http://localhost:4200",
+      "https://tenfe.cat",
+    ],
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+  transports: ["websocket", "polling"],
 });
 
-socket.on('horari_updated', (data) => {
-  // Refrescar l'horari
+// Gestio de connexions dels clients
+io.on("connection", (socket) => {
+  console.log(`Nou client connectat: ${socket.id}`);
+
+  socket.on("disconnect", () => {
+    console.log(`Client desconnectat: ${socket.id}`);
+  });
+});
+
+// Endpoint que rep els events de Laravel i els redistribueix
+app.post("/api/broadcast", (req, res) => {
+  const { event, data } = req.body;
+  io.emit(event, data);  // Emet a TOTS els clients connectats
+  res.json({ success: true });
 });
 ```
 
 ---
 
-*Per a l'estructura del frontend Angular, consulta [FRONTEND.md](FRONTEND.md).*
-*Per a l'arquitectura general i Docker, consulta [ARQUITECTURA.md](ARQUITECTURA.md).*
+### Codi del client WebSocket al frontend (Angular)
+
+El servei `SocketService` encapsula la connexio i exposa Observables d'Angular:
+
+```typescript
+// front/src/app/services/socket.service.ts
+import { Injectable } from '@angular/core';
+import { io, Socket } from 'socket.io-client';
+import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
+
+@Injectable({ providedIn: 'root' })
+export class SocketService {
+  private socket: Socket;
+
+  constructor() {
+    // Es connecta al servei Node.js en arrancar l'aplicacio
+    this.socket = io(environment.socketUrl);
+  }
+
+  // Retorna un Observable que emet cada cop que arriba l'event
+  on<T>(event: string): Observable<T> {
+    return new Observable(observer => {
+      this.socket.on(event, (data: T) => observer.next(data));
+    });
+  }
+}
+```
+
+**Us en un component:** per exemple, el component de passar llista escolta `assistencia_updated` per actualitzar la taula quan un altre professor modifica una assistencia al mateix temps:
+
+```typescript
+// Dins d'un component Angular
+constructor(private socketService: SocketService) {}
+
+ngOnInit() {
+  // Quan arribi l'event, recarregar les dades
+  this.socketService.on<any>('assistencia_updated').subscribe(data => {
+    this.carregarAssistencies();
+  });
+
+  // Quan canvii l'horari, recarregar l'horari
+  this.socketService.on<any>('horari_updated').subscribe(data => {
+    this.carregarHorari();
+  });
+}
+```
+
+---
+
+### Configuracio CORS del WebSocket
+
+Socket.IO te la seva propia configuracio de CORS independent de Laravel. Nomes accepta connexions dels orígens autoritzats:
+
+```
+Orígens permesos:
+  - http://localhost:4200   (desenvolupament local)
+  - https://tenfe.cat       (produccio)
+```
+
+Si el frontend s'executa des d'un altre origen, el navegador bloquejarà la connexió WebSocket.
+
+---
+
+*Per a l'estructura del frontend Angular, consulta [../frontend/FRONTEND.md](../frontend/FRONTEND.md).*
+*Per a l'arquitectura general i Docker, consulta [../arquitectura/ARQUITECTURA.md](../arquitectura/ARQUITECTURA.md).*

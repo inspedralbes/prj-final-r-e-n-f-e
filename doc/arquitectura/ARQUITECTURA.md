@@ -235,5 +235,5 @@ docker compose -f compose.DEV.yml down -v
 
 ---
 
-*Consulta [BACKEND.md](BACKEND.md) per a la referencia completa de l'API i els models de dades.*
-*Consulta [FRONTEND.md](FRONTEND.md) per a l'estructura de components Angular.*
+*Consulta [BACKEND.md](../backend/BACKEND.md) per a la referencia completa de l'API i els models de dades.*
+*Consulta [FRONTEND.md](../frontend/FRONTEND.md) per a l'estructura de components Angular.*
