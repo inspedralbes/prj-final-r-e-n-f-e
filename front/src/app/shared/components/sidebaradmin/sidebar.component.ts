@@ -4,13 +4,13 @@ import { SidebarService } from '../../services/sidebar.service';
 import { PerfilService } from '../../services/perfil/perfil.service';
 import { AuthService } from '../../../services/auth.service';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroHome, heroBookOpen, heroUsers, heroCalendarDays, heroAcademicCap, heroUserCircle, heroArrowLeftOnRectangle } from '@ng-icons/heroicons/outline';
+import { heroHome, heroBookOpen, heroUsers, heroCalendarDays, heroAcademicCap, heroRectangleGroup, heroUserCircle, heroArrowLeftOnRectangle } from '@ng-icons/heroicons/outline';
 
 @Component({
   selector: 'app-sidebaradmin',
   standalone: true,
   imports: [RouterLink, RouterLinkActive, NgIconComponent],
-  providers: [provideIcons({ heroHome, heroBookOpen, heroUsers, heroCalendarDays, heroAcademicCap, heroUserCircle, heroArrowLeftOnRectangle })],
+  providers: [provideIcons({ heroHome, heroBookOpen, heroUsers, heroCalendarDays, heroAcademicCap, heroRectangleGroup, heroUserCircle, heroArrowLeftOnRectangle })],
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css',
 })

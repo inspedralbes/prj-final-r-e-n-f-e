@@ -1,0 +1,22 @@
+@import '../admin-usuaris/admin-usuaris.component.css';
+
+:host {
+  display: block;
+  animation: pageEnter 0.35s ease-out;
+}
+
+.contingut {
+  padding-top: 84px;
+  margin-left: 0;
+  background: transparent;
+}
+
+.gm {
+  background: #c6f6d5;
+  color: #22543d;
+}
+
+.gs {
+  background: #fed7d7;
+  color: #742a2a;
+}

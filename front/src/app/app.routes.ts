@@ -16,6 +16,7 @@ import { AdminAssignaturesComponent } from './features/administracio/admin-assig
 import { AdminClassesComponent } from './features/administracio/admin-classes/admin-classes.component';
 import { AdminUsuarisComponent } from './features/administracio/admin-usuaris/admin-usuaris.component';
 import { AdminPeriodesComponent } from './features/administracio/admin-periodes/admin-periodes.component';
+import { AdminCursosComponent } from './features/administracio/admin-cursos/admin-cursos.component';
 import { CompletarPerfilComponent } from './features/completar-perfil/completar-perfil.component';
 import { JustificantsComponents } from './features/professors/justificants/justificants.component';
 import { authGuard } from './guards/auth.guard';
@@ -48,6 +49,7 @@ export const routes: Routes = [
   { path: 'admin-classes', component: AdminClassesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
   { path: 'admin-usuaris', component: AdminUsuarisComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
   { path: 'admin-periodes', component: AdminPeriodesComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
+  { path: 'gestio-cursos', component: AdminCursosComponent, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
   
   // Wildcard route per rutes no trobades
   { path: '**', redirectTo: '' }
