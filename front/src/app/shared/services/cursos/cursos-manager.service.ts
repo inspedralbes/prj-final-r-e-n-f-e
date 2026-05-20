@@ -20,9 +20,10 @@ export class CursosManagerService {
     this.error.set(null);
 
     try {
-      // Assuming a GET /cursos endpoint exists in the backend
-      const data = await this.apiManager.get<Curs[]>('/cursos');
-      this.cursos.set(data);
+      // GET /cursos endpoint: backend returns { success, data, message }
+      const resp = await this.apiManager.get<any>('/cursos');
+      const llista = resp?.data || resp;
+      this.cursos.set(llista);
     } catch (err) {
       this.error.set('Alguna cosa ha fallat demanant els cursos al Laravel');
       console.error(err);

@@ -7,14 +7,23 @@ import { CursosManagerService } from '../../../shared/services/cursos/cursos-man
 import { UsuarisManagerService } from '../../../shared/services/usuaris/usuaris-manager.service';
 import { Classe } from '../../../shared/models/classe.model';
 import { NgIconComponent, provideIcons } from '@ng-icons/core';
-import { heroPencilSquare, heroTrash, heroPlus, heroEye, heroAcademicCap, heroUser } from '@ng-icons/heroicons/outline';
+import {
+  heroPencilSquare,
+  heroTrash,
+  heroPlus,
+  heroEye,
+  heroAcademicCap,
+  heroUser,
+} from '@ng-icons/heroicons/outline';
 
 @Component({
-    selector: 'app-admin-classes',
-    imports: [CommonModule, FormsModule, SidebarAdminComponent, NgIconComponent],
-    providers: [provideIcons({ heroPencilSquare, heroTrash, heroPlus, heroEye, heroAcademicCap, heroUser })],
-    templateUrl: './admin-classes.component.html',
-    styleUrl: './admin-classes.component.css'
+  selector: 'app-admin-classes',
+  imports: [CommonModule, FormsModule, SidebarAdminComponent, NgIconComponent],
+  providers: [
+    provideIcons({ heroPencilSquare, heroTrash, heroPlus, heroEye, heroAcademicCap, heroUser }),
+  ],
+  templateUrl: './admin-classes.component.html',
+  styleUrl: './admin-classes.component.css',
 })
 export class AdminClassesComponent implements OnInit {
   private classesManager = inject(ClassesManagerService);
@@ -24,13 +33,15 @@ export class AdminClassesComponent implements OnInit {
   public classes = this.classesManager.classes;
   public isLoading = this.classesManager.isLoading;
   public cursos = this.cursosManager.cursos;
-  
+
   // Filtra manualment la llista completa d'usuaris per retenir només els "Professors" (requerit pel select de tutors)
   public professors = computed(() => {
     let listadoProfessores = [];
     let todosUsuarios = this.usuarisManager.usuaris();
     for (let i = 0; i < todosUsuarios.length; i++) {
-      if (todosUsuarios[i].rol === 'Professor') {
+      const rol = (todosUsuarios[i].rol || '').toString().toLowerCase();
+      // Accept several possible role values that indicate a professor (e.g. 'Professor', 'Profe')
+      if (rol.startsWith('prof')) {
         listadoProfessores.push(todosUsuarios[i]);
       }
     }
@@ -106,14 +117,14 @@ export class AdminClassesComponent implements OnInit {
       }
       this.tancarModal();
     } catch (error) {
-      console.error("Error al guardar la classe", error);
+      console.error('Error al guardar la classe', error);
     } finally {
       this.isSaving.set(false);
     }
   }
 
   async esborrarClasse(id: number) {
-    if (confirm("Estàs segur que vols esborrar aquesta classe de forma permanent?")) {
+    if (confirm('Estàs segur que vols esborrar aquesta classe de forma permanent?')) {
       this.isLoading.set(true);
       try {
         await this.classesManager.esborrarClasse(id);
@@ -129,18 +140,18 @@ export class AdminClassesComponent implements OnInit {
   obrirModalAlumnes(classe: Classe) {
     this.classeSeleccionada = classe;
     let alumnesTrobats = [];
-    
+
     // Obtenim en format brut i estàtic l'emmagatzemament prèviament portat del Backend
     let totsUsuaris = this.usuarisManager.usuaris();
-    
+
     // Iterem mitjançant bucle clàssic per evitar despesa de mètodes d'ordre superior
     for (let i = 0; i < totsUsuaris.length; i++) {
-       // Filtrem per garantir que l'estudiant encaixa l'ID a la nostra classe oberta
-       if (totsUsuaris[i].id_classe === classe.id && totsUsuaris[i].rol === 'Alumne') {
-           alumnesTrobats.push(totsUsuaris[i]);
-       }
+      // Filtrem per garantir que l'estudiant encaixa l'ID a la nostra classe oberta
+      if (totsUsuaris[i].id_classe === classe.id && totsUsuaris[i].rol === 'Alumne') {
+        alumnesTrobats.push(totsUsuaris[i]);
+      }
     }
-    
+
     this.alumnesClasseLlista = alumnesTrobats;
     this.isAlumnesModalOpen = true;
   }
