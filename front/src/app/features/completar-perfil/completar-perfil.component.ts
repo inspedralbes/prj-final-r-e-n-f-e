@@ -115,6 +115,7 @@ export class CompletarPerfilComponent {
             const userData = JSON.parse(usuari);
             userData.data_naixement = data;
             userData.email_pares = this.emailPares();
+            userData.isProfileComplited = true;
             localStorage.setItem('user', JSON.stringify(userData));
           }
           this.router.navigate(['/alumnes']);
