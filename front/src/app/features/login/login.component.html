@@ -6,32 +6,6 @@
     </div>
 
     <div class="cos-formulari">
-      <div class="grup-input">
-        <label for="usuari">Usuari</label>
-        <div class="input-wrapper">
-          <input
-            type="text"
-            id="usuari"
-            placeholder="Posa el teu email"
-            [(ngModel)]="usuari"
-            (keyup.enter)="iniciarSessio()"
-          />
-        </div>
-      </div>
-
-      <button
-        (click)="iniciarSessio()"
-        class="boto-entrar"
-        [class.boto-loading]="isLoading()"
-        [disabled]="isLoading() || isGoogleLoading()"
-      >
-        @if (isLoading()) {
-          <div class="spinner-circle"></div>
-        } @else {
-          <span class="btn-text">Iniciar Sessió</span>
-        }
-      </button>
-
       @if (error()) {
         <div class="missatge-error"><span class="icona-error"></span> {{ error() }}</div>
       }
