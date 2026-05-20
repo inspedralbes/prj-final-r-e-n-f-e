@@ -4,6 +4,7 @@
   min-height: 100vh;
   font-family: 'Inter', system-ui, sans-serif;
   background: transparent;
+  overflow: hidden;
 }
 
 .contingut {
