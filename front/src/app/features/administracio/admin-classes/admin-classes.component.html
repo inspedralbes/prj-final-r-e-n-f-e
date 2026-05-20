@@ -46,7 +46,7 @@
                   </div>
                 </td>
                 <td class="user-email">
-                  <span class="badge-role p-role">{{ obtenirNomCurs(classe.id_curs) }}</span>
+                  <span class="badge-role p-role">{{ obtenirNomCurs(classe.id_curs, classe.curs) }}</span>
                 </td>
                 <td class="user-email">{{ obtenirNomTutor(classe.id_tutor) }}</td>
                 <td class="actions">
@@ -88,7 +88,7 @@
               </div>
               <div class="name-details">
                 <span class="user-name">{{ classe.nom }}</span>
-                <span class="user-email">{{ obtenirNomCurs(classe.id_curs) }}</span>
+                <span class="user-email">{{ obtenirNomCurs(classe.id_curs, classe.curs) }}</span>
               </div>
             </div>
             <div class="card-info">

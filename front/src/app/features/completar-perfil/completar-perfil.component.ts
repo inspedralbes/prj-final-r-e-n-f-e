@@ -79,6 +79,20 @@ export class CompletarPerfilComponent {
     }
   }
 
+  private redirectByRole(rol: string) {
+    switch (rol?.toLowerCase()) {
+      case 'profe':
+        this.router.navigate(['/professors']);
+        break;
+      case 'admin':
+        this.router.navigate(['/administracio']);
+        break;
+      case 'alumne':
+      default:
+        this.router.navigate(['/alumnes']);
+    }
+  }
+
   guardar() {
     this.error.set('');
     const data = this.dataNaixement();
@@ -88,7 +102,7 @@ export class CompletarPerfilComponent {
     }
 
     if (this.esMenorEdat() && !this.emailPares().trim()) {
-      this.error.set('Com a menor d\'edat, has d\'indicar el correu dels pares/tutors');
+      this.error.set("Com a menor d'edat, has d'indicar el correu dels pares/tutors");
       return;
     }
 
@@ -117,8 +131,11 @@ export class CompletarPerfilComponent {
             userData.email_pares = this.emailPares();
             userData.isProfileComplited = true;
             localStorage.setItem('user', JSON.stringify(userData));
+            // Redirigim al dashboard correcte segons el rol
+            this.redirectByRole(userData.rol);
+          } else {
+            this.router.navigate(['/alumnes']);
           }
-          this.router.navigate(['/alumnes']);
         }
       },
       error: (err) => {

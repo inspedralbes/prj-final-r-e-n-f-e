@@ -42,9 +42,9 @@ export class AuthService {
         const user = JSON.parse(storedUser);
         this.userDataSignal.set({ user, token });
         this.isAuthenticatedSignal.set(true);
-        if (!user.isProfileComplited && !window.location.pathname.includes('/completar-perfil')) {
-          this.router.navigate(['/completar-perfil']);
-        }
+        // No redirigim aquí: el redirect a completar-perfil
+        // només es fa just després del login (handleGoogleCallback),
+        // no en cada inicialització de l'app o refresh de pàgina.
       } catch (e) {
         console.error('Error parsing stored user:', e);
         this.logout();

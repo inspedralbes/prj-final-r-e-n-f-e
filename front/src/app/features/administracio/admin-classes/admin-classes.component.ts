@@ -67,7 +67,11 @@ export class AdminClassesComponent implements OnInit {
   }
 
   // Cerca el Nom per ID per mostrar-lo a la taula
-  obtenirNomCurs(id_curs: number): string {
+  // Si la classe ja porta la relació 'curs' de l'eager loading de Laravel, l'usem directament
+  obtenirNomCurs(id_curs: number, classeCurs?: any): string {
+    if (classeCurs && classeCurs.nom) {
+      return classeCurs.nom;
+    }
     let curs = null;
     let todosCursos = this.cursos();
     for (let i = 0; i < todosCursos.length; i++) {
