@@ -191,6 +191,7 @@ $dadesValidades = $peticio->validate([
                 'info' => $infoAdicional,
             ], Response::HTTP_OK]);
     }
+    
     public function fullfillUserProfile(Request $request)
     {
         $user = $request->user();

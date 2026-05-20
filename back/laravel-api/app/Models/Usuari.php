@@ -94,7 +94,7 @@ class Usuari extends Authenticatable
         //Encara que es truqui sempre, només funcionarà amb alumnes
         if (strcmp($this->rol, 'Alumne') == 0)
         {
-            if($this->data_naixement == null){
+            if($this->data_naixement == null || $this->photo == null){
                 return false;
             }
         }
