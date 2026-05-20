@@ -36,7 +36,7 @@ Route::prefix('v1')->group(function (): void {
         Route::apiResource('usuaris', UsuariController::class);
 
         // Rutes de Cursos
-        Route::apiResource('cursos', \App\Http\Controllers\CursController::class)->only(['index']);
+        Route::apiResource('cursos', \App\Http\Controllers\CursController::class);
 
         // Rutes de Periodes
         Route::apiResource('periodes', PeriodeController::class);
