@@ -184,45 +184,7 @@ class AuthController extends Controller
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-    public function loginTemporal(Request $request)
-    {
-        try {
-            $request->validate([
-                'email' => 'required|email'
-            ]);
-
-            $user = Usuari::where('email', $request->email)->first();
-
-            if (!$user) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Usuari no trobat a la base de dades'
-                ], Response::HTTP_NOT_FOUND);
-            }
-
-            // Generem token temporal
-            $token = $user->createToken('temporal-auth')->plainTextToken;
-
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'user' => $user,
-                    'token' => $token,
-                    'rol' => $user->rol,
-                    'isProfileComplited' => $user->isProfileCompleted()
-                ],
-                'message' => 'Login temporal correcte'
-            ], Response::HTTP_OK);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Error en el login temporal',
-                'error' => $e->getMessage()
-            ], Response::HTTP_INTERNAL_SERVER_ERROR);
-        }
-    }
-
+    
     /**
      * Tanca la sessió de l'usuari (revoca tokens)
      */
