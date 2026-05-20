@@ -88,7 +88,9 @@ export class AdminClassesComponent implements OnInit {
         break;
       }
     }
-    return tutor ? `${tutor.nom} ${tutor.cognom}` : 'Sense Tutor';
+    if (!tutor) return 'Sense Tutor';
+    const cognom = tutor.cognom ? ` ${tutor.cognom}` : '';
+    return `${tutor.nom}${cognom}`;
   }
 
   obrirModal(classe?: Classe) {
