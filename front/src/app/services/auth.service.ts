@@ -42,6 +42,9 @@ export class AuthService {
         const user = JSON.parse(storedUser);
         this.userDataSignal.set({ user, token });
         this.isAuthenticatedSignal.set(true);
+        if (!user.isProfileComplited && !window.location.pathname.includes('/completar-perfil')) {
+          this.router.navigate(['/completar-perfil']);
+        }
       } catch (e) {
         console.error('Error parsing stored user:', e);
         this.logout();

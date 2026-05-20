@@ -23,7 +23,6 @@ Route::prefix('v1')->group(function (): void {
     // Rutes d'autenticació (sense autenticació requerida)
     Route::post('auth/google/redirect', [AuthController::class, 'googleRedirectUrl']);
     Route::post('auth/google/callback', [AuthController::class, 'googleCallback']);
-    Route::post('auth/login-temporal', [AuthController::class, 'loginTemporal']);
     Route::post('auth/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
     Route::patch('/fullfill-user-profile', [UsuariController::class, 'fullfillUserProfile'])->middleware(('auth:sanctum'));
 

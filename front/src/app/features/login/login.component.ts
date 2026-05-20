@@ -25,31 +25,4 @@ export class LoginComponent {
     this.isGoogleLoading.set(true);
     this.authService.loginWithGoogle();
   }
-
-  iniciarSessio() {
-    if (this.isLoading() || this.isGoogleLoading()) return;
-    const email = this.usuari().toLowerCase().trim();
-
-    if (!email.includes('@')) {
-      this.error.set("Introdueix un email vàlid de la base de dades.");
-      return;
-    }
-
-    this.isLoading.set(true);
-    this.error.set('');
-
-    this.authService.loginTemporal(email).subscribe({
-      next: (response: any) => {
-        if (response.success) {
-          this.authService.guardarSessio(response.data);
-        } else {
-          this.isLoading.set(false);
-        }
-      },
-      error: (err: any) => {
-        this.isLoading.set(false);
-        this.error.set("Usuari no trobat a la base de dades.");
-      }
-    });
-  }
 }

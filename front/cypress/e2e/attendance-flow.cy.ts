@@ -2,7 +2,15 @@ describe('Attendance Flow', () => {
   beforeEach(() => {
     // We mock the API responses to make the test independent of the back-end state
     // and faster to run in CI.
-    cy.intercept('POST', '**/auth/login-temporal', {
+    cy.intercept('POST', '**/auth/google/redirect', {
+      statusCode: 200,
+      body: {
+        success: true,
+        redirect_url: 'http://localhost:4200/auth/callback?code=mock-code'
+      }
+    }).as('googleRedirect');
+
+    cy.intercept('POST', '**/auth/google/callback', {
       statusCode: 200,
       body: {
         success: true,
@@ -11,12 +19,13 @@ describe('Attendance Flow', () => {
             id: 1,
             nom: 'Professor de Prova',
             email: 'test@example.com',
-            rol: 'Profe'
+            rol: 'Profe',
+            isProfileComplited: true
           },
           token: 'fake-jwt-token'
         }
       }
-    }).as('loginRequest');
+    }).as('googleCallback');
 
     // Specific intercepts first
     cy.intercept('GET', '**/back/api/v1/horaris/professor/*/context', {
@@ -71,11 +80,10 @@ describe('Attendance Flow', () => {
   it('should login and mark an absence', () => {
     cy.visit('/');
 
-    // Login
-    cy.get('#usuari').type('test@example.com');
-    cy.get('.boto-entrar').click();
-    
-    cy.wait('@loginRequest');
+    // Login with Google
+    cy.get('.boto-google').click();
+    cy.wait('@googleRedirect');
+    cy.wait('@googleCallback', { timeout: 10000 });
 
     // Check we are in the dashboard
     cy.url().should('include', '/professors');
