@@ -61,6 +61,7 @@ jobs:
             echo "Copiant .env.PROD de Back laravel-api..."
             cp .env.PROD .env
             ls -l /prj-final-r-e-n-f-e/back/laravel-api/.env
+            echo "" >> .env
             echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
             echo "DB_CONNECTION=pgsql" >> .env
             echo "DB_HOST=pfg1-postgres" >> .env
