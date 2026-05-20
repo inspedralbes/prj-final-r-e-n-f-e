@@ -1,7 +1,8 @@
 <nav class="barra-superior">
   <div class="contenedor-navegacio-centrat">
     <!-- 1. Llista d'Assignatures -->
-    <a routerLink="/llista-assignatures" routerLinkActive="actiu" class="element-navegacio">
+    <a routerLink="/llista-assignatures" routerLinkActive="actiu"
+      class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroBookOpen"></ng-icon>
       </div>
@@ -10,24 +11,27 @@
 
     <!-- 2. Gestió Inscrits (Tutor) -->
     @if (esTutor()) {
-    <a routerLink="/gestio-inscrits" routerLinkActive="actiu" class="element-navegacio">
+    <a routerLink="/gestio-inscrits" routerLinkActive="actiu"
+      class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroAcademicCap"></ng-icon>
       </div>
-      <span>Alumnes</span>
+      <span>Classe</span>
     </a>
     }
 
     <!-- 3. Llista Classe -->
-    <a routerLink="/llista-classe" routerLinkActive="actiu" class="element-navegacio">
+    <a routerLink="/llista-classe" routerLinkActive="actiu"
+      class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroClipboardDocumentList"></ng-icon>
       </div>
-      <span>Classe</span>
+      <span>Llista</span>
     </a>
 
     <!-- 4. CENTRE: Professors (Inici) -->
-    <a routerLink="/professors" routerLinkActive="actiu" [routerLinkActiveOptions]="{ exact: true }"
+    <a routerLink="/professors" routerLinkActive="actiu"
+      [routerLinkActiveOptions]="{ exact: true }"
       class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroHome"></ng-icon>
@@ -36,7 +40,8 @@
     </a>
 
     <!-- 5. Llista Faltes -->
-    <a routerLink="/llista-faltes" routerLinkActive="actiu" class="element-navegacio">
+    <a routerLink="/llista-faltes" routerLinkActive="actiu"
+      class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroClock"></ng-icon>
       </div>
@@ -45,7 +50,8 @@
 
     <!-- 6. Gestio Justificants (Tutor) -->
     @if (esTutor()) {
-    <a routerLink="/gestio-justificants" routerLinkActive="actiu" class="element-navegacio">
+    <a routerLink="/gestio-justificants" routerLinkActive="actiu"
+      class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroDocumentText"></ng-icon>
       </div>
@@ -55,7 +61,8 @@
 
     <!-- 7. Horari Alumnes (Tutor) -->
     @if (esTutor()) {
-    <a routerLink="/horari-alumnes" routerLinkActive="actiu" class="element-navegacio">
+    <a routerLink="/horari-alumnes" routerLinkActive="actiu"
+      class="element-navegacio">
       <div class="caixa-icona">
         <ng-icon name="heroCalendarDays"></ng-icon>
       </div>

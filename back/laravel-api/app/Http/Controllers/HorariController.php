@@ -28,7 +28,7 @@ class HorariController extends Controller
      */
     public function getHorarisClasse($id)
     {
-        $horaris = Horari::with(['assignatura', 'classe', 'aula', 'professor'])
+        $horaris = Horari::with(['assignatura', 'classe', 'aula', 'professor', 'inscrits'])
             ->where('id_classe', $id)
             ->get();
 
@@ -194,7 +194,7 @@ class HorariController extends Controller
 
         return response()->json([
             'success' => true,
-            'data' => $horari->load(['assignatura', 'aula', 'professor']),
+            'data' => $horari->load(['assignatura', 'aula', 'professor', 'inscrits']),
             'message' => 'Configuració de la franja desada correctament'
         ]);
     }
