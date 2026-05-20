@@ -70,7 +70,7 @@ En accedir a l'aplicacio, es mostra la pantalla d'inici de sessio. Hi ha dues op
 3. **Important**: Has d'usar el teu compte institucional `@inspedralbes.cat`. Si uses un compte personal, l'acces sera denegat.
 4. Despres de triar el compte, seras redirigit automaticament a la teva zona.
 
-### 2.3 Login Temporal per Email
+### 2.3 Login Temporal per Email(Només accesible per el devMode)
 
 Aquesta opcio es per a situacions on Google no esta disponible o per a proves:
 1. Escriu el teu email institucional al camp corresponent.

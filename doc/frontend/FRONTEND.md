@@ -365,35 +365,59 @@ export interface Justificant {
 
 ## 7. Disseny i Estils
 
-El projecte usa un sistema de disseny propi anomenat **"Light Glassify Premium"**.
+El projecte usa un sistema de disseny propi anomenat **Glassify**, basat en glassmorphism sobre fons de gradient clar. El nom apareix al primer comentari del fitxer `styles.css`.
 
 ### Caracteristiques visuals
 
-- **Fons**: Gradient suau de colors lila i rosa (`#f0e6ff` -> `#ffe0f0`)
-- **Targetes**: Efecte glassmorphism (`backdrop-filter: blur()`, fons semitransparent blanc)
-- **Tipografia**: Google Fonts (Outfit)
-- **Colors principals**: Lila (`#a259ff`), Rosa (`#f471b5`)
-- **Ombres**: Suaus i colorejades, no negres pures
-- **Animacions**: Transicions CSS en hover, entrades amb `fade-in`
+- **Fons**: Gradient de blau-lila a lila-rosa (`#e0e7ff` -> `#f3e8ff`) amb orbs de color radials
+- **Targetes**: Efecte glassmorphism (`backdrop-filter: blur(25px) saturate(200%)`, fons semitransparent blanc)
+- **Tipografia**: Google Fonts (Outfit, pesos 300-800)
+- **Colors principals**: Violeta (`#6366f1`), Lila (`#a78bfa`), Rosa (`#f472b6`)
+- **Ombres**: Suaus amb to de color, no negres pures
+- **Animacions**: `pageEnter` (fade + slide en carregar), `spin-morph` (spinner), `shake` (errors)
 
 ### Sidebar
 
 Dos components de sidebar reutilitzables:
-- `SidebarComponent` (professors i alumnes): Mostra la foto de l'usuari, nom i rol, i els links de navegacio corresponents.
-- `SidebaradminComponent` (administradors): Versio simplificada per a la zona d'admin.
+- `SidebarComponent` (professors i alumnes): navbar flotant tipus pill amb to violeta. Variant `.tema-alumne` per als alumnes (to blau).
+- `SidebaradminComponent` (administradors): navbar pill amb to blanc/neutre, botons amb text expandible en hover.
 
 ### Variables CSS globals (`styles.css`)
 
 ```css
 :root {
-  --color-primary: #a259ff;
-  --color-secondary: #f471b5;
-  --glass-bg: rgba(255, 255, 255, 0.6);
-  --glass-border: rgba(255, 255, 255, 0.8);
-  --glass-blur: blur(16px);
-  --shadow: 0 8px 32px rgba(162, 89, 255, 0.15);
-  --radius: 1.25rem;
-  --font: 'Outfit', sans-serif;
+    --bg-main: #f0f4ff;
+    --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+    --primary-color: #6366f1;
+    --primary-light: #818cf8;
+    --secondary-color: #a78bfa;
+    --accent-color: #f472b6;
+
+    --glass-bg: rgba(255, 255, 255, 0.4);
+    --glass-border: rgba(255, 255, 255, 0.7);
+    --glass-blur: blur(25px) saturate(200%);
+    --glass-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.15);
+    --glass-reflection: inset 0 1px 1px rgba(255, 255, 255, 0.8);
+
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+
+    --radius-l: 32px;
+    --radius-m: 20px;
+}
+```
+
+### Classe utilitaria `.glass-panel`
+
+Aplicable a qualsevol element per donar-li l'efecte de targeta de vidre:
+
+```css
+.glass-panel {
+    background: var(--glass-bg);
+    backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--glass-shadow), var(--glass-reflection);
+    border-radius: var(--radius-m);
 }
 ```
 
