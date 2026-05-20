@@ -6,6 +6,7 @@ export interface Classe {
     id_curs: number;
     nom: string;
     id_tutor: number;
+    id_aula?: number;
     created_at: string;
     updated_at: string;
 

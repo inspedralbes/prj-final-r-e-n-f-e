@@ -15,6 +15,7 @@ class Classe extends Model
         'id_curs',
         'nom',
         'id_tutor',
+        'id_aula',
     ];
 
     public function curs()
