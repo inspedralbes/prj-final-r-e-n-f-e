@@ -55,12 +55,12 @@ export class HorariAlumnesComponent implements OnInit {
         this.laMevaClasse.set(classe);
 
         if (classe) {
-            // 2. Carreguem nomes els alumnes de la classe, els horaris d'aquesta classe
-            // i tots els usuaris que són profes directament filtrats al Laravel.
-            // Carreguem cada llista de forma seqüencial sense Promise.all
-            const alumnes = await this.serveiClasses.getAlumnesClasse(classe.id);
-            const horaris = await this.serveiHoraris.getHorarisClasse(classe.id);
-            const profes = await this.serveiUsuaris.getUsuarisPerRol('Profe');
+            // 2. Executem les 3 crides en PARAL·LEL per reduir el temps de càrrega
+            const [alumnes, horaris, profes] = await Promise.all([
+                this.serveiClasses.getAlumnesClasse(classe.id),
+                this.serveiHoraris.getHorarisClasse(classe.id),
+                this.serveiUsuaris.getUsuarisPerRol('Profe'),
+            ]);
 
             this.alumnesDelaClasseSegur.set(alumnes);
             this.horarisDelaClasseSegur.set(horaris);
@@ -355,6 +355,11 @@ export class HorariAlumnesComponent implements OnInit {
       console.log('comienzo');
       await this.serveiHoraris.actualitzarHorariGranular(dadesGranulars);
       console.log('enviao');
+
+      // Refresc local del signal per garantir la persistència de dades al modal
+      const horarsActualitzats = await this.serveiHoraris.getHorarisClasse(classe.id);
+      this.horarisDelaClasseSegur.set(horarsActualitzats);
+
       this.mostrarModal.set(false);
       alert('Horari i alumnes actualitzats correctament.');
     } catch (error) {

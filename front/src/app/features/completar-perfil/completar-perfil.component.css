@@ -1,229 +1,339 @@
+/* ─────────────────────────────────────────────
+   Fons degradat amb orbes decoratius
+   ───────────────────────────────────────────── */
 .fons-perfil {
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: linear-gradient(135deg, #6200EA 0%, #B388FF 100%);
-    position: relative;
-    overflow: hidden;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #6200ea 0%, #b388ff 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .fons-perfil::before {
-    content: '';
-    position: absolute;
-    width: 600px;
-    height: 600px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    top: -100px;
-    right: -100px;
+  content: '';
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  top: -100px;
+  right: -100px;
+  pointer-events: none;
 }
 
 .fons-perfil::after {
-    content: '';
-    position: absolute;
-    width: 400px;
-    height: 400px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 50%;
-    bottom: -50px;
-    left: -50px;
+  content: '';
+  position: absolute;
+  width: 400px;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 50%;
+  bottom: -50px;
+  left: -50px;
+  pointer-events: none;
 }
 
+/* ─────────────────────────────────────────────
+   Targeta principal
+   ───────────────────────────────────────────── */
 .targeta-perfil {
-    background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
-    border-radius: 30px;
-    padding: 40px;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    display: flex;
-    flex-direction: column;
-    gap: 25px;
-    z-index: 10;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(10px);
+  border-radius: 28px;
+  padding: 40px;
+  width: 100%;
+  max-width: 460px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.22);
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  z-index: 10;
+  box-sizing: border-box;
 }
 
+/* ─────────────────────────────────────────────
+   Encapçalament
+   ───────────────────────────────────────────── */
 .encapçalament-perfil {
-    text-align: center;
+  text-align: center;
 }
 
 .encapçalament-perfil h1 {
-    margin: 0;
-    color: #333;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-bottom: 10px;
+  margin: 0 0 8px;
+  color: #1e1b4b;
+  font-size: 1.8rem;
+  font-weight: 700;
+  line-height: 1.2;
 }
 
 .encapçalament-perfil p {
-    margin: 0;
-    color: #666;
-    font-size: 0.95rem;
+  margin: 0;
+  color: #64748b;
+  font-size: 0.95rem;
+  line-height: 1.5;
 }
 
+/* ─────────────────────────────────────────────
+   Formulari
+   ───────────────────────────────────────────── */
 .cos-formulari {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .grup-input {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .grup-input label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #444;
-    margin-left: 5px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #374151;
+  margin-left: 4px;
 }
 
+/* ─────────────────────────────────────────────
+   Inputs
+   ───────────────────────────────────────────── */
 .input-wrapper {
-    position: relative;
+  position: relative;
 }
 
 .input-wrapper input {
-    width: 100%;
-    padding: 15px 45px 15px 20px;
-    border: 2px solid #eee;
-    border-radius: 15px;
-    font-size: 1rem;
-    outline: none;
-    transition: all 0.3s ease;
-    background-color: #f9f9f9;
+  width: 100%;
+  padding: 14px 44px 14px 18px;
+  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.25s ease;
+  background-color: #f9fafb;
+  color: #1e1b4b;
+  box-sizing: border-box;
+  font-family: 'Outfit', 'Inter', sans-serif;
 }
 
 .input-wrapper input:focus {
-    border-color: #6200EA;
-    background-color: white;
-    box-shadow: 0 0 0 4px rgba(98, 0, 234, 0.1);
+  border-color: #6200ea;
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(98, 0, 234, 0.1);
 }
 
 .icona-input {
-    position: absolute;
-    right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 1.2rem;
-    opacity: 0.5;
-    pointer-events: none;
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.1rem;
+  opacity: 0.45;
+  pointer-events: none;
 }
 
+/* ─────────────────────────────────────────────
+   Foto de perfil
+   ───────────────────────────────────────────── */
 .contenedor-foto {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
 }
 
 .vista-previa {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid rgba(98, 0, 234, 0.15);
+  flex-shrink: 0;
 }
 
 .vista-previa img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .placeholder-foto {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 2.5rem;
-    opacity: 0.4;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  opacity: 0.4;
 }
 
 .boto-canviar-foto {
-    background: linear-gradient(90deg, #6200EA 0%, #7C4DFF 100%);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+  background: linear-gradient(90deg, #6200ea 0%, #7c4dff 100%);
+  color: white;
+  padding: 10px 22px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: inline-block;
 }
 
 .boto-canviar-foto:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(98, 0, 234, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(98, 0, 234, 0.3);
 }
 
+/* ─────────────────────────────────────────────
+   Missatge d'error
+   ───────────────────────────────────────────── */
 .missatge-error {
-    background-color: #FFEBEE;
-    color: #D32F2F;
-    padding: 12px;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border: 1px solid #FFCDD2;
-    animation: shake 0.4s ease-in-out;
+  background-color: #fff1f2;
+  color: #be123c;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid #fecdd3;
+  animation: shake 0.4s ease-in-out;
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  75% { transform: translateX(5px); }
 }
 
+/* ─────────────────────────────────────────────
+   Botó guardar
+   ───────────────────────────────────────────── */
 .boto-guardar {
-    background: linear-gradient(90deg, #6200EA 0%, #7C4DFF 100%);
-    color: white;
-    padding: 16px;
-    border: none;
-    border-radius: 15px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-    margin-top: 10px;
-    box-shadow: 0 10px 20px rgba(98, 0, 234, 0.3);
+  background: linear-gradient(90deg, #6200ea 0%, #7c4dff 100%);
+  color: white;
+  padding: 15px;
+  border: none;
+  border-radius: 14px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.25s ease;
+  margin-top: 6px;
+  box-shadow: 0 10px 24px rgba(98, 0, 234, 0.28);
+  width: 100%;
+  font-family: 'Outfit', 'Inter', sans-serif;
+  letter-spacing: 0.3px;
 }
 
 .boto-guardar:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(98, 0, 234, 0.4);
-    filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(98, 0, 234, 0.38);
+  filter: brightness(1.08);
 }
 
 .boto-guardar:active:not(:disabled) {
-    transform: translateY(1px);
+  transform: translateY(1px);
 }
 
 .boto-guardar:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  opacity: 0.65;
+  cursor: not-allowed;
 }
 
+/* ─────────────────────────────────────────────
+   Spinner de càrrega
+   ───────────────────────────────────────────── */
 .carregant-spinner {
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    border-top-color: white;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+  width: 18px;
+  height: 18px;
+  border: 2.5px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
 }
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE — Tablet (≤ 600px)
+   ───────────────────────────────────────────── */
+@media (max-width: 600px) {
+  .fons-perfil {
+    padding: 16px;
+    align-items: flex-start;
+    padding-top: 32px;
+  }
+
+  .targeta-perfil {
+    padding: 28px 20px;
+    border-radius: 22px;
+    gap: 20px;
+    max-width: 100%;
+  }
+
+  .encapçalament-perfil h1 {
+    font-size: 1.5rem;
+  }
+
+  .encapçalament-perfil p {
+    font-size: 0.88rem;
+  }
+
+  .input-wrapper input {
+    padding: 13px 40px 13px 16px;
+    font-size: 0.95rem;
+    border-radius: 12px;
+  }
+
+  .vista-previa {
+    width: 90px;
+    height: 90px;
+  }
+
+  .boto-guardar {
+    padding: 14px;
+    font-size: 0.95rem;
+    border-radius: 12px;
+  }
+}
+
+/* ─────────────────────────────────────────────
+   RESPONSIVE — Mòbil petit (≤ 380px)
+   ───────────────────────────────────────────── */
+@media (max-width: 380px) {
+  .fons-perfil {
+    padding: 12px;
+    padding-top: 20px;
+  }
+
+  .targeta-perfil {
+    padding: 22px 16px;
+    border-radius: 18px;
+  }
+
+  .encapçalament-perfil h1 {
+    font-size: 1.3rem;
+  }
+
+  .boto-canviar-foto {
+    padding: 9px 18px;
+    font-size: 0.85rem;
+  }
 }

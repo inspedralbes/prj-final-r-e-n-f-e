@@ -60,7 +60,9 @@ export class UsuarisManagerService {
    */
   async actualitzarUsuari(id: number, dadesActualitzades: Partial<Usuari>) {
     try {
-      const actualitzacio = await this.apiManager.put<Usuari>(`/usuaris/${id}`, dadesActualitzades);
+      const resp = await this.apiManager.put<any>(`/usuaris/${id}`, dadesActualitzades);
+      // L'API retorna { success, data, message } — desempaquetem .data
+      const actualitzacio: Usuari = resp.data || resp;
 
       // Lògica primitiva
       const llistaActual = this.usuaris();

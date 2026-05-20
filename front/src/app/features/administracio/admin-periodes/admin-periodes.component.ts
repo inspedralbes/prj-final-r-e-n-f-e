@@ -88,4 +88,15 @@ export class AdminPeriodesComponent implements OnInit {
         .catch(err => console.error('Error establint periode actiu:', err));
     }
   }
+
+  // Converteix '2025-09-12T00:00:00.000000Z' → '12/09/2025'
+  formatarData(dataIso: string | null | undefined): string {
+    if (!dataIso) return '—';
+    const data = new Date(dataIso);
+    if (isNaN(data.getTime())) return dataIso;
+    const dia = String(data.getUTCDate()).padStart(2, '0');
+    const mes = String(data.getUTCMonth() + 1).padStart(2, '0');
+    const any = data.getUTCFullYear();
+    return `${dia}/${mes}/${any}`;
+  }
 }
