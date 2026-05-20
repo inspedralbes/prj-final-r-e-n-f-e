@@ -53,8 +53,8 @@ export class AdminAssignaturesComponent implements OnInit {
       try {
         if (assignatura.interval) {
           let parsed = JSON.parse(assignatura.interval);
-          this.dataInici = parsed.inici || '';
-          this.dataFi = parsed.fi || '';
+          this.dataInici = this.formatarDataInput(parsed.inici);
+          this.dataFi = this.formatarDataInput(parsed.fi);
         } else {
           this.dataInici = '';
           this.dataFi = '';
@@ -158,16 +158,37 @@ export class AdminAssignaturesComponent implements OnInit {
     if (!interval) return 'Sense definir';
     try {
       const parsed = JSON.parse(interval);
+      const formatarData = (d: string) => {
+        if (!d) return '';
+        const date = new Date(d);
+        if (isNaN(date.getTime())) return d;
+        const dia = String(date.getUTCDate()).padStart(2, '0');
+        const mes = String(date.getUTCMonth() + 1).padStart(2, '0');
+        const any = date.getUTCFullYear();
+        return `${dia}/${mes}/${any}`;
+      };
+
       if (parsed.inici && parsed.fi) {
-        return `${parsed.inici} al ${parsed.fi}`;
+        return `${formatarData(parsed.inici)} al ${formatarData(parsed.fi)}`;
       } else if (parsed.inici) {
-        return `Des de ${parsed.inici}`;
+        return `Des de ${formatarData(parsed.inici)}`;
       } else if (parsed.fi) {
-        return `Fins ${parsed.fi}`;
+        return `Fins ${formatarData(parsed.fi)}`;
       }
       return 'Sense definir';
     } catch (e) {
       return interval;
     }
+  }
+
+  // Converteix '2025-09-12T00:00:00.000000Z' → '2025-09-12'
+  formatarDataInput(dataIso: string | null | undefined): string {
+    if (!dataIso) return '';
+    const date = new Date(dataIso);
+    if (isNaN(date.getTime())) return dataIso;
+    const dia = String(date.getUTCDate()).padStart(2, '0');
+    const mes = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const any = date.getUTCFullYear();
+    return `${any}-${mes}-${dia}`;
   }
 }

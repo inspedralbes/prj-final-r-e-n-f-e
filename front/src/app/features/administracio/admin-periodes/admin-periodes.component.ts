@@ -36,12 +36,12 @@ export class AdminPeriodesComponent implements OnInit {
         id: periode.id,
         nom: periode.nom,
         actiu: periode.actiu,
-        trimestre_1_ini: periode.trimestre_1_ini,
-        trimestre_1_fi: periode.trimestre_1_fi,
-        trimestre_2_ini: periode.trimestre_2_ini,
-        trimestre_2_fi: periode.trimestre_2_fi,
-        trimestre_3_ini: periode.trimestre_3_ini,
-        trimestre_3_fi: periode.trimestre_3_fi
+        trimestre_1_ini: this.formatarDataInput(periode.trimestre_1_ini),
+        trimestre_1_fi: this.formatarDataInput(periode.trimestre_1_fi),
+        trimestre_2_ini: this.formatarDataInput(periode.trimestre_2_ini),
+        trimestre_2_fi: this.formatarDataInput(periode.trimestre_2_fi),
+        trimestre_3_ini: this.formatarDataInput(periode.trimestre_3_ini),
+        trimestre_3_fi: this.formatarDataInput(periode.trimestre_3_fi)
       };
     } else {
       // En aquest cas, no esperem crear nous períodes, només editar els existents
@@ -98,5 +98,16 @@ export class AdminPeriodesComponent implements OnInit {
     const mes = String(data.getUTCMonth() + 1).padStart(2, '0');
     const any = data.getUTCFullYear();
     return `${dia}/${mes}/${any}`;
+  }
+
+  // Converteix '2025-09-12T00:00:00.000000Z' → '2025-09-12'
+  formatarDataInput(dataIso: string | null | undefined): string {
+    if (!dataIso) return '';
+    const date = new Date(dataIso);
+    if (isNaN(date.getTime())) return '';
+    const dia = String(date.getUTCDate()).padStart(2, '0');
+    const mes = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const any = date.getUTCFullYear();
+    return `${any}-${mes}-${dia}`;
   }
 }
