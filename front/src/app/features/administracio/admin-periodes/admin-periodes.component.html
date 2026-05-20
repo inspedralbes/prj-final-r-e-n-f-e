@@ -46,8 +46,8 @@
                     </div>
                   </div>
                 </td>
-                <td class="user-email">{{ periode.trimestre_1_ini }}</td>
-                <td class="user-email">{{ periode.trimestre_3_fi }}</td>
+                <td class="user-email">{{ formatarData(periode.trimestre_1_ini) }}</td>
+                <td class="user-email">{{ formatarData(periode.trimestre_3_fi) }}</td>
                 <td>
                   @if (periode.actiu) {
                     <span class="badge-role professor">ACTIU</span>
@@ -100,7 +100,7 @@
               </div>
               <div class="name-details">
                 <span class="user-name">{{ periode.nom }}</span>
-                <span class="user-email">{{ periode.trimestre_1_ini }} - {{ periode.trimestre_3_fi }}</span>
+                <span class="user-email">{{ formatarData(periode.trimestre_1_ini) }} - {{ formatarData(periode.trimestre_3_fi) }}</span>
               </div>
             </div>
             <div class="card-info">
