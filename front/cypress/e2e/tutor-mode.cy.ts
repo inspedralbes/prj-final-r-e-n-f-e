@@ -1,16 +1,24 @@
 describe('Tutor Mode Visibility', () => {
   it('should show tutor icons if the user is a tutor', () => {
     // Mock user login as tutor
-    cy.intercept('POST', '**/auth/login-temporal', {
+    cy.intercept('POST', '**/auth/google/redirect', {
+      statusCode: 200,
+      body: {
+        success: true,
+        redirect_url: 'http://localhost:4200/auth/callback?code=mock-code'
+      }
+    }).as('googleRedirect');
+
+    cy.intercept('POST', '**/auth/google/callback', {
       statusCode: 200,
       body: {
         success: true,
         data: {
-          user: { id: 1, nom: 'Tutor Test', rol: 'Profe' },
+          user: { id: 1, nom: 'Tutor Test', rol: 'Profe', isProfileComplited: true },
           token: 'fake-jwt'
         }
       }
-    });
+    }).as('googleCallback');
 
     // Mock initial data
     cy.intercept('GET', '**/back/api/v1/horaris/professor/*', { body: [] });
@@ -19,8 +27,9 @@ describe('Tutor Mode Visibility', () => {
     cy.intercept('GET', '**/back/api/v1/classes/tutor/1', { body: { data: { id: 1, nom: 'Classe Test' } } });
 
     cy.visit('/');
-    cy.get('#usuari').type('tutor@example.com');
-    cy.get('.boto-entrar').click();
+    cy.get('.boto-google').click();
+    cy.wait('@googleRedirect');
+    cy.wait('@googleCallback', { timeout: 10000 });
 
     // Verify we are on the dashboard
     cy.url().should('include', '/professors');
