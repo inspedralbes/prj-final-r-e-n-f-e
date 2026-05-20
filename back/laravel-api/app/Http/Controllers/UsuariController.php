@@ -51,7 +51,7 @@ class UsuariController extends Controller
             'cognom' => 'required|string|max:255',
             'email' => 'required|email|unique:usuaris,email',
             'email_pares' => 'nullable|email',
-            'rol' => 'required|string|in:admin,professor,alumne,pare,Administrador,Professor,Alumne,Pares',
+            'rol' => 'required|string|in:Admin,Profe,Alumne',
             'password' => 'required|string|min:8',
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id',
         ]);
@@ -102,13 +102,13 @@ class UsuariController extends Controller
             ], Response::HTTP_NOT_FOUND);
         }
 
-$dadesValidades = $peticio->validate([
+        $dadesValidades = $peticio->validate([
             'nom' => 'sometimes|required|string|max:255',
             'cognom' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:usuaris,email,' . $id,
             'email_pares' => 'nullable|email',
             'data_naixement' => 'nullable|date',
-            'rol' => 'sometimes|required|string|in:Administrador,Profe,Alumne',
+            'rol' => 'sometimes|required|string|in:Admin,Profe,Alumne',
             'password' => 'sometimes|required|string|min:8',
             'nfc_id' => 'nullable|string|unique:usuaris,nfc_id,' . $id,
             'id_classe' => 'nullable|exists:classes,id',
