@@ -1,0 +1,176 @@
+<div id="contenidor">
+  <app-sidebaradmin></app-sidebaradmin>
+  <div class="contingut">
+    <div class="admin-header">
+      <div class="header-titles">
+        <h2>Gestió de Cursos</h2>
+        <p class="subtitle">Administra i gestiona els cursos acadèmics de l'aplicació.</p>
+      </div>
+      <button class="btn-primary" (click)="obrirModal()">
+        <ng-icon name="heroPlus"></ng-icon> Nou Curs
+      </button>
+    </div>
+
+    @if (isLoading()) {
+      <div class="loading-overlay glass-panel">
+        <div class="spinner"></div>
+        <p>Carregant cursos...</p>
+      </div>
+    } @else {
+      <!-- TABLE VIEW (Desktop) -->
+      <div class="table-container glass-panel desktop-only">
+        <table class="premium-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nom del Curs</th>
+              <th>Tipus</th>
+              <th>Tutor</th>
+              <th>Període</th>
+              <th>Accions</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (curs of cursos(); track curs.id) {
+              <tr class="table-row">
+                <td>
+                  <span class="badge-id">#{{ curs.id }}</span>
+                </td>
+                <td>
+                  <div class="user-info">
+                    <div class="avatar-placeholder">
+                      <ng-icon name="heroRectangleGroup"></ng-icon>
+                    </div>
+                    <div class="name-details">
+                      <span class="user-name">{{ curs.nom }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td>
+                  <span class="badge-role" [class.gm]="curs.tipus === 'GM'" [class.gs]="curs.tipus === 'GS'">{{ curs.tipus }}</span>
+                </td>
+                <td class="user-email">{{ obtenirNomTutor(curs.id_tutor) }}</td>
+                <td class="user-email">{{ obtenirNomPeriode(curs.id_periode) }}</td>
+                <td class="actions">
+                  <button class="btn-icon edit" (click)="obrirModal(curs)" title="Editar">
+                    <ng-icon name="heroPencilSquare"></ng-icon>
+                  </button>
+                  <button class="btn-icon delete" (click)="esborrarCurs(curs.id)" title="Eliminar">
+                    <ng-icon name="heroTrash"></ng-icon>
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-state">No hi ha cursos registrats al sistema.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <!-- CARD VIEW (Mobile) -->
+      <div class="cards-container mobile-only">
+        @for (curs of cursos(); track curs.id) {
+          <div class="user-card">
+            <div class="card-header">
+              <div class="avatar-placeholder">
+                <ng-icon name="heroRectangleGroup"></ng-icon>
+              </div>
+              <div class="name-details">
+                <span class="user-name">{{ curs.nom }}</span>
+                <span class="user-email">{{ curs.tipus }}</span>
+              </div>
+            </div>
+            <div class="card-info">
+              <span class="badge-role" style="font-size: 10px">{{ obtenirNomTutor(curs.id_tutor) }}</span>
+              <span class="badge-role" style="font-size: 10px">{{ obtenirNomPeriode(curs.id_periode) }}</span>
+            </div>
+            <div class="card-actions">
+              <button class="btn-icon edit" (click)="obrirModal(curs)" title="Editar">
+                <ng-icon name="heroPencilSquare"></ng-icon>
+              </button>
+              <button class="btn-icon delete" (click)="esborrarCurs(curs.id)" title="Eliminar">
+                <ng-icon name="heroTrash"></ng-icon>
+              </button>
+            </div>
+          </div>
+        } @empty {
+          <div class="empty-state glass-panel">No hi ha cursos registrats.</div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Premium Glassify Modal -->
+@if (isModalOpen) {
+  <div class="modal-backdrop">
+    <div class="modal-glass">
+      <div class="modal-header">
+        <h3>{{ isEditing ? 'Editar Curs' : 'Crear Nou Curs' }}</h3>
+        <button class="btn-close" (click)="tancarModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="guardarCurs()" #cursForm="ngForm" class="premium-form">
+          <div class="form-group">
+            <label for="nom">Nom del Curs</label>
+            <input
+              type="text"
+              id="nom"
+              name="nom"
+              [(ngModel)]="cursActual.nom"
+              required
+              placeholder="ex: 1r CFGM Sistemes Microinformàtics"
+            />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="tipus">Tipus</label>
+              <select id="tipus" name="tipus" [(ngModel)]="cursActual.tipus" required>
+                <option value="GM">GM (Grau Mitjà)</option>
+                <option value="GS">GS (Grau Superior)</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="id_periode">Període (opcional)</label>
+              <select id="id_periode" name="id_periode" [(ngModel)]="cursActual.id_periode">
+                <option [ngValue]="null">Cap Període</option>
+                @for (periode of periodes(); track periode.id) {
+                  <option [ngValue]="periode.id">{{ periode.nom }}</option>
+                }
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="id_tutor">Tutor Assignat (opcional)</label>
+            <select id="id_tutor" name="id_tutor" [(ngModel)]="cursActual.id_tutor">
+              <option [ngValue]="null">Cap Tutor</option>
+              @for (prof of professors(); track prof.id) {
+                <option [ngValue]="prof.id">
+                  {{ prof.nom }}{{ prof.cognom ? ' ' + prof.cognom : '' }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn-secondary" (click)="tancarModal()">Cancel·lar</button>
+            <button
+              type="submit"
+              class="btn-primary btn-loading-state"
+              [class.loading]="isSaving()"
+              [disabled]="!cursForm.form.valid || isLoading() || isSaving()"
+            >
+              <div class="btn-spinner"></div>
+              <span>{{ isEditing ? 'Actualitzar Curs' : 'Guardar Nou Curs' }}</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
