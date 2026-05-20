@@ -143,6 +143,12 @@
   font-size: 20px;
 }
 
+.name-details {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .user-name {
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
@@ -297,20 +303,27 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  box-sizing: border-box;
+  overflow: hidden;
   animation: fadeIn 0.2s ease;
 }
 
 .modal-glass {
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: 1px solid var(--glass-border);
-  border-radius: var(--radius-m);
-  box-shadow: var(--glass-shadow), var(--glass-reflection);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 24px;
+  box-shadow: 0 25px 50px -12px rgba(139, 92, 246, 0.25);
   width: 100%;
-  max-width: 500px;
+  max-width: 650px; /* Slightly wider to fit 3 columns better */
+  max-height: 90vh; /* Prevent modal from exceeding screen height */
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
-  animation: slideUp 0.3s ease;
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .modal-header {
@@ -323,8 +336,10 @@
 
 .modal-header h3 {
   margin: 0;
-  font-size: 18px;
-  color: #2d3748;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #1e1b4b;
+  font-family: 'Outfit', sans-serif;
 }
 
 .btn-close {
@@ -340,17 +355,21 @@
 
 .modal-body {
   padding: 24px;
+  overflow-y: auto;
+  flex: 1;
 }
 
 /* Form Styling */
 .form-row {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   margin-bottom: 16px;
 }
 
 .form-group {
   flex: 1;
+  min-width: 120px;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -368,20 +387,25 @@
 }
 
 .form-group input, .form-group select {
-  padding: 10px 14px;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 14px;
-  color: #2d3748;
-  transition: all 0.2s ease;
-  background: #f8fafc;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px 20px;
+  border: 1px solid rgba(139, 92, 246, 0.2);
+  border-radius: 16px;
+  font-size: 1rem;
+  color: #1e293b;
+  font-family: 'Outfit', sans-serif;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .form-group input:focus, .form-group select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
   background: white;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 15px rgba(124, 58, 237, 0.15);
+  transform: translateY(-2px);
 }
 
 .modal-footer {
@@ -674,12 +698,14 @@
 
   .form-row {
     flex-direction: column;
-    gap: 0;
+    gap: 16px;
   }
 
   .modal-glass {
+    width: calc(100% - 32px);
     max-width: calc(100vw - 32px);
     margin: 16px;
+    box-sizing: border-box;
   }
 
   .modal-header {

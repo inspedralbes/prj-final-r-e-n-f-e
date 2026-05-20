@@ -153,4 +153,21 @@ export class AdminAssignaturesComponent implements OnInit {
     this.assignaturaSeleccionada = null;
     this.alumnesInscritsLlista = [];
   }
+
+  formatarInterval(interval: string | undefined): string {
+    if (!interval) return 'Sense definir';
+    try {
+      const parsed = JSON.parse(interval);
+      if (parsed.inici && parsed.fi) {
+        return `${parsed.inici} al ${parsed.fi}`;
+      } else if (parsed.inici) {
+        return `Des de ${parsed.inici}`;
+      } else if (parsed.fi) {
+        return `Fins ${parsed.fi}`;
+      }
+      return 'Sense definir';
+    } catch (e) {
+      return interval;
+    }
+  }
 }
