@@ -411,23 +411,41 @@ class AssistenciaController extends Controller
         $user = $request->user();
         if (!$user) return response()->json(['message' => 'No auth'], 401);
 
-        // 1. IDs de les teves assignatures
-        $ids = DB::table('imparteix')->where('id_profe', $user->id)->pluck('id_assignatura');
-
-        // 2. Alumnes i faltes (més senzill amb Eloquent)
-        $inscrits = Inscrit::whereIn('id_assignatura', $ids)
-            ->with(['alumne', 'assignatura'])
-            ->withCount(['assistencies as totalFaltes' => function ($query) {
-                $query->where('estat', 'Falta');
-            }])
+        // Obtenir totes les faltes que ha registrat aquest professor
+        // Això és més robust que dependre de la taula imparteix
+        $faltes = Assistencia::where('id_profe', $user->id)
+            ->where('estat', 'Falta')
+            ->with(['inscripcio.alumne', 'inscripcio.assignatura'])
             ->get();
 
-        $dades = $inscrits->map(fn($i) => [
-            'nomAlumne' => $i->alumne->nom ?? '',
-            'cognomAlumne' => $i->alumne->cognom ?? '',
-            'nomAssignatura' => $i->assignatura->nom ?? '',
-            'totalFaltes' => $i->totalFaltes
-        ])->sortByDesc('totalFaltes')->values();
+        // Agrupar per alumne i assignatura per contar
+        $dades = [];
+        foreach ($faltes as $falta) {
+            $alumne = $falta->inscripcio->alumne;
+            $assignatura = $falta->inscripcio->assignatura;
+            
+            if (!$alumne || !$assignatura) continue;
+
+            $key = $alumne->id . '_' . $assignatura->id;
+            
+            if (!isset($dades[$key])) {
+                $dades[$key] = [
+                    'nomAlumne' => $alumne->nom ?? '',
+                    'cognomAlumne' => $alumne->cognom ?? '',
+                    'nomAssignatura' => $assignatura->nom ?? '',
+                    'totalFaltes' => 0
+                ];
+            }
+            $dades[$key]['totalFaltes']++;
+        }
+
+        // Ordenar per nombre de faltes (descendent)
+        usort($dades, function($a, $b) {
+            return $b['totalFaltes'] - $a['totalFaltes'];
+        });
+
+        // Reindexar l'array
+        $dades = array_values($dades);
 
         return response()->json(['success' => true, 'data' => $dades]);
     }
