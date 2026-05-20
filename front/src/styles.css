@@ -1,8 +1,7 @@
-/* Global Styles - Light Glassify Premium (saviru.me style) */
+/* Glassify — Sistema de disseny global */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* Luminescent Light Palette */
     --bg-main: #f0f4ff;
     --bg-gradient: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
     --primary-color: #6366f1;
@@ -10,22 +9,20 @@
     --secondary-color: #a78bfa;
     --accent-color: #f472b6;
 
-    /* Ultra Glass Tokens (Molt més evidents i premium) */
     --glass-bg: rgba(255, 255, 255, 0.4);
     --glass-border: rgba(255, 255, 255, 0.7);
     --glass-blur: blur(25px) saturate(200%);
     --glass-shadow: 0 12px 40px -10px rgba(0, 0, 0, 0.15);
     --glass-reflection: inset 0 1px 1px rgba(255, 255, 255, 0.8);
 
-    /* Text - Fosc per a contrast en mode clar */
     --text-main: #1e293b;
     --text-muted: #64748b;
 
-    /* Radius */
     --radius-l: 32px;
     --radius-m: 20px;
 }
 
+/* Classe utilitaria de targeta de vidre */
 .glass-panel {
     background: var(--glass-bg);
     backdrop-filter: var(--glass-blur);
@@ -35,6 +32,7 @@
     border-radius: var(--radius-m);
 }
 
+/* Base */
 body {
     margin: 0;
     padding: 0;
@@ -52,7 +50,7 @@ body {
     box-sizing: inherit;
 }
 
-/* Fons Orgànic Global - Més lluminós */
+/* Fons amb gradient i orbs de color */
 body::before {
     content: '';
     position: fixed;
@@ -79,7 +77,7 @@ body::after {
     pointer-events: none;
 }
 
-/* Scrollbar Premium Light */
+/* Scrollbar */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -97,7 +95,7 @@ body::after {
     background: var(--primary-color);
 }
 
-/* Loading Blur Overlay - Premium Glass Spinner */
+/* Overlay de carrega amb blur i spinner */
 .loading-blur-overlay {
     position: relative !important;
 }
@@ -109,16 +107,15 @@ body::after {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(240, 244, 255, 0.4); /* match --bg-main softly */
+    background: rgba(240, 244, 255, 0.4);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     z-index: 50;
     border-radius: inherit;
     animation: fadeIn 0.3s ease-out;
-    pointer-events: none; /* Block clicks handled by the wrapper */
+    pointer-events: none;
 }
 
-/* We prevent clicks on the blurred container */
 .loading-blur-overlay > * {
     pointer-events: none !important;
 }
@@ -138,31 +135,7 @@ body::after {
     z-index: 51;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-/* Animació d'entrada de pàgina: fade + lleuger moviment cap amunt */
-@keyframes pageEnter {
-    from {
-        opacity: 0;
-        transform: translateY(16px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes spin-morph {
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-.relative-container {
-    position: relative !important;
-}
-/* Admin-style Loading Overlay */
+/* Spinner d'administracio */
 .admin-loading-container {
     display: flex;
     flex-direction: column;
@@ -183,18 +156,13 @@ body::after {
     animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Button Loading Animation (Login style) */
+/* Boto amb estat de carrega: es transforma en cercle amb spinner */
 .btn-loading-state {
     position: relative !important;
     transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55) !important;
 }
 
 .btn-loading-state.loading {
-    /* Forcem que sigui un quadrat perfecte */
     width: 52px !important;
     height: 52px !important;
     min-width: 52px !important;
@@ -202,11 +170,10 @@ body::after {
     min-height: 52px !important;
     max-height: 52px !important;
     aspect-ratio: 1 / 1 !important;
-    
     border-radius: 50% !important;
     color: transparent !important;
     padding: 0 !important;
-    margin: 0 !important; /* Evitem que marges externs el deformin en flex */
+    margin: 0 !important;
     pointer-events: none !important;
     display: flex !important;
     align-items: center !important;
@@ -235,13 +202,37 @@ body::after {
     display: block !important;
 }
 
-/* Ocultem tot el contingut original (text, icones, etc.) */
-.btn-loading-state.loading ng-icon, 
+.btn-loading-state.loading ng-icon,
 .btn-loading-state.loading span,
 .btn-loading-state.loading i,
 .btn-loading-state.loading div:not(.btn-spinner) {
     display: none !important;
     opacity: 0 !important;
+}
+
+/* Animacions */
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin-morph {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
 }
 
 @keyframes btn-spin {
