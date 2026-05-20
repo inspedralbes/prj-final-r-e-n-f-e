@@ -78,7 +78,7 @@ RUN mkdir -p /app/storage/app/public/photos/profes \
     && chmod -R 775 /app/storage /app/bootstrap/cache
 
 # Pre-generar cachés de Laravel (config, rutas)
-RUN cd /app && php artisan config:cache && php artisan route:cache
+RUN cd /app && php artisan config:cache && php artisan route:cache && php artisan key:generate
 
 # Generar archivo de preload para opcache
 RUN cd /app && php artisan package:discover --ansi
