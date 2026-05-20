@@ -37,7 +37,8 @@ export class UsuarisManagerService {
    */
   async afegirUsuari(nouUsuari: Partial<Usuari>) {
     try {
-      const creada = await this.apiManager.post<Usuari>('/usuaris', nouUsuari);
+      const resp = await this.apiManager.post<any>('/usuaris', nouUsuari);
+      const creada: Usuari = resp.data || resp;
 
       // Lògica primitiva
       const llistaActual = this.usuaris();

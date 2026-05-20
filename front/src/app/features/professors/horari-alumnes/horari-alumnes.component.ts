@@ -51,28 +51,28 @@ export class HorariAlumnesComponent implements OnInit {
     // 1. Obtenim la classe on és tutor
     const usuariLoguejat = this.serveiAuth.usuarioInfo;
     if (usuariLoguejat && usuariLoguejat.id) {
-        const classe = await this.serveiClasses.obtenirClasseTutor(usuariLoguejat.id);
-        this.laMevaClasse.set(classe);
+      const classe = await this.serveiClasses.obtenirClasseTutor(usuariLoguejat.id);
+      this.laMevaClasse.set(classe);
 
-        if (classe) {
-            // 2. Executem les 3 crides en PARAL·LEL per reduir el temps de càrrega
-            const [alumnes, horaris, profes] = await Promise.all([
-                this.serveiClasses.getAlumnesClasse(classe.id),
-                this.serveiHoraris.getHorarisClasse(classe.id),
-                this.serveiUsuaris.getUsuarisPerRol('Profe'),
-            ]);
+      if (classe) {
+        // 2. Carreguem nomes els alumnes de la classe, els horaris d'aquesta classe
+        // i tots els usuaris que són profes directament filtrats al Laravel.
+        // Carreguem cada llista de forma seqüencial sense Promise.all
+        const alumnes = await this.serveiClasses.getAlumnesClasse(classe.id);
+        const horaris = await this.serveiHoraris.getHorarisClasse(classe.id);
+        const profes = await this.serveiUsuaris.getUsuarisPerRol('Profe');
 
-            this.alumnesDelaClasseSegur.set(alumnes);
-            this.horarisDelaClasseSegur.set(horaris);
-            this.professorsDisponiblesSegur.set(profes);
-        }
+        this.alumnesDelaClasseSegur.set(alumnes);
+        this.horarisDelaClasseSegur.set(horaris);
+        this.professorsDisponiblesSegur.set(profes);
+      }
     }
-    
+
     // Carreguem llistats per als modals d'assignatures o aules
     // d'Assignatures i Aules disponibles al centre per posar-les al <select> del HTML
     this.serveiAssignatures.carregarAssignatures();
     this.serveiAules.carregarAules();
-    
+
     this.socketService.listenToEvent('horari_updated').subscribe(async () => {
       console.log('[SOCKET] horari_updated rebut a horari-alumnes, recarregant...');
       const classe = this.laMevaClasse();

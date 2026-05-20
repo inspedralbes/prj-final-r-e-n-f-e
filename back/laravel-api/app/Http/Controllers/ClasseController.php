@@ -31,8 +31,9 @@ class ClasseController extends Controller
     {
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
-            'curs_id' => 'required|exists:cursos,id',
-            'aula_id' => 'nullable|exists:aules,id',
+            'id_curs' => 'required|exists:cursos,id',
+            'id_tutor' => 'nullable|exists:usuaris,id',
+            'id_aula' => 'nullable|exists:aules,id',
         ]);
 
         $classe = Classe::create($validated);
@@ -81,8 +82,9 @@ class ClasseController extends Controller
 
         $validated = $request->validate([
             'nom' => 'sometimes|required|string|max:255',
-            'curs_id' => 'sometimes|required|exists:cursos,id',
-            'aula_id' => 'nullable|exists:aules,id',
+            'id_curs' => 'sometimes|required|exists:cursos,id',
+            'id_tutor' => 'nullable|exists:usuaris,id',
+            'id_aula' => 'nullable|exists:aules,id',
         ]);
 
         $classe->update($validated);
