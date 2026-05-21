@@ -113,7 +113,7 @@ class CartaFaltesController extends Controller
             $wordBase64 = base64_encode($wordFileContent);
 
             error_log('Enviant fitxer a Node API per conversió a PDF: ' . $fileName);
-            $response = Http::timeout(120)->post($_ENV['NODE_PRINCIPAL_API_URL'] . '/api/convert/word-to-pdf', [
+            $response = Http::timeout(120)->post($_ENV['NODE_PRINCIPAL_API_URL'] . 'api/convert/word-to-pdf', [
                 'fileBase64' => $wordBase64,
                 'fileName' => $fileName,
             ]);
