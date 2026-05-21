@@ -17,7 +17,7 @@ class CartaFaltesController extends Controller
 
     public function __construct()
     {
-        $this->nodeApiUrl = env('NODE_PRINCIPAL_API_URL');
+        $this->nodeApiUrl = $_ENV['NODE_PRINCIPAL_API_URL'];
     }
 
     public function generar(Request $peticio)
