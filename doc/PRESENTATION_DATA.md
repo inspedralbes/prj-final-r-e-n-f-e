@@ -1,0 +1,1 @@
+Com amb git lfs no es poden pujar objectes a forks públics, aquí és un link: [drive.google.com](https://drive.google.com/drive/folders/1SKSHTLwzp1afdafkoLexuOHXqLuHb7zM?usp=sharing)
